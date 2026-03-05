@@ -230,7 +230,7 @@ namespace MakePacketTemplate.Packets
             BitConverter.GetBytes((ushort)MessageBytes.Length).CopyTo(buffer, offset);
             offset += sizeof(ushort);
             MessageBytes.CopyTo(buffer, offset);
-            offset += MessageBytes.Length;
+            offset += (ushort)MessageBytes.Length;
             
 
             return new ArraySegment<byte>(buffer, 0, size);
