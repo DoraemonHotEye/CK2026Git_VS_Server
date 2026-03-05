@@ -72,6 +72,7 @@ namespace MakePacketTemplate.Packets
 
     public enum MsgID : ushort
     {
+         MAINSERVER_TESTPACKET = 0,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -172,5 +173,68 @@ namespace MakePacketTemplate.Packets
         }
     }
 
+    
+    public class MAINSERVER_TestPacket : PacketInterface
+    {
+        public MsgID MsgID = MsgID.MAINSERVER_TESTPACKET;
+
+        public string Message;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort MessageLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            Message = Encoding.UTF8.GetString(buffer, start + offset, MessageLength);
+            offset += (ushort)MessageLength;
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(Message);
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            byte[] MessageBytes = Encoding.UTF8.GetBytes(Message);
+            BitConverter.GetBytes((ushort)MessageBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            MessageBytes.CopyTo(buffer, offset);
+            offset += MessageBytes.Length;
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
     
 }
