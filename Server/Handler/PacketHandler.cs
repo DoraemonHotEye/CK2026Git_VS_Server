@@ -1,0 +1,15 @@
+﻿using MakePacketTemplate.Packets;
+using Server.Session;
+using ServerCore;
+using ServerCore.DebugPoint;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+public class PacketHandler
+{
+    
+}
+

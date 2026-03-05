@@ -1,0 +1,113 @@
+
+[/class]
+{}
+[class/]
+[EndLine/]
+[/struct]
+{}
+[struct/]
+[EndLine/]
+[/Settings]
+{
+  "GameClient": {
+    "Name": "GameClient",
+    "Description": "게임 클라이언트",
+    "Path": "D:\\Gits\\CK2026Git_VS",
+    "tag": {
+      "Name": "GameClient",
+      "Type": 4,
+      "ClientSeed": 0,
+      "Description": ""
+    },
+    "isUseUDP": true
+  },
+  "MainServer": {
+    "Name": "MainServer",
+    "Description": "메인서버",
+    "Path": "../../../Server",
+    "tag": {
+      "Name": "MainServer",
+      "Type": 1,
+      "ClientSeed": 0,
+      "Description": "메인 서버"
+    },
+    "isUseUDP": true
+  }
+}
+[Settings/]
+[EndLine/]
+[/Tags]
+{
+  "Default_Server": {
+    "Name": "Default_Server",
+    "Type": 1,
+    "ClientSeed": 0,
+    "Description": "기본 서버"
+  },
+  "Default_Client": {
+    "Name": "Default_Client",
+    "Type": 2,
+    "ClientSeed": 1,
+    "Description": "기본 클라이언트"
+  },
+  "GameClient": {
+    "Name": "GameClient",
+    "Type": 4,
+    "ClientSeed": 2,
+    "Description": ""
+  },
+  "MainServer": {
+    "Name": "MainServer",
+    "Type": 1,
+    "ClientSeed": 3,
+    "Description": "메인 서버"
+  }
+}
+[Tags/]
+[EndLine/]
+[/EventPackets]
+{
+  "GameClient": {
+    "tag": {
+      "Name": "GameClient",
+      "Type": 4,
+      "ClientSeed": 0,
+      "Description": ""
+    },
+    "Packers": {},
+    "profiler": {
+      "Name": "GameClient",
+      "Description": "게임 클라이언트",
+      "Path": "D:\\Gits\\CK2026Git_VS",
+      "tag": {
+        "Name": "GameClient",
+        "Type": 4,
+        "ClientSeed": 0,
+        "Description": ""
+      },
+      "isUseUDP": false
+    }
+  },
+  "MainServer": {
+    "tag": {
+      "Name": "MainServer",
+      "Type": 1,
+      "ClientSeed": 0,
+      "Description": "메인 서버"
+    },
+    "Packers": {},
+    "profiler": {
+      "Name": "MainServer",
+      "Description": "메인서버",
+      "Path": "../../../Server",
+      "tag": {
+        "Name": "MainServer",
+        "Type": 1,
+        "ClientSeed": 0,
+        "Description": "메인 서버"
+      },
+      "isUseUDP": true
+    }
+  }
+}
+[EventPackets/]

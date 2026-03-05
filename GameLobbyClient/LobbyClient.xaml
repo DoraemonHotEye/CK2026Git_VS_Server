@@ -1,0 +1,25 @@
+﻿<Window x:Class="GameLobbyClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GameLobbyClient"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1280"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border CornerRadius="20" Background="#FFE9E9E9">
+        <Grid>
+            <Border Height="35"
+                Width="1280"
+                Background="#FF63B5E9"
+                CornerRadius="15,15,0,0"
+                VerticalAlignment="Top"
+                MouseLeftButtonDown="Rectangle_MouseLeftButtonDown"/>
+            <Image x:Name="Exit" HorizontalAlignment="Right" Height="41" Margin="0,-3,4,0" VerticalAlignment="Top" Width="42" Source="/[CITYPNG.COM]HD Red Square Close X Button Icon Transparent Background - 1000x1000.png"/>
+        </Grid>
+    </Border>
+</Window>

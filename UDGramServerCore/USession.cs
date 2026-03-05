@@ -1,0 +1,178 @@
+﻿using MakePacketTemplate.Packets;
+using ServerCore;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+
+namespace UDgramCore
+{
+    public abstract class UPacketSession : USession
+    {
+        public static readonly int HeaderSize = 2;
+
+        // [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ]
+        public sealed override int OnRecv(ArraySegment<byte> buffer)
+        {
+            int processLen = 0;
+
+            // 최소한 헤더는 파싱할 수 있는지 확인
+            if (buffer.Count < HeaderSize)
+                return 0;
+
+            //패킷이 완전체로 도착했는지 확인
+            ushort dataSize = BitConverter.ToUInt16(buffer.Array, buffer.Offset);
+            if (buffer.Count < dataSize)
+                return 0; ;
+
+            // 여기까지 왔으면 패킷 조립 가능
+            OnRecvPacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, buffer.Count));
+
+            return processLen;
+        }
+        public void Send(PacketInterface packet, IPEndPoint endPoint, bool RUDPUse = false)
+        {
+            var sendBuffer = packet.Serialize();
+
+            lock (_lock)
+            {
+                _server.BeginSend(sendBuffer.Array, sendBuffer.Count, endPoint, udpSendCallback, _server);
+            }
+
+            OnSend(true);
+        }
+
+        public abstract void OnRecvPacket(ArraySegment<byte> buffer);
+    }
+
+    public abstract class USession
+    {
+        public int SessionId = -1;
+
+        //TODO PacketHandler 쪽에서 처리하게 추가하도록 처리함
+        public Dictionary<int, IPEndPoint> _ipList = new Dictionary<int, IPEndPoint>();
+
+        public UdpClient _server;
+        public UdpClient SendServer;
+
+        public IPEndPoint _holePunchServer;
+        public IPEndPoint _recvServer;
+        RecvBuffer _recvBuffer = new RecvBuffer(65535);
+
+        public object _lock = new object();
+        Queue<ArraySegment<byte>> _sendQueue = new Queue<ArraySegment<byte>>();
+        List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
+
+        public abstract int OnRecv(ArraySegment<byte> buffer);
+        public abstract void OnSend(bool isCompeleted);
+
+        void Clear()
+        {
+            lock (_lock)
+            {
+                _sendQueue.Clear();
+                _pendingList.Clear();
+            }
+        }
+
+        public void Start(IPEndPoint endPoint)
+        {
+            _server = new UdpClient(endPoint);
+            SendServer = new UdpClient();
+
+            Console.WriteLine("UDP Port: " + endPoint.Port);
+            _server.BeginReceive(udpReceiveCallback, _server);
+            ThreadPool.QueueUserWorkItem((WaitCallback)pingCallback);
+        }
+
+        public void SendCallBack(object state)
+        {
+            Console.WriteLine("-> 데이터 전송");
+        }
+
+        void pingCallback(object state)
+        {
+            lock (UPlayerManager.Instance.IPEndPoints)
+            {
+                foreach (var item in UPlayerManager.Instance.IPEndPoints)
+                {
+                    DGRAM_SERVER_Ping _pingpacket = new DGRAM_SERVER_Ping();
+                    var serialize = _pingpacket.Serialize();
+                    _server.BeginSend(serialize.Array, serialize.Count, item, udpSendCallback, _server);
+                }
+            }
+            Thread.Sleep(5000); // 5초에 한번씩 클라이언트 목록 전송 (P2P 포트가 닫히는 것을 방지하기 위함)
+            ThreadPool.QueueUserWorkItem((WaitCallback)pingCallback);
+        }
+
+        public void udpSendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                UdpClient udpClient = ar.AsyncState as UdpClient;
+                udpClient.EndSend(ar);  // 싱크 마지막 값 보내기
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Send Error: " + ex.ToString());
+            }
+        }
+
+        public int _SessionID = 0;
+        void udpReceiveCallback(IAsyncResult ar)
+        {
+            try // 패킷을 받는데 연결되어다가 안되었다가 반복하면 패킷 강제 Loss
+            {
+                UdpClient udpServer = ar.AsyncState as UdpClient;   // udpclient에서 보낸것을 받아야 하는 변수가 있어야 하는 이유
+                IPEndPoint remoteEndPoint = null;                   // 마지막 IP의 Point에 값이 남아있으면 초기화 시키는 변수
+
+                byte[] receiveBytes = null;
+
+                try // 패킷이 감지 되었다가 호스트가 완전히 끊겼을때
+                {
+                    lock (_lock)
+                    {
+                        receiveBytes = udpServer.EndReceive(ar, ref remoteEndPoint); // 클라이언트에서 마지막으로 받은 값을 초기화 시키는 변수를 넣어 null
+
+                        UPlayerManager.Instance.RegisterPlayer(remoteEndPoint);
+
+                        Console.WriteLine("[UDP 받음]");
+
+                        //_ipList.Add(_SessionID, remoteEndPoint);
+                        //_SessionID++;
+
+                        byte[] sendBytes = new byte[4];                             // 다시 보내는 바이트가 있어야 하니 바이트 배열 생성
+                        udpServer.BeginSend(sendBytes, sendBytes.Length, remoteEndPoint, udpSendCallback, udpServer);
+                        // udpclient에 다시 보내기 (보내는 변수, 보내는 변수 길이, 마지막에 끝나는 ipendpoint, session에 마지막으로 보낸 결과값, udpserver변수에 )
+
+                        _recvServer = remoteEndPoint;
+                        int processLen = OnRecv(new ArraySegment<byte>(receiveBytes, 0, receiveBytes.Length));  // 받는 길이 변수 = 바이트 배열 변수, 0, 배열 바이트 변수 길이
+                    }
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine($"패킷Loss 감지 중간에 호스트가 끊겼습니다.");
+                    UPlayerManager.Instance.RemoverPlayer(remoteEndPoint);
+                }
+
+                udpServer.BeginReceive(udpReceiveCallback, udpServer);              // 다시 받기
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"패킷 강제 Loss 불안전한 연결입니다.");
+            }
+        }
+
+        private void OutputIPList()
+        {
+            foreach (var item in _ipList.Keys)
+            {
+                IPEndPoint ipAddr = _ipList[item];
+                Console.WriteLine(item + " == " + ipAddr.ToString() + ":" + ipAddr.Port);
+            }
+        }
+
+    }
+}
