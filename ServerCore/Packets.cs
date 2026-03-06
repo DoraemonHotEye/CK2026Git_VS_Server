@@ -72,7 +72,7 @@ namespace MakePacketTemplate.Packets
 
     public enum MsgID : ushort
     {
-         MAINSERVER_TESTPACKET = 0,
+         GAMECLIENT_DISCONNECTUDP = 0,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -174,11 +174,11 @@ namespace MakePacketTemplate.Packets
     }
 
     
-    public class MAINSERVER_TestPacket : PacketInterface
+    public class GAMECLIENT_DisconnectUDP : PacketInterface
     {
-        public MsgID MsgID = MsgID.MAINSERVER_TESTPACKET;
+        public MsgID MsgID = MsgID.GAMECLIENT_DISCONNECTUDP;
 
-        public string Message;
+        public ushort timeout;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -193,10 +193,8 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
-            ushort MessageLength = BitConverter.ToUInt16(buffer, start + offset);
+            timeout = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            Message = Encoding.UTF8.GetString(buffer, start + offset, MessageLength);
-            offset += (ushort)MessageLength;
             
         }
 
@@ -208,7 +206,7 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketID
 
             size += sizeof(ushort);
-            size += (ushort)Encoding.UTF8.GetByteCount(Message);
+            
             
 
             return size;
@@ -226,11 +224,8 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
-            byte[] MessageBytes = Encoding.UTF8.GetBytes(Message);
-            BitConverter.GetBytes((ushort)MessageBytes.Length).CopyTo(buffer, offset);
+            BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
-            MessageBytes.CopyTo(buffer, offset);
-            offset += (ushort)MessageBytes.Length;
             
 
             return new ArraySegment<byte>(buffer, 0, size);

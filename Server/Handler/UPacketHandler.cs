@@ -22,4 +22,10 @@ public class UPacketHandler
     {
         Console.WriteLine($"[DGRAM_SERVER]: {Sender}");
     }
+
+    public static void GAMECLIENT_DisconnectUDPHandler(IPEndPoint Sender, USession session, PacketInterface message)
+    {
+        Console.WriteLine($"[DGRAM_SERVER]: Disconnecrt 감지 {Sender}");
+        UPlayerManager.Instance.RemovePlayer(Sender);
+    }
 }

@@ -29,7 +29,7 @@ namespace UDgramCore
             }
         }
 
-        public bool RemoverPlayer(IPEndPoint endPoint)
+        public bool RemovePlayer(IPEndPoint endPoint)
         {
             lock (_lock)
             {

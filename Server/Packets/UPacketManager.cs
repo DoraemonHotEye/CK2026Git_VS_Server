@@ -27,7 +27,9 @@ public class UPacketManager
 	    _handler.Add((ushort)MsgID.DGRAM_SERVER_PING, UPacketHandler.DGRAM_SERVER_PingHandler);
 	    _makeFunc.Add((ushort)MsgID.DGRAM_SERVER_CONNECTPACKET, MakePacket<DGRAM_SERVER_ConnectPacket>);
 	    _handler.Add((ushort)MsgID.DGRAM_SERVER_CONNECTPACKET, UPacketHandler.DGRAM_SERVER_ConnectPacketHandler);
-	    
+	    _makeFunc.Add((ushort)MsgID.GAMECLIENT_DISCONNECTUDP, MakePacket<GAMECLIENT_DisconnectUDP>);
+        _handler.Add((ushort)MsgID.GAMECLIENT_DISCONNECTUDP, UPacketHandler.GAMECLIENT_DisconnectUDPHandler);
+        
     }
 
     public void OnRecvPacket(IPEndPoint ipendPoint, USession usession, ArraySegment<byte> buffer, Action<IPEndPoint, USession, PacketInterface> onRecvCallback = null)

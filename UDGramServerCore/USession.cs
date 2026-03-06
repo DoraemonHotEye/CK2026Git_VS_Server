@@ -123,45 +123,53 @@ namespace UDgramCore
         public int _SessionID = 0;
         void udpReceiveCallback(IAsyncResult ar)
         {
-            try // 패킷을 받는데 연결되어다가 안되었다가 반복하면 패킷 강제 Loss
-            {
-                UdpClient udpServer = ar.AsyncState as UdpClient;   // udpclient에서 보낸것을 받아야 하는 변수가 있어야 하는 이유
-                IPEndPoint remoteEndPoint = null;                   // 마지막 IP의 Point에 값이 남아있으면 초기화 시키는 변수
+            UdpClient udpServer = ar.AsyncState as UdpClient;
+            IPEndPoint remoteEndPoint = null;
 
+            try
+            {
                 byte[] receiveBytes = null;
 
-                try // 패킷이 감지 되었다가 호스트가 완전히 끊겼을때
+                try
                 {
                     lock (_lock)
                     {
-                        receiveBytes = udpServer.EndReceive(ar, ref remoteEndPoint); // 클라이언트에서 마지막으로 받은 값을 초기화 시키는 변수를 넣어 null
+                        receiveBytes = udpServer.EndReceive(ar, ref remoteEndPoint);
 
                         UPlayerManager.Instance.RegisterPlayer(remoteEndPoint);
 
                         Console.WriteLine("[UDP 받음]");
 
-                        //_ipList.Add(_SessionID, remoteEndPoint);
-                        //_SessionID++;
-
-                        byte[] sendBytes = new byte[4];                             // 다시 보내는 바이트가 있어야 하니 바이트 배열 생성
-                        udpServer.BeginSend(sendBytes, sendBytes.Length, remoteEndPoint, udpSendCallback, udpServer);
-                        // udpclient에 다시 보내기 (보내는 변수, 보내는 변수 길이, 마지막에 끝나는 ipendpoint, session에 마지막으로 보낸 결과값, udpserver변수에 )
-
                         _recvServer = remoteEndPoint;
-                        int processLen = OnRecv(new ArraySegment<byte>(receiveBytes, 0, receiveBytes.Length));  // 받는 길이 변수 = 바이트 배열 변수, 0, 배열 바이트 변수 길이
+
+                        int processLen = OnRecv(new ArraySegment<byte>(receiveBytes, 0, receiveBytes.Length));
                     }
                 }
-                catch (SocketException ex)
+                catch (SocketException)
                 {
-                    Console.WriteLine($"패킷Loss 감지 중간에 호스트가 끊겼습니다.");
-                    UPlayerManager.Instance.RemoverPlayer(remoteEndPoint);
+                    Console.WriteLine("패킷Loss 감지 중간에 호스트가 끊겼습니다.");
+
+                    IPEndPoint removeTarget = remoteEndPoint ?? _recvServer;
+
+                    if (removeTarget != null)
+                        UPlayerManager.Instance.RemovePlayer(removeTarget);
                 }
 
-                udpServer.BeginReceive(udpReceiveCallback, udpServer);              // 다시 받기
+                udpServer.BeginReceive(udpReceiveCallback, udpServer);
             }
-            catch (Exception ex)
+            catch (ObjectDisposedException)
             {
-                Console.WriteLine($"패킷 강제 Loss 불안전한 연결입니다.");
+                Console.WriteLine("UDP 소켓이 이미 종료되었습니다.");
+
+                if (_recvServer != null)
+                    UPlayerManager.Instance.RemovePlayer(_recvServer);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("패킷 강제 Loss 불안전한 연결입니다.");
+
+                if (_recvServer != null)
+                    UPlayerManager.Instance.RemovePlayer(_recvServer);
             }
         }
 
