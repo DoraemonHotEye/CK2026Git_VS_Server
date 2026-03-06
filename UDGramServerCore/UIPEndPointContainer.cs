@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace UDgramCore
 {
-    public class UPlayerManager
+    public class UIPEndPointContainer
     {
-        private static UPlayerManager inst = null;
-        public static UPlayerManager Instance => inst ?? (inst = new UPlayerManager());
+        private static UIPEndPointContainer inst = null;
+        public static UIPEndPointContainer Instance => inst ?? (inst = new UIPEndPointContainer());
 
         private List<IPEndPoint> PlayerList = new List<IPEndPoint>();
 

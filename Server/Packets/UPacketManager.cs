@@ -29,6 +29,8 @@ public class UPacketManager
 	    _handler.Add((ushort)MsgID.DGRAM_SERVER_CONNECTPACKET, UPacketHandler.DGRAM_SERVER_ConnectPacketHandler);
 	    _makeFunc.Add((ushort)MsgID.GAMECLIENT_DISCONNECTUDP, MakePacket<GAMECLIENT_DisconnectUDP>);
         _handler.Add((ushort)MsgID.GAMECLIENT_DISCONNECTUDP, UPacketHandler.GAMECLIENT_DisconnectUDPHandler);
+        _makeFunc.Add((ushort)MsgID.GAMECLIENT_USESSIONIDMATCH, MakePacket<GAMECLIENT_USessionIDMatch>);
+        _handler.Add((ushort)MsgID.GAMECLIENT_USESSIONIDMATCH, UPacketHandler.GAMECLIENT_USessionIDMatchHandler);
         
     }
 

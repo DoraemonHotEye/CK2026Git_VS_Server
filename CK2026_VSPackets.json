@@ -101,6 +101,33 @@
           }
         ],
         "MProtoType": 1
+      },
+      "GAMECLIENT_USESSIONIDMATCH": {
+        "packer": {
+          "Name": "USessionIDMatch",
+          "MemberTypes": [
+            "single:int"
+          ],
+          "MemberNames": [
+            "SessionID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_USESSIONIDMATCH",
+        "LinkedProfilers": [
+          {
+            "Name": "MainServer",
+            "Description": "메인서버",
+            "Path": "../../../Server",
+            "tag": {
+              "Name": "MainServer",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "메인 서버"
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
       }
     },
     "profiler": {
@@ -123,7 +150,35 @@
       "ClientSeed": 0,
       "Description": "메인 서버"
     },
-    "Packers": {},
+    "Packers": {
+      "MAINSERVER_SENDSESSIONID": {
+        "packer": {
+          "Name": "SendSessionID",
+          "MemberTypes": [
+            "single:int"
+          ],
+          "MemberNames": [
+            "SessionID"
+          ]
+        },
+        "PacketID": "MAINSERVER_SENDSESSIONID",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      }
+    },
     "profiler": {
       "Name": "MainServer",
       "Description": "메인서버",

@@ -16,17 +16,34 @@ namespace Server.Session
 {
     public class ClientSession : PacketSession
     {
+        public Player player { get; set; }
 
         public override void OnConnected(EndPoint endPoint)
         {
             DebugConsole.PrintWrite($"접속: {endPoint}");
+
+            PlayerManager.Instance.Generate(this);
+
+            MAINSERVER_SendSessionID _SessionID = new MAINSERVER_SendSessionID();
+            _SessionID.SessionID = SessionID;
+
+            Send(_SessionID.Serialize());
         }
 
         public override void OnDisconnected(EndPoint endPoint)
         {
             DebugConsole.PrintWrite($"접속 종료: {endPoint}");
 
+            if (player != null)
+                if (player.CurrentRoom != null)
+                    player.CurrentRoom.Remove(player);
+
+            
+            if (player != null)
+                PlayerManager.Instance.Remove(this);
+
             ClientSessionManager.Instance.Remove(this);
+            UDPPlayerManager.Instance.Exit(SessionID);
         }
 
         public override void OnRecvPacket(ArraySegment<byte> buffer)

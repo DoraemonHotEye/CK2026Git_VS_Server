@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Player\Player.cs" />
+    <Compile Include="Game\Player\PlayerManager.cs" />
+    <Compile Include="Game\Room\Room.cs" />
+    <Compile Include="Game\Room\RoomManager.cs" />
     <Compile Include="Handler\PacketHandler.cs" />
     <Compile Include="Handler\UPacketHandler.cs" />
     <Compile Include="Packets\UPacketManager.cs" />
@@ -51,6 +55,7 @@
     <Compile Include="Session\ClientSession.cs" />
     <Compile Include="Session\Manager\ClientSessionManager.cs" />
     <Compile Include="Packets\PacketManager.cs" />
+    <Compile Include="Session\Manager\UDPPlayerManager.cs" />
     <Compile Include="Session\UDP\UClientSession.cs" />
   </ItemGroup>
   <ItemGroup>

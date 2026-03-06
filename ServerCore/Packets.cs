@@ -73,6 +73,8 @@ namespace MakePacketTemplate.Packets
     public enum MsgID : ushort
     {
          GAMECLIENT_DISCONNECTUDP = 0,
+         GAMECLIENT_USESSIONIDMATCH = 1,
+         MAINSERVER_SENDSESSIONID = 2,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -226,6 +228,122 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_USessionIDMatch : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_USESSIONIDMATCH;
+
+        public int SessionID;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SessionID = BitConverter.ToInt32(buffer, start + offset);
+            offset += sizeof(int);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(int);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
+            offset += sizeof(int);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class MAINSERVER_SendSessionID : PacketInterface
+    {
+        public MsgID MsgID = MsgID.MAINSERVER_SENDSESSIONID;
+
+        public int SessionID;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SessionID = BitConverter.ToInt32(buffer, start + offset);
+            offset += sizeof(int);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(int);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
+            offset += sizeof(int);
             
 
             return new ArraySegment<byte>(buffer, 0, size);

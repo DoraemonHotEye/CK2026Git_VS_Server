@@ -94,9 +94,9 @@ namespace UDgramCore
 
         void pingCallback(object state)
         {
-            lock (UPlayerManager.Instance.IPEndPoints)
+            lock (UIPEndPointContainer.Instance.IPEndPoints)
             {
-                foreach (var item in UPlayerManager.Instance.IPEndPoints)
+                foreach (var item in UIPEndPointContainer.Instance.IPEndPoints)
                 {
                     DGRAM_SERVER_Ping _pingpacket = new DGRAM_SERVER_Ping();
                     var serialize = _pingpacket.Serialize();
@@ -136,8 +136,6 @@ namespace UDgramCore
                     {
                         receiveBytes = udpServer.EndReceive(ar, ref remoteEndPoint);
 
-                        UPlayerManager.Instance.RegisterPlayer(remoteEndPoint);
-
                         Console.WriteLine("[UDP 받음]");
 
                         _recvServer = remoteEndPoint;
@@ -152,7 +150,7 @@ namespace UDgramCore
                     IPEndPoint removeTarget = remoteEndPoint ?? _recvServer;
 
                     if (removeTarget != null)
-                        UPlayerManager.Instance.RemovePlayer(removeTarget);
+                        UIPEndPointContainer.Instance.RemovePlayer(removeTarget);
                 }
 
                 udpServer.BeginReceive(udpReceiveCallback, udpServer);
@@ -162,14 +160,14 @@ namespace UDgramCore
                 Console.WriteLine("UDP 소켓이 이미 종료되었습니다.");
 
                 if (_recvServer != null)
-                    UPlayerManager.Instance.RemovePlayer(_recvServer);
+                    UIPEndPointContainer.Instance.RemovePlayer(_recvServer);
             }
             catch (Exception)
             {
                 Console.WriteLine("패킷 강제 Loss 불안전한 연결입니다.");
 
                 if (_recvServer != null)
-                    UPlayerManager.Instance.RemovePlayer(_recvServer);
+                    UIPEndPointContainer.Instance.RemovePlayer(_recvServer);
             }
         }
 

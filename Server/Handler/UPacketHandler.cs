@@ -26,6 +26,25 @@ public class UPacketHandler
     public static void GAMECLIENT_DisconnectUDPHandler(IPEndPoint Sender, USession session, PacketInterface message)
     {
         Console.WriteLine($"[DGRAM_SERVER]: Disconnecrt 감지 {Sender}");
-        UPlayerManager.Instance.RemovePlayer(Sender);
+        UIPEndPointContainer.Instance.RemovePlayer(Sender);
+    }
+
+    public static void GAMECLIENT_USessionIDMatchHandler(IPEndPoint Sender, USession session, PacketInterface message)
+    {
+        GAMECLIENT_USessionIDMatch UMatch = message as GAMECLIENT_USessionIDMatch;
+        Console.WriteLine($"[DGRAM_SERVER]: {UMatch.SessionID}");
+
+        UIPEndPointContainer.Instance.RegisterPlayer(Sender);
+        UDPPlayerManager.Instance.Enter(UMatch.SessionID, Sender);
+
+        var _session = ClientSessionManager.Instance.Get(UMatch.SessionID);
+
+        if (_session != null)
+        {
+            if (_session.player != null)
+            {
+                _session.player.PeerEndPoint = Sender;
+            }
+        }
     }
 }
