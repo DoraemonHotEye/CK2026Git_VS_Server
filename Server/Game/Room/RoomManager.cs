@@ -18,10 +18,10 @@ public class RoomManager
     {
         lock (_lock)
         {
-            bool succ = RoomList.Remove(room.MapHashID);
+            bool succ = RoomList.Remove(room.RoomHashData);
 
             if(succ == true)
-                Console.WriteLine($"[RoomManager]:: {room.MapHashID} 삭제완료");
+                Console.WriteLine($"[RoomManager]:: {room.RoomHashData} 삭제완료");
 
             return succ;
         }

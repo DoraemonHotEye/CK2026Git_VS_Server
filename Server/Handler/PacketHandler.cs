@@ -17,6 +17,8 @@ public class PacketHandler
         if (_session != null) 
         {
             Console.WriteLine($"[Server]: 방 생성 요청 : {session.SessionID}");
+
+            RoomManager.Instance.GenerateAndJoin(_session.player, 3);
         }
     }
 }

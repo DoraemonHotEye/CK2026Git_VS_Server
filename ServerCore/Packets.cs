@@ -77,6 +77,7 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_CREATEROOMCALL = 2,
          MAINSERVER_SENDSESSIONID = 3,
          MAINSERVER_CREATEROOMSUCC = 4,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 5,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -415,6 +416,8 @@ namespace MakePacketTemplate.Packets
         public MsgID MsgID = MsgID.MAINSERVER_CREATEROOMSUCC;
 
         public ushort timeout;
+        public string RoomHashData;
+        public ushort MaxPlayerCount;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -431,6 +434,12 @@ namespace MakePacketTemplate.Packets
 
             timeout = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
+            ushort RoomHashDataLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            RoomHashData = Encoding.UTF8.GetString(buffer, start + offset, RoomHashDataLength);
+            offset += (ushort)RoomHashDataLength;
+            MaxPlayerCount = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
             
         }
 
@@ -441,6 +450,10 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
 
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(RoomHashData);
             size += sizeof(ushort);
             
             
@@ -462,6 +475,71 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            byte[] RoomHashDataBytes = Encoding.UTF8.GetBytes(RoomHashData);
+            BitConverter.GetBytes((ushort)RoomHashDataBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            RoomHashDataBytes.CopyTo(buffer, offset);
+            offset += (ushort)RoomHashDataBytes.Length;
+            BitConverter.GetBytes(MaxPlayerCount).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class MAINSERVER_OtherPlayerRoomJoin : PacketInterface
+    {
+        public MsgID MsgID = MsgID.MAINSERVER_OTHERPLAYERROOMJOIN;
+
+        public int SessionID;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SessionID = BitConverter.ToInt32(buffer, start + offset);
+            offset += sizeof(int);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(int);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
+            offset += sizeof(int);
             
 
             return new ArraySegment<byte>(buffer, 0, size);

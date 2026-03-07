@@ -227,12 +227,12 @@ namespace MakePacketTemplate.Packets
         public static string MemberTypeList = @"public PacketConvertList<{0}> {1};";
 
         #region MemberType Offset Formats
-        public static string StringOffsetFormatSerializeSingle = 
+        public static string StringOffsetFormatSerializeSingle =
             @"byte[] {0}Bytes = Encoding.UTF8.GetBytes({0});
             BitConverter.GetBytes((ushort){0}Bytes.Length).CopyTo(buffer, offset);
             offset += sizeof(ushort);
             {0}Bytes.CopyTo(buffer, offset);
-            offset += {0}Bytes.Length;
+            offset += (ushort){0}Bytes.Length;
             ";
         public static string StringOffsetFormatSerializeList =
             @"BitConverter.GetBytes({0}.GetCount()).CopyTo(buffer, offset);

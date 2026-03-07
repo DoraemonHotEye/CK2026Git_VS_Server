@@ -209,13 +209,44 @@
         "packer": {
           "Name": "CreateRoomSucc",
           "MemberTypes": [
+            "single:ushort",
+            "single:string",
             "single:ushort"
           ],
           "MemberNames": [
-            "timeout"
+            "timeout",
+            "RoomHashData",
+            "MaxPlayerCount"
           ]
         },
         "PacketID": "MAINSERVER_CREATEROOMSUCC",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_OTHERPLAYERROOMJOIN": {
+        "packer": {
+          "Name": "OtherPlayerRoomJoin",
+          "MemberTypes": [
+            "single:int"
+          ],
+          "MemberNames": [
+            "SessionID"
+          ]
+        },
+        "PacketID": "MAINSERVER_OTHERPLAYERROOMJOIN",
         "LinkedProfilers": [
           {
             "Name": "GameClient",
