@@ -23,6 +23,10 @@ public class PacketManager
     {
         _makeFunc.Add((ushort)MsgID.GAMECLIENT_CREATEROOMCALL, MakePacket<GAMECLIENT_CreateRoomCall>);
         _handler.Add((ushort)MsgID.GAMECLIENT_CREATEROOMCALL, PacketHandler.GAMECLIENT_CreateRoomCallHandler);
+        _makeFunc.Add((ushort)MsgID.GAMECLIENT_ROOMSENDCALL, MakePacket<GAMECLIENT_RoomSendCall>);
+        _handler.Add((ushort)MsgID.GAMECLIENT_ROOMSENDCALL, PacketHandler.GAMECLIENT_RoomSendCallHandler);
+        _makeFunc.Add((ushort)MsgID.GAMECLIENT_JOINROOMCALL, MakePacket<GAMECLIENT_JoinRoomCall>);
+        _handler.Add((ushort)MsgID.GAMECLIENT_JOINROOMCALL, PacketHandler.GAMECLIENT_JoinRoomCallHandler);
         
     }
 

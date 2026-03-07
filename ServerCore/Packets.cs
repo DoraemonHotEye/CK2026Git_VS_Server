@@ -116,10 +116,12 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_DISCONNECTUDP = 0,
          GAMECLIENT_USESSIONIDMATCH = 1,
          GAMECLIENT_CREATEROOMCALL = 2,
-         MAINSERVER_SENDSESSIONID = 3,
-         MAINSERVER_CREATEROOMSUCC = 4,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 5,
-         MAINSERVER_SENDROOMLIST = 6,
+         GAMECLIENT_ROOMSENDCALL = 3,
+         GAMECLIENT_JOINROOMCALL = 4,
+         MAINSERVER_SENDSESSIONID = 5,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 6,
+         MAINSERVER_SENDROOMLIST = 7,
+         MAINSERVER_JOINROOMSUCC = 8,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -395,6 +397,127 @@ namespace MakePacketTemplate.Packets
         }
     }
     
+    public class GAMECLIENT_RoomSendCall : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_ROOMSENDCALL;
+
+        public ushort timeout;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            timeout = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_JoinRoomCall : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_JOINROOMCALL;
+
+        public string RoomHashID;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort RoomHashIDLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            RoomHashID = Encoding.UTF8.GetString(buffer, start + offset, RoomHashIDLength);
+            offset += (ushort)RoomHashIDLength;
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(RoomHashID);
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            byte[] RoomHashIDBytes = Encoding.UTF8.GetBytes(RoomHashID);
+            BitConverter.GetBytes((ushort)RoomHashIDBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            RoomHashIDBytes.CopyTo(buffer, offset);
+            offset += (ushort)RoomHashIDBytes.Length;
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
     public class MAINSERVER_SendSessionID : PacketInterface
     {
         public MsgID MsgID = MsgID.MAINSERVER_SENDSESSIONID;
@@ -453,89 +576,11 @@ namespace MakePacketTemplate.Packets
         }
     }
     
-    public class MAINSERVER_CreateRoomSucc : PacketInterface
-    {
-        public MsgID MsgID = MsgID.MAINSERVER_CREATEROOMSUCC;
-
-        public ushort timeout;
-        public string RoomHashData;
-        public ushort MaxPlayerCount;
-        
-
-        public void Desrialize(ArraySegment<byte> data)
-        {
-            byte[] buffer = data.Array;
-            int start = data.Offset;
-            int offset = 0;
-            
-            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            timeout = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            ushort RoomHashDataLength = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            RoomHashData = Encoding.UTF8.GetString(buffer, start + offset, RoomHashDataLength);
-            offset += (ushort)RoomHashDataLength;
-            MaxPlayerCount = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            
-        }
-
-        public ushort GetSize()
-        {
-            ushort size = 0;
-
-            size += sizeof(ushort); // PacketSize
-            size += sizeof(ushort); // PacketID
-
-            size += sizeof(ushort);
-            
-            size += sizeof(ushort);
-            size += (ushort)Encoding.UTF8.GetByteCount(RoomHashData);
-            size += sizeof(ushort);
-            
-            
-
-            return size;
-        }
-
-        public ArraySegment<byte> Serialize()
-        {
-            ushort size = GetSize();
-            byte[] buffer = new byte[size];
-            ushort offset = 0;
-
-            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            byte[] RoomHashDataBytes = Encoding.UTF8.GetBytes(RoomHashData);
-            BitConverter.GetBytes((ushort)RoomHashDataBytes.Length).CopyTo(buffer, offset);
-            offset += sizeof(ushort);
-            RoomHashDataBytes.CopyTo(buffer, offset);
-            offset += (ushort)RoomHashDataBytes.Length;
-            BitConverter.GetBytes(MaxPlayerCount).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            
-
-            return new ArraySegment<byte>(buffer, 0, size);
-        }
-    }
-    
     public class MAINSERVER_OtherPlayerRoomJoin : PacketInterface
     {
         public MsgID MsgID = MsgID.MAINSERVER_OTHERPLAYERROOMJOIN;
 
-        public int SessionID;
-        public PacketConvertList<PlayerData> PlayerList;
+        public PlayerData OtherPlayer;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -550,29 +595,15 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
-            SessionID = BitConverter.ToInt32(buffer, start + offset);
-            offset += sizeof(int);
-            ushort PlayerListCount = BitConverter.ToUInt16(buffer, start + offset);
+            ushort OtherPlayerPacketSize = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
-            PlayerList = new PacketConvertList<PlayerData>();
-            PlayerList.Empty(); // 기존 리스트 비우기
-
-            for (int i = 0; i < PlayerListCount; i++)
-            {
-                ushort objectsize = BitConverter.ToUInt16(buffer, start + offset);
-                offset += sizeof(ushort);
-
-                PlayerData packet = new PlayerData();
-                byte[] copied = new byte[objectsize];
-                Array.Copy(buffer, offset, copied, 0, objectsize);
-                var slice = new ArraySegment<byte>(copied);
-
-                packet.Deserialize(slice);
-                PlayerList.Enter(packet);
-
-                offset += objectsize;
-            }
+            OtherPlayer = new PlayerData();
+            byte[] OtherPlayerSliceCopied = new byte[OtherPlayerPacketSize];
+            Array.Copy(buffer, offset, OtherPlayerSliceCopied, 0, OtherPlayerPacketSize);
+            var OtherPlayerArray = new ArraySegment<byte>(OtherPlayerSliceCopied);
+            OtherPlayer.Deserialize(OtherPlayerArray);
+            offset += OtherPlayerPacketSize;
             
         }
 
@@ -583,11 +614,8 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
 
-            size += sizeof(int);
-            
             size += sizeof(ushort);
-            size += (ushort)(sizeof(ushort) * (PlayerList.GetCount() == 0 ? 1 : PlayerList.GetCount()));
-            size += PlayerList.GetSize_RefType<PacketObject>();
+            size += OtherPlayer.GetSize();
             
             
 
@@ -606,19 +634,11 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
-            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
-            offset += sizeof(int);
-            Array.Copy(BitConverter.GetBytes((ushort)PlayerList.GetCount()), 0, buffer, offset, sizeof(ushort));
+            var (OtherPlayerPacketSize, OtherPlayerSerialize) = OtherPlayer.GetPacketSerialize();
+            Array.Copy(BitConverter.GetBytes((ushort)OtherPlayerPacketSize), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
-
-            foreach (var packet in PlayerList.Values)
-            {
-                var (packetSize, segment) = packet.GetPacketSerialize();
-                Array.Copy(BitConverter.GetBytes((ushort)packetSize), 0, buffer, offset, sizeof(ushort));
-                offset += sizeof(ushort);
-                Array.Copy(segment.Array, segment.Offset, buffer, offset, packetSize);
-                offset += packetSize;
-            }
+            Array.Copy(OtherPlayerSerialize.Array, OtherPlayerSerialize.Offset, buffer, offset, OtherPlayerPacketSize);
+            offset += OtherPlayerPacketSize;
             
 
             return new ArraySegment<byte>(buffer, 0, size);
@@ -699,6 +719,131 @@ namespace MakePacketTemplate.Packets
                 offset += sizeof(ushort);
                 strBytes.CopyTo(buffer, offset);
                 offset += (ushort)strBytes.Length;
+            }
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class MAINSERVER_JoinRoomSucc : PacketInterface
+    {
+        public MsgID MsgID = MsgID.MAINSERVER_JOINROOMSUCC;
+
+        public PlayerData MasterPlayer;
+        public string RoomHashData;
+        public ushort MaxPlayerCount;
+        public PacketConvertList<PlayerData> OtherPlayers;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort MasterPlayerPacketSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            MasterPlayer = new PlayerData();
+            byte[] MasterPlayerSliceCopied = new byte[MasterPlayerPacketSize];
+            Array.Copy(buffer, offset, MasterPlayerSliceCopied, 0, MasterPlayerPacketSize);
+            var MasterPlayerArray = new ArraySegment<byte>(MasterPlayerSliceCopied);
+            MasterPlayer.Deserialize(MasterPlayerArray);
+            offset += MasterPlayerPacketSize;
+            ushort RoomHashDataLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            RoomHashData = Encoding.UTF8.GetString(buffer, start + offset, RoomHashDataLength);
+            offset += (ushort)RoomHashDataLength;
+            MaxPlayerCount = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            ushort OtherPlayersCount = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            OtherPlayers = new PacketConvertList<PlayerData>();
+            OtherPlayers.Empty(); // 기존 리스트 비우기
+
+            for (int i = 0; i < OtherPlayersCount; i++)
+            {
+                ushort objectsize = BitConverter.ToUInt16(buffer, start + offset);
+                offset += sizeof(ushort);
+
+                PlayerData packet = new PlayerData();
+                byte[] copied = new byte[objectsize];
+                Array.Copy(buffer, offset, copied, 0, objectsize);
+                var slice = new ArraySegment<byte>(copied);
+
+                packet.Deserialize(slice);
+                OtherPlayers.Enter(packet);
+
+                offset += objectsize;
+            }
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            size += MasterPlayer.GetSize();
+            
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(RoomHashData);
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            size += (ushort)(sizeof(ushort) * (OtherPlayers.GetCount() == 0 ? 1 : OtherPlayers.GetCount()));
+            size += OtherPlayers.GetSize_RefType<PacketObject>();
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            var (MasterPlayerPacketSize, MasterPlayerSerialize) = MasterPlayer.GetPacketSerialize();
+            Array.Copy(BitConverter.GetBytes((ushort)MasterPlayerPacketSize), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+            Array.Copy(MasterPlayerSerialize.Array, MasterPlayerSerialize.Offset, buffer, offset, MasterPlayerPacketSize);
+            offset += MasterPlayerPacketSize;
+            byte[] RoomHashDataBytes = Encoding.UTF8.GetBytes(RoomHashData);
+            BitConverter.GetBytes((ushort)RoomHashDataBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            RoomHashDataBytes.CopyTo(buffer, offset);
+            offset += (ushort)RoomHashDataBytes.Length;
+            BitConverter.GetBytes(MaxPlayerCount).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            Array.Copy(BitConverter.GetBytes((ushort)OtherPlayers.GetCount()), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            foreach (var packet in OtherPlayers.Values)
+            {
+                var (packetSize, segment) = packet.GetPacketSerialize();
+                Array.Copy(BitConverter.GetBytes((ushort)packetSize), 0, buffer, offset, sizeof(ushort));
+                offset += sizeof(ushort);
+                Array.Copy(segment.Array, segment.Offset, buffer, offset, packetSize);
+                offset += packetSize;
             }
             
 

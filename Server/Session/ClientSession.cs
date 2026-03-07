@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using UDgramCore;
 using UnitySupportLibrary.Game.Managers;
 using UnitySupportLibrary.Game.Objects.Childs;
 using static System.Collections.Specialized.BitVector32;
@@ -28,21 +29,6 @@ namespace Server.Session
             _SessionID.SessionID = SessionID;
 
             Send(_SessionID.Serialize());
-
-            if (RoomManager.Instance.Count > 0)
-            {
-                MAINSERVER_SendRoomList _roomList = new MAINSERVER_SendRoomList();
-                _roomList.RoomHashDatas = new PacketConvertList<string>();
-
-                var HashList = RoomManager.Instance.GetRoomHashList();
-
-                foreach(var Hash in HashList)
-                {
-                    _roomList.RoomHashDatas.Enter(Hash);
-                }
-
-                Send(_roomList.Serialize());
-            }
         }
 
         public override void OnDisconnected(EndPoint endPoint)
@@ -53,10 +39,12 @@ namespace Server.Session
                 if (player.CurrentRoom != null)
                     player.CurrentRoom.Remove(player);
 
-            
-            if (player != null)
-                PlayerManager.Instance.Remove(this);
 
+            if (player != null)
+            {
+                UIPEndPointContainer.Instance.RemovePlayer(player.PeerEndPoint);
+                PlayerManager.Instance.Remove(this);
+            }
             ClientSessionManager.Instance.Remove(this);
             UDPPlayerManager.Instance.Exit(SessionID);
         }

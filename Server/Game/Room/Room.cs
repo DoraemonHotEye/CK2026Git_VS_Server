@@ -82,15 +82,8 @@ public class Room
             if (playerList.Count > 0)
             {
                 MAINSERVER_OtherPlayerRoomJoin _OtherJoin = new MAINSERVER_OtherPlayerRoomJoin();
-                _OtherJoin.SessionID = player.session.SessionID;
-                _OtherJoin.PlayerList = new PacketConvertList<PlayerData>();
-
-                foreach (var playerData in playerList) 
-                {
-                    PlayerData pl = new PlayerData();
-                    pl.SessionID = playerData.session.SessionID;
-                    _OtherJoin.PlayerList.Enter(pl);
-                }
+                _OtherJoin.OtherPlayer = new PlayerData();
+                _OtherJoin.OtherPlayer.SessionID = player.session.SessionID;
 
                 BroadCast(_OtherJoin);
             }
@@ -98,13 +91,22 @@ public class Room
             player.CurrentRoom = this;
             playerList.Add(player);
 
-            MAINSERVER_CreateRoomSucc createRoomsucc = new MAINSERVER_CreateRoomSucc();
-            createRoomsucc.timeout = 10;
-            createRoomsucc.RoomHashData = RoomHashData;
-            createRoomsucc.MaxPlayerCount = _MaxPlayerCount;
-            
+            MAINSERVER_JoinRoomSucc JoinRoomSucc = new MAINSERVER_JoinRoomSucc();
+            JoinRoomSucc.RoomHashData = RoomHashData;
+            JoinRoomSucc.MaxPlayerCount = _MaxPlayerCount;
+            JoinRoomSucc.MasterPlayer = new PlayerData();
+            JoinRoomSucc.MasterPlayer.SessionID = playerList[0].session.SessionID;
+            JoinRoomSucc.OtherPlayers = new PacketConvertList<PlayerData>();
 
-            player.session.Send(createRoomsucc.Serialize());
+            foreach (var pl in playerList)
+            {
+                PlayerData pld = new PlayerData();
+                pld.SessionID = pl.session.SessionID;
+                JoinRoomSucc.OtherPlayers.Enter(pld);
+            }
+
+            player.session.Send(JoinRoomSucc.Serialize());
+
 
             Console.WriteLine($"[Room]: 방접속 완료 {player.session.SessionID} :-> MaxPlayerRoom {_MaxPlayerCount}");
 
@@ -114,7 +116,7 @@ public class Room
         {
             rwLock.ExitWriteLock();
         }
-        
+
     }
 
     public bool Remove(Player player)

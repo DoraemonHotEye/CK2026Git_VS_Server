@@ -165,6 +165,60 @@
           }
         ],
         "MProtoType": 0
+      },
+      "GAMECLIENT_ROOMSENDCALL": {
+        "packer": {
+          "Name": "RoomSendCall",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "GAMECLIENT_ROOMSENDCALL",
+        "LinkedProfilers": [
+          {
+            "Name": "MainServer",
+            "Description": "메인서버",
+            "Path": "../../../Server",
+            "tag": {
+              "Name": "MainServer",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "메인 서버"
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "GAMECLIENT_JOINROOMCALL": {
+        "packer": {
+          "Name": "JoinRoomCall",
+          "MemberTypes": [
+            "single:string"
+          ],
+          "MemberNames": [
+            "RoomHashID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_JOINROOMCALL",
+        "LinkedProfilers": [
+          {
+            "Name": "MainServer",
+            "Description": "메인서버",
+            "Path": "../../../Server",
+            "tag": {
+              "Name": "MainServer",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "메인 서버"
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
       }
     },
     "profiler": {
@@ -215,47 +269,14 @@
         ],
         "MProtoType": 0
       },
-      "MAINSERVER_CREATEROOMSUCC": {
-        "packer": {
-          "Name": "CreateRoomSucc",
-          "MemberTypes": [
-            "single:ushort",
-            "single:string",
-            "single:ushort"
-          ],
-          "MemberNames": [
-            "timeout",
-            "RoomHashData",
-            "MaxPlayerCount"
-          ]
-        },
-        "PacketID": "MAINSERVER_CREATEROOMSUCC",
-        "LinkedProfilers": [
-          {
-            "Name": "GameClient",
-            "Description": "게임 클라이언트",
-            "Path": "D:\\Gits\\CK2026Git_VS",
-            "tag": {
-              "Name": "GameClient",
-              "Type": 4,
-              "ClientSeed": 0,
-              "Description": ""
-            },
-            "isUseUDP": true
-          }
-        ],
-        "MProtoType": 0
-      },
       "MAINSERVER_OTHERPLAYERROOMJOIN": {
         "packer": {
           "Name": "OtherPlayerRoomJoin",
           "MemberTypes": [
-            "single:int",
-            "list:PlayerData"
+            "single:PlayerData"
           ],
           "MemberNames": [
-            "SessionID",
-            "PlayerList"
+            "OtherPlayer"
           ]
         },
         "PacketID": "MAINSERVER_OTHERPLAYERROOMJOIN",
@@ -286,6 +307,39 @@
           ]
         },
         "PacketID": "MAINSERVER_SENDROOMLIST",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_JOINROOMSUCC": {
+        "packer": {
+          "Name": "JoinRoomSucc",
+          "MemberTypes": [
+            "single:PlayerData",
+            "single:string",
+            "single:ushort",
+            "list:PlayerData"
+          ],
+          "MemberNames": [
+            "MasterPlayer",
+            "RoomHashData",
+            "MaxPlayerCount",
+            "OtherPlayers"
+          ]
+        },
+        "PacketID": "MAINSERVER_JOINROOMSUCC",
         "LinkedProfilers": [
           {
             "Name": "GameClient",

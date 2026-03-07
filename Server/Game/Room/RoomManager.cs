@@ -65,6 +65,18 @@ public class RoomManager
         }
     }
 
+    public Room GetRoom(string HashID)
+    {
+        lock (_lock)
+        {
+            if (RoomList.TryGetValue(HashID, out Room room))
+            {
+                return room;
+            }
+            return null;
+        }
+    }
+
     public static string CreateDateHashTag()    // 날짜와 그리고 몇시 몇분에 들어왔는지
     {
         string date = DateTime.Now.ToString("yyyyMMdd");
