@@ -10,6 +10,14 @@ using System.Threading.Tasks;
 
 public class PacketHandler
 {
-    
+    public static void GAMECLIENT_CreateRoomCallHandler(PacketSession session, PacketInterface message)
+    {
+        ClientSession _session = session as ClientSession;
+
+        if (_session != null) 
+        {
+            Console.WriteLine($"[Server]: 방 생성 요청 : {session.SessionID}");
+        }
+    }
 }
 

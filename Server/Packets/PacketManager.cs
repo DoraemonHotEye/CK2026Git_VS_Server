@@ -21,6 +21,8 @@ public class PacketManager
 
     public void Register()
     {
+        _makeFunc.Add((ushort)MsgID.GAMECLIENT_CREATEROOMCALL, MakePacket<GAMECLIENT_CreateRoomCall>);
+        _handler.Add((ushort)MsgID.GAMECLIENT_CREATEROOMCALL, PacketHandler.GAMECLIENT_CreateRoomCallHandler);
         
     }
 

@@ -89,7 +89,7 @@ namespace UDgramCore
 
         public void SendCallBack(object state)
         {
-            Console.WriteLine("-> 데이터 전송");
+
         }
 
         void pingCallback(object state)
@@ -135,9 +135,6 @@ namespace UDgramCore
                     lock (_lock)
                     {
                         receiveBytes = udpServer.EndReceive(ar, ref remoteEndPoint);
-
-                        Console.WriteLine("[UDP 받음]");
-
                         _recvServer = remoteEndPoint;
 
                         int processLen = OnRecv(new ArraySegment<byte>(receiveBytes, 0, receiveBytes.Length));

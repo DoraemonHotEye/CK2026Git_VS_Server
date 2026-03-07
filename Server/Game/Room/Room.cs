@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 public class Room
 {
-
     private object _lock = new object();
 
     public string MapHashID = "NONE_HASH_#ERROR_CODE";
 
     public ushort _MaxPlayerCount = 4;
-
 
     public Room(ushort MaxPlayerCount, string InitMapHashID)
     {
