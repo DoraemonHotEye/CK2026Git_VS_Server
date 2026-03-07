@@ -28,6 +28,21 @@ namespace Server.Session
             _SessionID.SessionID = SessionID;
 
             Send(_SessionID.Serialize());
+
+            if (RoomManager.Instance.Count > 0)
+            {
+                MAINSERVER_SendRoomList _roomList = new MAINSERVER_SendRoomList();
+                _roomList.RoomHashDatas = new PacketConvertList<string>();
+
+                var HashList = RoomManager.Instance.GetRoomHashList();
+
+                foreach(var Hash in HashList)
+                {
+                    _roomList.RoomHashDatas.Enter(Hash);
+                }
+
+                Send(_roomList.Serialize());
+            }
         }
 
         public override void OnDisconnected(EndPoint endPoint)

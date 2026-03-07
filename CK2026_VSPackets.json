@@ -4,7 +4,17 @@
 [class/]
 [EndLine/]
 [/struct]
-{}
+{
+  "PlayerData": {
+    "Name": "PlayerData",
+    "MemberTypes": [
+      "single:int"
+    ],
+    "MemberNames": [
+      "SessionID"
+    ]
+  }
+}
 [struct/]
 [EndLine/]
 [/Settings]
@@ -240,13 +250,42 @@
         "packer": {
           "Name": "OtherPlayerRoomJoin",
           "MemberTypes": [
-            "single:int"
+            "single:int",
+            "list:PlayerData"
           ],
           "MemberNames": [
-            "SessionID"
+            "SessionID",
+            "PlayerList"
           ]
         },
         "PacketID": "MAINSERVER_OTHERPLAYERROOMJOIN",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_SENDROOMLIST": {
+        "packer": {
+          "Name": "SendRoomList",
+          "MemberTypes": [
+            "list:string"
+          ],
+          "MemberNames": [
+            "RoomHashDatas"
+          ]
+        },
+        "PacketID": "MAINSERVER_SENDROOMLIST",
         "LinkedProfilers": [
           {
             "Name": "GameClient",

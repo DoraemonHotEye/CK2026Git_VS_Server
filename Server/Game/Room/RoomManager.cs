@@ -14,6 +14,21 @@ public class RoomManager
 
     private object _lock = new object();
     
+    public int Count => RoomList.Count;
+
+    public List<string> GetRoomHashList()
+    {
+        lock (_lock)
+        {
+            List<string> HashList = new List<string>();
+
+            foreach(var Hash in RoomList.Keys)
+                HashList.Add(Hash);
+
+            return HashList;
+        }
+    }
+
     public bool Remove(Room room)   // 방의 리스트 에서 RoomHashID 삭제 하기
     {
         lock (_lock)
@@ -32,6 +47,7 @@ public class RoomManager
         lock (_lock)
         {
             Room room = new Room(MaxPlayerCount, CreateDateHashTag());
+            RoomList.Add(room.RoomHashData, room);
 
             return room;
         }
@@ -42,8 +58,8 @@ public class RoomManager
         lock(_lock)
         {
             Room room = new Room(MaxPlayerCount, CreateDateHashTag());
-
             room.Enter(player);
+            RoomList.Add(room.RoomHashData, room);
 
             return room;
         }

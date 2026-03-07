@@ -83,6 +83,14 @@ public class Room
             {
                 MAINSERVER_OtherPlayerRoomJoin _OtherJoin = new MAINSERVER_OtherPlayerRoomJoin();
                 _OtherJoin.SessionID = player.session.SessionID;
+                _OtherJoin.PlayerList = new PacketConvertList<PlayerData>();
+
+                foreach (var playerData in playerList) 
+                {
+                    PlayerData pl = new PlayerData();
+                    pl.SessionID = playerData.session.SessionID;
+                    _OtherJoin.PlayerList.Enter(pl);
+                }
 
                 BroadCast(_OtherJoin);
             }
@@ -94,6 +102,7 @@ public class Room
             createRoomsucc.timeout = 10;
             createRoomsucc.RoomHashData = RoomHashData;
             createRoomsucc.MaxPlayerCount = _MaxPlayerCount;
+            
 
             player.session.Send(createRoomsucc.Serialize());
 
