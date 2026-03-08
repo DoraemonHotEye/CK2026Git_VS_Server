@@ -14,7 +14,7 @@ public class PacketHandler
     {
         ClientSession _session = session as ClientSession;
 
-        if (_session != null) 
+        if (_session != null)
         {
             Console.WriteLine($"[Server]: 방 생성 요청 : {session.SessionID}");
 
@@ -95,6 +95,22 @@ public class PacketHandler
         if (FindRoom != null)
         {
             FindRoom.Enter(_session.player);
+        }
+    }
+
+    public static void GAMECLIENT_GameStartHandler(PacketSession session, PacketInterface message)
+    {
+        ClientSession _session = session as ClientSession;
+
+        if (_session != null)
+        {
+            if (_session.player != null)
+            {
+                if (_session.player.CurrentRoom != null)
+                {
+                    _session.player.CurrentRoom.GameStart();
+                }
+            }
         }
     }
 }

@@ -246,6 +246,33 @@
           }
         ],
         "MProtoType": 0
+      },
+      "GAMECLIENT_GAMESTART": {
+        "packer": {
+          "Name": "GameStart",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "GAMECLIENT_GAMESTART",
+        "LinkedProfilers": [
+          {
+            "Name": "MainServer",
+            "Description": "메인서버",
+            "Path": "../../../Server",
+            "tag": {
+              "Name": "MainServer",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "메인 서버"
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
       }
     },
     "profiler": {
@@ -495,13 +522,42 @@
         "packer": {
           "Name": "SendPeerUser",
           "MemberTypes": [
-            "single:string"
+            "single:string",
+            "single:int"
           ],
           "MemberNames": [
-            "endPointStr"
+            "endPointStr",
+            "SessionID"
           ]
         },
         "PacketID": "MAINSERVER_SENDPEERUSER",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_GAMESTARTSUCC": {
+        "packer": {
+          "Name": "GameStartSucc",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "MAINSERVER_GAMESTARTSUCC",
         "LinkedProfilers": [
           {
             "Name": "GameClient",

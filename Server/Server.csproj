@@ -47,6 +47,7 @@
     <Compile Include="Game\Player\PlayerManager.cs" />
     <Compile Include="Game\Room\Room.cs" />
     <Compile Include="Game\Room\RoomManager.cs" />
+    <Compile Include="Game\Room\PeerJobTimerSender.cs" />
     <Compile Include="Handler\PacketHandler.cs" />
     <Compile Include="Handler\UPacketHandler.cs" />
     <Compile Include="Packets\UPacketManager.cs" />

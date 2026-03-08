@@ -20,6 +20,7 @@ namespace Server
         static UClientSession UClientSession = new UClientSession();
         static void FlushPingUDP()
         {
+            PeerJobTimerSender.Instance.BroadCast();
             JobTimer.Instance.Push(FlushPingUDP, 1000);
         }
 

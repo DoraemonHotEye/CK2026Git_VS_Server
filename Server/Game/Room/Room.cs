@@ -50,6 +50,38 @@ public class Room
         }
     }
 
+    public void GameStart()
+    {
+        try
+        {
+            rwLock.EnterReadLock();
+
+            PeerStationPackage package = new PeerStationPackage();
+            package.EnterPlayers(playerList);
+
+            List<PeerDataPack> Peers = new List<PeerDataPack>();
+            foreach (var p in playerList) 
+            {
+                PeerDataPack peer = new PeerDataPack();
+                peer.endPoint = p.PeerEndPoint;
+                peer.SessionID = p.session.SessionID;
+                Peers.Add(peer);
+            }
+
+            package.EnterPeers(Peers);
+
+            PeerJobTimerSender.Instance.RegisterSender(package);
+
+            MAINSERVER_GameStartSucc _gamestart = new MAINSERVER_GameStartSucc();
+            _gamestart.timeout = 10;
+            BroadCast(_gamestart);
+        }
+        finally
+        {
+            rwLock.ExitReadLock();
+        }
+    }
+
     public Room Enter(Player player)
     {
         try
