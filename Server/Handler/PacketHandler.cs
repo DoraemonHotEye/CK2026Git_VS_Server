@@ -75,5 +75,23 @@ public class PacketHandler
             FindRoom.Enter(_session.player);
         }
     }
+
+    public static void GAMECLIENT_RoomExitCallHandler(PacketSession session, PacketInterface message)
+    {
+        ClientSession _session = session as ClientSession;
+
+        if (_session != null)
+        {
+            if (_session.player != null)
+            {
+                if (_session.player.CurrentRoom != null)
+                {
+                    _session.player.CurrentRoom.Remove(_session.player);
+
+                    Console.WriteLine($"[Room]: 플레이어 퇴장 처리 {_session.SessionID}");
+                }
+            }
+        }
+    }
 }
 

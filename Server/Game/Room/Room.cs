@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 public class Room
 {
     private ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
-
-    public string RoomHashData = "NONE_HASH_#ERROR_CODE";
-
+    public string RoomHashData = "NONE_HASH_#ERROR_CODE"; 
     public ushort _MaxPlayerCount = 4;
+
+    public Player MasterPlayer;
 
     public Room(ushort MaxPlayerCount, string InitMapHashID)
     {
@@ -91,11 +91,16 @@ public class Room
             player.CurrentRoom = this;
             playerList.Add(player);
 
+            if (playerList.Count == 1) //방장 설정
+            {
+                MasterPlayer = player;
+            }
+
             MAINSERVER_JoinRoomSucc JoinRoomSucc = new MAINSERVER_JoinRoomSucc();
             JoinRoomSucc.RoomHashData = RoomHashData;
             JoinRoomSucc.MaxPlayerCount = _MaxPlayerCount;
             JoinRoomSucc.MasterPlayer = new PlayerData();
-            JoinRoomSucc.MasterPlayer.SessionID = playerList[0].session.SessionID;
+            JoinRoomSucc.MasterPlayer.SessionID = MasterPlayer.session.SessionID;
             JoinRoomSucc.OtherPlayers = new PacketConvertList<PlayerData>();
 
             foreach (var pl in playerList)
@@ -130,12 +135,25 @@ public class Room
             if (succ == true)
             {
                 player.CurrentRoom = null;
+
+                MAINSERVER_RoomExitSucc exitsucc = new MAINSERVER_RoomExitSucc();
+                exitsucc.timeout = 10;
+
+                player.session.Send(exitsucc.Serialize());
             }
 
             if (playerList.Count <= 0)  // 유저가 없으니 그 방의 RoomManager(그 방의 관리자)를 삭제
             {
                 //유저가 전부 나감
                 RoomManager.Instance.Remove(this);
+            }
+            else
+            {
+                if (player == MasterPlayer)
+                {
+                    //TODO 마스터 플레이어 변경
+                    MasterPlayer = playerList[0];
+                }
             }
 
             return succ;
