@@ -16,6 +16,7 @@ public class Room
 
     public ushort _MaxPlayerCount = 4;
 
+    Player RoomMaster = null;
     public Room(ushort MaxPlayerCount, string InitMapHashID)
     {
         _MaxPlayerCount = MaxPlayerCount;
@@ -91,11 +92,16 @@ public class Room
             player.CurrentRoom = this;
             playerList.Add(player);
 
+            if (playerList.Count == 1)
+            {
+                RoomMaster = player; //방장 설정
+            }
+
             MAINSERVER_JoinRoomSucc JoinRoomSucc = new MAINSERVER_JoinRoomSucc();
             JoinRoomSucc.RoomHashData = RoomHashData;
             JoinRoomSucc.MaxPlayerCount = _MaxPlayerCount;
             JoinRoomSucc.MasterPlayer = new PlayerData();
-            JoinRoomSucc.MasterPlayer.SessionID = playerList[0].session.SessionID;
+            JoinRoomSucc.MasterPlayer.SessionID = RoomMaster.session.SessionID;
             JoinRoomSucc.OtherPlayers = new PacketConvertList<PlayerData>();
 
             foreach (var pl in playerList)
@@ -127,16 +133,43 @@ public class Room
 
             bool succ = playerList.Remove(player);
 
-            if (succ == true)
-            {
-                player.CurrentRoom = null;
-            }
+            if (succ == false)
+                return false;
+
+            player.CurrentRoom = null;
+
+            MAINSERVER_RoomExitSucc exitsucc = new MAINSERVER_RoomExitSucc();
+            exitsucc.timeout = 10;
+            player.session.Send(exitsucc.Serialize());
 
             if (playerList.Count <= 0)  // 유저가 없으니 그 방의 RoomManager(그 방의 관리자)를 삭제
             {
                 //유저가 전부 나감
                 RoomManager.Instance.Remove(this);
             }
+            else
+            {
+                if (player == RoomMaster)
+                {
+                    RoomMaster = playerList[0]; //일단 제일 첫번쨰 친구를 방장으로 설정
+
+                    MAINSERVER_RoomMasterChanged _changedRoomMaster = new MAINSERVER_RoomMasterChanged();
+                    _changedRoomMaster.RoomMasterData = new PlayerData();
+                    _changedRoomMaster.RoomMasterData.SessionID = RoomMaster.session.SessionID;
+
+                    BroadCast(_changedRoomMaster);
+
+                    Console.WriteLine($"[Room]: 방장 위임 완료 {RoomMaster.session.SessionID}");
+                }
+            }
+
+            MAINSERVER_OtherPlayerRoomExit exitRoomOther = new MAINSERVER_OtherPlayerRoomExit();
+            exitRoomOther.LeavePlayerData = new PlayerData();
+            exitRoomOther.LeavePlayerData.SessionID = player.session.SessionID;
+
+            BroadCast(exitRoomOther);
+
+            Console.WriteLine($"[Room]: 퇴장 처리 완료 {player.session.SessionID}");
 
             return succ;
         }

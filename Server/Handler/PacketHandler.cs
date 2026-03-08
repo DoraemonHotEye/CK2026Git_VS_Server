@@ -45,6 +45,22 @@ public class PacketHandler
         }
     }
 
+    public static void GAMECLIENT_RoomExitCallHandler(PacketSession session, PacketInterface message)
+    {
+        ClientSession _session = session as ClientSession;
+
+        if (_session != null)
+        {
+            if (_session.player != null)
+            {
+                if (_session.player.CurrentRoom != null)
+                {
+                    _session.player.CurrentRoom.Remove(_session.player);
+                }
+            }
+        }
+    }
+
     public static void GAMECLIENT_JoinRoomCallHandler(PacketSession session, PacketInterface message)
     {
         ClientSession _session = session as ClientSession;
@@ -67,6 +83,12 @@ public class PacketHandler
         if (FindRoom == null)
         {
             Console.WriteLine($"[Server]: 현재 Room이 없습니다. {_packet.RoomHashID}");
+
+            MAINSERVER_NoRoomCallback noRoom = new MAINSERVER_NoRoomCallback();
+            noRoom.ReturnHashID = _packet.RoomHashID;
+
+            _session.Send(noRoom.Serialize());
+
             return;
         }
 

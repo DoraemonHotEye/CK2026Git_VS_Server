@@ -219,6 +219,33 @@
           }
         ],
         "MProtoType": 0
+      },
+      "GAMECLIENT_ROOMEXITCALL": {
+        "packer": {
+          "Name": "RoomExitCall",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "GAMECLIENT_ROOMEXITCALL",
+        "LinkedProfilers": [
+          {
+            "Name": "MainServer",
+            "Description": "메인서버",
+            "Path": "../../../Server",
+            "tag": {
+              "Name": "MainServer",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "메인 서버"
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
       }
     },
     "profiler": {
@@ -340,6 +367,141 @@
           ]
         },
         "PacketID": "MAINSERVER_JOINROOMSUCC",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_ROOMMASTERCHANGED": {
+        "packer": {
+          "Name": "RoomMasterChanged",
+          "MemberTypes": [
+            "single:PlayerData"
+          ],
+          "MemberNames": [
+            "RoomMasterData"
+          ]
+        },
+        "PacketID": "MAINSERVER_ROOMMASTERCHANGED",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_ROOMEXITSUCC": {
+        "packer": {
+          "Name": "RoomExitSucc",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "MAINSERVER_ROOMEXITSUCC",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_OTHERPLAYERROOMEXIT": {
+        "packer": {
+          "Name": "OtherPlayerRoomExit",
+          "MemberTypes": [
+            "single:PlayerData"
+          ],
+          "MemberNames": [
+            "LeavePlayerData"
+          ]
+        },
+        "PacketID": "MAINSERVER_OTHERPLAYERROOMEXIT",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_NOROOMCALLBACK": {
+        "packer": {
+          "Name": "NoRoomCallback",
+          "MemberTypes": [
+            "single:string"
+          ],
+          "MemberNames": [
+            "ReturnHashID"
+          ]
+        },
+        "PacketID": "MAINSERVER_NOROOMCALLBACK",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
+      },
+      "MAINSERVER_SENDPEERUSER": {
+        "packer": {
+          "Name": "SendPeerUser",
+          "MemberTypes": [
+            "single:string"
+          ],
+          "MemberNames": [
+            "endPointStr"
+          ]
+        },
+        "PacketID": "MAINSERVER_SENDPEERUSER",
         "LinkedProfilers": [
           {
             "Name": "GameClient",

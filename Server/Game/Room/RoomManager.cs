@@ -79,7 +79,7 @@ public class RoomManager
 
     public static string CreateDateHashTag()    // 날짜와 그리고 몇시 몇분에 들어왔는지
     {
-        string date = DateTime.Now.ToString("yyyyMMdd");
+        string date = DateTime.Now.ToString("yyyyMMddhhmmss");
         return $"#{date}";
     }
 }
