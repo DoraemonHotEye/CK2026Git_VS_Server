@@ -27,8 +27,6 @@ public class PacketManager
         _handler.Add((ushort)MsgID.GAMECLIENT_ROOMSENDCALL, PacketHandler.GAMECLIENT_RoomSendCallHandler);
         _makeFunc.Add((ushort)MsgID.GAMECLIENT_JOINROOMCALL, MakePacket<GAMECLIENT_JoinRoomCall>);
         _handler.Add((ushort)MsgID.GAMECLIENT_JOINROOMCALL, PacketHandler.GAMECLIENT_JoinRoomCallHandler);
-        _makeFunc.Add((ushort)MsgID.GAMECLIENT_ROOMEXITCALL, MakePacket<GAMECLIENT_RoomExitCall>);
-        _handler.Add((ushort)MsgID.GAMECLIENT_ROOMEXITCALL, PacketHandler.GAMECLIENT_RoomExitCallHandler);
         
     }
 

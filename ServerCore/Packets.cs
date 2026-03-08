@@ -118,12 +118,10 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_CREATEROOMCALL = 2,
          GAMECLIENT_ROOMSENDCALL = 3,
          GAMECLIENT_JOINROOMCALL = 4,
-         GAMECLIENT_ROOMEXITCALL = 5,
-         MAINSERVER_SENDSESSIONID = 6,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 7,
-         MAINSERVER_SENDROOMLIST = 8,
-         MAINSERVER_JOINROOMSUCC = 9,
-         MAINSERVER_ROOMEXITSUCC = 10,
+         MAINSERVER_SENDSESSIONID = 5,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 6,
+         MAINSERVER_SENDROOMLIST = 7,
+         MAINSERVER_JOINROOMSUCC = 8,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -520,64 +518,6 @@ namespace MakePacketTemplate.Packets
         }
     }
     
-    public class GAMECLIENT_RoomExitCall : PacketInterface
-    {
-        public MsgID MsgID = MsgID.GAMECLIENT_ROOMEXITCALL;
-
-        public ushort timeout;
-        
-
-        public void Desrialize(ArraySegment<byte> data)
-        {
-            byte[] buffer = data.Array;
-            int start = data.Offset;
-            int offset = 0;
-            
-            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            timeout = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            
-        }
-
-        public ushort GetSize()
-        {
-            ushort size = 0;
-
-            size += sizeof(ushort); // PacketSize
-            size += sizeof(ushort); // PacketID
-
-            size += sizeof(ushort);
-            
-            
-
-            return size;
-        }
-
-        public ArraySegment<byte> Serialize()
-        {
-            ushort size = GetSize();
-            byte[] buffer = new byte[size];
-            ushort offset = 0;
-
-            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            
-
-            return new ArraySegment<byte>(buffer, 0, size);
-        }
-    }
-    
     public class MAINSERVER_SendSessionID : PacketInterface
     {
         public MsgID MsgID = MsgID.MAINSERVER_SENDSESSIONID;
@@ -905,64 +845,6 @@ namespace MakePacketTemplate.Packets
                 Array.Copy(segment.Array, segment.Offset, buffer, offset, packetSize);
                 offset += packetSize;
             }
-            
-
-            return new ArraySegment<byte>(buffer, 0, size);
-        }
-    }
-    
-    public class MAINSERVER_RoomExitSucc : PacketInterface
-    {
-        public MsgID MsgID = MsgID.MAINSERVER_ROOMEXITSUCC;
-
-        public ushort timeout;
-        
-
-        public void Desrialize(ArraySegment<byte> data)
-        {
-            byte[] buffer = data.Array;
-            int start = data.Offset;
-            int offset = 0;
-            
-            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            timeout = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            
-        }
-
-        public ushort GetSize()
-        {
-            ushort size = 0;
-
-            size += sizeof(ushort); // PacketSize
-            size += sizeof(ushort); // PacketID
-
-            size += sizeof(ushort);
-            
-            
-
-            return size;
-        }
-
-        public ArraySegment<byte> Serialize()
-        {
-            ushort size = GetSize();
-            byte[] buffer = new byte[size];
-            ushort offset = 0;
-
-            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
             
 
             return new ArraySegment<byte>(buffer, 0, size);

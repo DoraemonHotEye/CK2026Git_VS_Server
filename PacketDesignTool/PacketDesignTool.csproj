@@ -66,18 +66,6 @@
   <ItemGroup>
     <Compile Include="Managers\EventPacketManager.cs" />
     <Compile Include="Managers\ManagerInterface.cs" />
-    <Compile Include="Managers\managers\ClassPackerManager.cs" />
-    <Compile Include="Managers\managers\EventPacketManager.cs" />
-    <Compile Include="Managers\managers\ManagerInterface.cs" />
-    <Compile Include="Managers\managers\PackerGeneraterManager.cs" />
-    <Compile Include="Managers\managers\PackerImportManager.cs" />
-    <Compile Include="Managers\managers\Parent\PackerManager.cs" />
-    <Compile Include="Managers\managers\SettingsManager.cs" />
-    <Compile Include="Managers\managers\StructPackerManager.cs" />
-    <Compile Include="Managers\managers\Supports\PacketFormatsCSharp.cs" />
-    <Compile Include="Managers\managers\Supports\PathProfilerSupportClass.cs" />
-    <Compile Include="Managers\managers\Supports\StaticLibrary.cs" />
-    <Compile Include="Managers\managers\TagManager.cs" />
     <Compile Include="Managers\SettingsManager.cs" />
     <Compile Include="Managers\Supports\PathProfilerSupportClass.cs" />
     <Compile Include="SubWinformConfs\AddLinkedProfiler.cs">
