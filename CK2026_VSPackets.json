@@ -305,12 +305,10 @@
         "packer": {
           "Name": "UPosSyncPacket",
           "MemberTypes": [
-            "single:float",
             "single:float"
           ],
           "MemberNames": [
-            "x",
-            "y"
+            "x"
           ]
         },
         "PacketID": "GAMECLIENT_UPOSSYNCPACKET",
@@ -368,6 +366,33 @@
           ]
         },
         "PacketID": "GAMECLIENT_PEERPINGACK",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_UJUMPPACKET": {
+        "packer": {
+          "Name": "UJumpPacket",
+          "MemberTypes": [
+            "single:float"
+          ],
+          "MemberNames": [
+            "JumpPos"
+          ]
+        },
+        "PacketID": "GAMECLIENT_UJUMPPACKET",
         "LinkedProfilers": [
           {
             "Name": "GameClient",

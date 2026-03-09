@@ -124,16 +124,17 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_UPOSSYNCPACKET = 8,
          GAMECLIENT_PEERPINGPACKET = 9,
          GAMECLIENT_PEERPINGACK = 10,
-         MAINSERVER_SENDSESSIONID = 11,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 12,
-         MAINSERVER_SENDROOMLIST = 13,
-         MAINSERVER_JOINROOMSUCC = 14,
-         MAINSERVER_ROOMMASTERCHANGED = 15,
-         MAINSERVER_ROOMEXITSUCC = 16,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 17,
-         MAINSERVER_NOROOMCALLBACK = 18,
-         MAINSERVER_SENDPEERUSER = 19,
-         MAINSERVER_GAMESTARTSUCC = 20,
+         GAMECLIENT_UJUMPPACKET = 11,
+         MAINSERVER_SENDSESSIONID = 12,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 13,
+         MAINSERVER_SENDROOMLIST = 14,
+         MAINSERVER_JOINROOMSUCC = 15,
+         MAINSERVER_ROOMMASTERCHANGED = 16,
+         MAINSERVER_ROOMEXITSUCC = 17,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 18,
+         MAINSERVER_NOROOMCALLBACK = 19,
+         MAINSERVER_SENDPEERUSER = 20,
+         MAINSERVER_GAMESTARTSUCC = 21,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -709,7 +710,6 @@ namespace MakePacketTemplate.Packets
         public MsgID MsgID = MsgID.GAMECLIENT_UPOSSYNCPACKET;
 
         public float x;
-        public float y;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -726,8 +726,6 @@ namespace MakePacketTemplate.Packets
 
             x = BitConverter.ToSingle(buffer, start + offset);
             offset += sizeof(float);
-            y = BitConverter.ToSingle(buffer, start + offset);
-            offset += sizeof(float);
             
         }
 
@@ -738,8 +736,6 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
 
-            size += sizeof(float);
-            
             size += sizeof(float);
             
             
@@ -760,8 +756,6 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(x).CopyTo(buffer, offset);        
-            offset += sizeof(float);
-            BitConverter.GetBytes(y).CopyTo(buffer, offset);        
             offset += sizeof(float);
             
 
@@ -879,6 +873,64 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_UJumpPacket : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_UJUMPPACKET;
+
+        public float JumpPos;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            JumpPos = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(float);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(JumpPos).CopyTo(buffer, offset);        
+            offset += sizeof(float);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
