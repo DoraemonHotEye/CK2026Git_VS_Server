@@ -47,6 +47,9 @@ public class PeerStationPackage
 
         var EndPoint = SendIPEndPointContainer.Dequeue();
 
+        if (EndPoint.endPoint == null)
+            return false;
+
         MAINSERVER_SendPeerUser peer = new MAINSERVER_SendPeerUser();
         peer.endPointStr = EndPoint.endPoint.ToString();
         peer.SessionID = EndPoint.SessionID;

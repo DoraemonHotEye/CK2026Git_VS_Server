@@ -273,6 +273,116 @@
           }
         ],
         "MProtoType": 0
+      },
+      "GAMECLIENT_UMOVEPACKET": {
+        "packer": {
+          "Name": "UMovepacket",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "MoveType"
+          ]
+        },
+        "PacketID": "GAMECLIENT_UMOVEPACKET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_UPOSSYNCPACKET": {
+        "packer": {
+          "Name": "UPosSyncPacket",
+          "MemberTypes": [
+            "single:float",
+            "single:float"
+          ],
+          "MemberNames": [
+            "x",
+            "y"
+          ]
+        },
+        "PacketID": "GAMECLIENT_UPOSSYNCPACKET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_PEERPINGPACKET": {
+        "packer": {
+          "Name": "PeerPingPacket",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PEERPINGPACKET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_PEERPINGACK": {
+        "packer": {
+          "Name": "PeerPingACK",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PEERPINGACK",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
       }
     },
     "profiler": {

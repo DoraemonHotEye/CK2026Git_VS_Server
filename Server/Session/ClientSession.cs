@@ -39,12 +39,12 @@ namespace Server.Session
                 if (player.CurrentRoom != null)
                     player.CurrentRoom.Remove(player);
 
-
             if (player != null)
             {
                 UIPEndPointContainer.Instance.RemovePlayer(player.PeerEndPoint);
                 PlayerManager.Instance.Remove(this);
             }
+
             ClientSessionManager.Instance.Remove(this);
             UDPPlayerManager.Instance.Exit(SessionID);
         }
