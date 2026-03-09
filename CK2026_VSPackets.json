@@ -305,10 +305,12 @@
         "packer": {
           "Name": "UPosSyncPacket",
           "MemberTypes": [
+            "single:float",
             "single:float"
           ],
           "MemberNames": [
-            "x"
+            "x",
+            "y"
           ]
         },
         "PacketID": "GAMECLIENT_UPOSSYNCPACKET",
@@ -393,6 +395,64 @@
           ]
         },
         "PacketID": "GAMECLIENT_UJUMPPACKET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_UJUMPENDPACKET": {
+        "packer": {
+          "Name": "UJumpEndPacket",
+          "MemberTypes": [
+            "single:float",
+            "single:float"
+          ],
+          "MemberNames": [
+            "currY",
+            "currX"
+          ]
+        },
+        "PacketID": "GAMECLIENT_UJUMPENDPACKET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "D:\\Gits\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_RANDINGSYNCPOS": {
+        "packer": {
+          "Name": "RandingSyncPos",
+          "MemberTypes": [
+            "single:float",
+            "single:float"
+          ],
+          "MemberNames": [
+            "x",
+            "y"
+          ]
+        },
+        "PacketID": "GAMECLIENT_RANDINGSYNCPOS",
         "LinkedProfilers": [
           {
             "Name": "GameClient",
