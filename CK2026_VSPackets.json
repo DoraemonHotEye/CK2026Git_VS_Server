@@ -278,10 +278,10 @@
         "packer": {
           "Name": "UMovepacket",
           "MemberTypes": [
-            "single:ushort"
+            "single:short"
           ],
           "MemberNames": [
-            "MoveType"
+            "XDir"
           ]
         },
         "PacketID": "GAMECLIENT_UMOVEPACKET",

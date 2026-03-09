@@ -650,7 +650,7 @@ namespace MakePacketTemplate.Packets
     {
         public MsgID MsgID = MsgID.GAMECLIENT_UMOVEPACKET;
 
-        public ushort MoveType;
+        public short XDir;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -665,8 +665,8 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
-            MoveType = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
+            XDir = BitConverter.ToInt16(buffer, start + offset);
+            offset += sizeof(short);
             
         }
 
@@ -677,7 +677,7 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
 
-            size += sizeof(ushort);
+            size += sizeof(short);
             
             
 
@@ -696,8 +696,8 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
-            BitConverter.GetBytes(MoveType).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
+            BitConverter.GetBytes(XDir).CopyTo(buffer, offset);        
+            offset += sizeof(short);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
