@@ -113,5 +113,21 @@ public class PacketHandler
             }
         }
     }
+
+    public static void GAMECLIENT_GameStartReadyHandler(PacketSession session, PacketInterface message)
+    {
+        ClientSession _session = session as ClientSession;
+
+        if (_session != null)
+        {
+            if (_session.player != null)
+            {
+                if (_session.player.CurrentRoom != null)
+                {
+                    _session.player.CurrentRoom.Ready();
+                }
+            }
+        }
+    }
 }
 

@@ -468,6 +468,33 @@
           }
         ],
         "MProtoType": 1
+      },
+      "GAMECLIENT_GAMESTARTREADY": {
+        "packer": {
+          "Name": "GameStartReady",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "timeout"
+          ]
+        },
+        "PacketID": "GAMECLIENT_GAMESTARTREADY",
+        "LinkedProfilers": [
+          {
+            "Name": "MainServer",
+            "Description": "메인서버",
+            "Path": "../../../Server",
+            "tag": {
+              "Name": "MainServer",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "메인 서버"
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
       }
     },
     "profiler": {

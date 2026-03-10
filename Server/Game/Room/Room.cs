@@ -25,6 +25,10 @@ public class Room
 
     private object _lock = new object();
 
+    #region GameStart Zone 
+    public int ReadyCount = 0;
+    #endregion
+
     public void BroadCast(PacketInterface message)
     {
         Player[] snapshot;
@@ -42,18 +46,23 @@ public class Room
         }
     }
 
-    public void GameStart()
+    public void Ready()
     {
-        Player[] snapshot;
+        List<Player> snapshotPlayers;
         List<PeerDataPack> peers;
 
         lock (_lock)
         {
-            snapshot = playerList.ToArray();
+            ReadyCount++;
+
+            if (ReadyCount < playerList.Count)
+                return;
+
+            snapshotPlayers = playerList.ToList(); // snapshot
 
             peers = new List<PeerDataPack>();
 
-            foreach (var p in snapshot)
+            foreach (var p in snapshotPlayers)
             {
                 PeerDataPack peer = new PeerDataPack();
                 peer.endPoint = p.PeerEndPoint;
@@ -62,13 +71,15 @@ public class Room
             }
         }
 
-        // lock 밖
         PeerStationPackage package = new PeerStationPackage();
-        package.EnterPlayers(new List<Player>(snapshot));
+        package.EnterPlayers(snapshotPlayers);
         package.EnterPeers(peers);
 
         PeerJobTimerSender.Instance.RegisterSender(package);
+    }
 
+    public void GameStart()
+    {
         MAINSERVER_GameStartSucc start = new MAINSERVER_GameStartSucc();
         start.timeout = 10;
 

@@ -31,6 +31,8 @@ public class PacketManager
         _handler.Add((ushort)MsgID.GAMECLIENT_ROOMEXITCALL, PacketHandler.GAMECLIENT_RoomExitCallHandler);
         _makeFunc.Add((ushort)MsgID.GAMECLIENT_GAMESTART, MakePacket<GAMECLIENT_GameStart>);
         _handler.Add((ushort)MsgID.GAMECLIENT_GAMESTART, PacketHandler.GAMECLIENT_GameStartHandler);
+        _makeFunc.Add((ushort)MsgID.GAMECLIENT_GAMESTARTREADY, MakePacket<GAMECLIENT_GameStartReady>);
+        _handler.Add((ushort)MsgID.GAMECLIENT_GAMESTARTREADY, PacketHandler.GAMECLIENT_GameStartReadyHandler);
         
     }
 
