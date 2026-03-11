@@ -495,6 +495,33 @@
           }
         ],
         "MProtoType": 0
+      },
+      "GAMECLIENT_SENDLOCALENDPOINT": {
+        "packer": {
+          "Name": "SendLocalEndPoint",
+          "MemberTypes": [
+            "single:string"
+          ],
+          "MemberNames": [
+            "LocalAddress"
+          ]
+        },
+        "PacketID": "GAMECLIENT_SENDLOCALENDPOINT",
+        "LinkedProfilers": [
+          {
+            "Name": "MainServer",
+            "Description": "메인서버",
+            "Path": "../../../Server",
+            "tag": {
+              "Name": "MainServer",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "메인 서버"
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 0
       }
     },
     "profiler": {
@@ -745,11 +772,13 @@
           "Name": "SendPeerUser",
           "MemberTypes": [
             "single:string",
-            "single:int"
+            "single:int",
+            "single:string"
           ],
           "MemberNames": [
             "endPointStr",
-            "SessionID"
+            "SessionID",
+            "LocalAddress"
           ]
         },
         "PacketID": "MAINSERVER_SENDPEERUSER",

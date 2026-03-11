@@ -36,5 +36,15 @@ namespace UDgramCore
                 return PlayerList.Remove(endPoint);
             }
         }
+
+        public static IPEndPoint StringToIPEndPoint(string endpoint)
+        {
+            string[] parts = endpoint.Split(':');
+
+            IPAddress ip = IPAddress.Parse(parts[0]);
+            int port = int.Parse(parts[1]);
+
+            return new IPEndPoint(ip, port);
+        }
     }
 }

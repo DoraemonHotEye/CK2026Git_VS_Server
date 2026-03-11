@@ -66,6 +66,7 @@ public class Room
             {
                 PeerDataPack peer = new PeerDataPack();
                 peer.endPoint = p.PeerEndPoint;
+                peer.LocalAddress = p.LocalAddress;
                 peer.SessionID = p.session.SessionID;
                 peers.Add(peer);
             }

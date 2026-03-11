@@ -33,6 +33,8 @@ public class PacketManager
         _handler.Add((ushort)MsgID.GAMECLIENT_GAMESTART, PacketHandler.GAMECLIENT_GameStartHandler);
         _makeFunc.Add((ushort)MsgID.GAMECLIENT_GAMESTARTREADY, MakePacket<GAMECLIENT_GameStartReady>);
         _handler.Add((ushort)MsgID.GAMECLIENT_GAMESTARTREADY, PacketHandler.GAMECLIENT_GameStartReadyHandler);
+        _makeFunc.Add((ushort)MsgID.GAMECLIENT_SENDLOCALENDPOINT, MakePacket<GAMECLIENT_SendLocalEndPoint>);
+        _handler.Add((ushort)MsgID.GAMECLIENT_SENDLOCALENDPOINT, PacketHandler.GAMECLIENT_SendLocalEndPointHandler);
         
     }
 

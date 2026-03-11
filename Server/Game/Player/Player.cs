@@ -11,5 +11,6 @@ public class Player
     public IPEndPoint PeerEndPoint { get; set; }
     public ClientSession session { get; set; }
     public Room CurrentRoom { get; set; }
+    public string LocalAddress { get; set; }
 }
 

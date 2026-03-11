@@ -128,16 +128,17 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_UJUMPENDPACKET = 12,
          GAMECLIENT_RANDINGSYNCPOS = 13,
          GAMECLIENT_GAMESTARTREADY = 14,
-         MAINSERVER_SENDSESSIONID = 15,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 16,
-         MAINSERVER_SENDROOMLIST = 17,
-         MAINSERVER_JOINROOMSUCC = 18,
-         MAINSERVER_ROOMMASTERCHANGED = 19,
-         MAINSERVER_ROOMEXITSUCC = 20,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 21,
-         MAINSERVER_NOROOMCALLBACK = 22,
-         MAINSERVER_SENDPEERUSER = 23,
-         MAINSERVER_GAMESTARTSUCC = 24,
+         GAMECLIENT_SENDLOCALENDPOINT = 15,
+         MAINSERVER_SENDSESSIONID = 16,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 17,
+         MAINSERVER_SENDROOMLIST = 18,
+         MAINSERVER_JOINROOMSUCC = 19,
+         MAINSERVER_ROOMMASTERCHANGED = 20,
+         MAINSERVER_ROOMEXITSUCC = 21,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 22,
+         MAINSERVER_NOROOMCALLBACK = 23,
+         MAINSERVER_SENDPEERUSER = 24,
+         MAINSERVER_GAMESTARTSUCC = 25,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -1135,6 +1136,69 @@ namespace MakePacketTemplate.Packets
         }
     }
     
+    public class GAMECLIENT_SendLocalEndPoint : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_SENDLOCALENDPOINT;
+
+        public string LocalAddress;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort LocalAddressLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            LocalAddress = Encoding.UTF8.GetString(buffer, start + offset, LocalAddressLength);
+            offset += (ushort)LocalAddressLength;
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(LocalAddress);
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            byte[] LocalAddressBytes = Encoding.UTF8.GetBytes(LocalAddress);
+            BitConverter.GetBytes((ushort)LocalAddressBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            LocalAddressBytes.CopyTo(buffer, offset);
+            offset += (ushort)LocalAddressBytes.Length;
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
     public class MAINSERVER_SendSessionID : PacketInterface
     {
         public MsgID MsgID = MsgID.MAINSERVER_SENDSESSIONID;
@@ -1733,6 +1797,7 @@ namespace MakePacketTemplate.Packets
 
         public string endPointStr;
         public int SessionID;
+        public string LocalAddress;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -1753,6 +1818,10 @@ namespace MakePacketTemplate.Packets
             offset += (ushort)endPointStrLength;
             SessionID = BitConverter.ToInt32(buffer, start + offset);
             offset += sizeof(int);
+            ushort LocalAddressLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            LocalAddress = Encoding.UTF8.GetString(buffer, start + offset, LocalAddressLength);
+            offset += (ushort)LocalAddressLength;
             
         }
 
@@ -1767,6 +1836,8 @@ namespace MakePacketTemplate.Packets
             size += (ushort)Encoding.UTF8.GetByteCount(endPointStr);
             size += sizeof(int);
             
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(LocalAddress);
             
 
             return size;
@@ -1791,6 +1862,11 @@ namespace MakePacketTemplate.Packets
             offset += (ushort)endPointStrBytes.Length;
             BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
             offset += sizeof(int);
+            byte[] LocalAddressBytes = Encoding.UTF8.GetBytes(LocalAddress);
+            BitConverter.GetBytes((ushort)LocalAddressBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            LocalAddressBytes.CopyTo(buffer, offset);
+            offset += (ushort)LocalAddressBytes.Length;
             
 
             return new ArraySegment<byte>(buffer, 0, size);

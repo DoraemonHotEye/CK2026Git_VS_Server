@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 public struct PeerDataPack
 {
     public IPEndPoint endPoint;
+    public string LocalAddress;
     public int SessionID;
 }
 
@@ -39,7 +40,7 @@ public class PeerStationPackage
         }
     }
 
-    public bool BroadCast()
+    public bool BroadCast() //LockLess Zone
     {
         //TODO Queue에서 순차적 진행
         if (SendIPEndPointContainer.Count < 1)
@@ -52,6 +53,7 @@ public class PeerStationPackage
 
         MAINSERVER_SendPeerUser peer = new MAINSERVER_SendPeerUser();
         peer.endPointStr = EndPoint.endPoint.ToString();
+        peer.LocalAddress = EndPoint.LocalAddress;
         peer.SessionID = EndPoint.SessionID;
 
         BroadCastMessage(peer);
@@ -71,7 +73,7 @@ public class PeerJobTimerSender
 
     public void RegisterSender(PeerStationPackage sender)
     {
-        lock (_lock)
+        lock (_lock) //Locl Station #0941
         {
             PeerPackages.Add(sender);
         }
@@ -79,7 +81,7 @@ public class PeerJobTimerSender
 
     public void BroadCast()
     {
-        lock (_lock)
+        lock (_lock) //Lock Station #0942
         {
             List<PeerStationPackage> DestroyStation = new List<PeerStationPackage>();
 

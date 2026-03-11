@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UDgramCore;
 
 public class PacketHandler
 {
@@ -126,6 +127,22 @@ public class PacketHandler
                 {
                     _session.player.CurrentRoom.Ready();
                 }
+            }
+        }
+    }
+
+    public static void GAMECLIENT_SendLocalEndPointHandler(PacketSession session, PacketInterface message)
+    {
+        ClientSession _session = session as ClientSession;
+
+        if (_session != null)
+        {
+            GAMECLIENT_SendLocalEndPoint _localEndPoint = message as GAMECLIENT_SendLocalEndPoint;
+
+            if (_session.player != null)
+            {
+                Console.WriteLine($"[Server]: LocalEndPoint Peer Session :: Address Reset :: {_localEndPoint.LocalAddress}");
+                _session.player.LocalAddress = _localEndPoint.LocalAddress;
             }
         }
     }
