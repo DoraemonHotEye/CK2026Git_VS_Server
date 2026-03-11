@@ -2,6 +2,7 @@
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -36,12 +37,16 @@ namespace UDgramCore
         {
             var sendBuffer = packet.Serialize();
 
-            lock (_lock)
+            try
             {
                 _server.BeginSend(sendBuffer.Array, sendBuffer.Count, endPoint, udpSendCallback, _server);
+                OnSend(true);
             }
-
-            OnSend(true);
+            catch (Exception e)
+            {
+                Console.WriteLine($"UDP Send Error: {e}");
+                OnSend(false);
+            }
         }
 
         public abstract void OnRecvPacket(ArraySegment<byte> buffer);

@@ -27,9 +27,8 @@ namespace Server
         static void Main(string[] args)
         {
             string hostName = Dns.GetHostName(); // 내 컴퓨터 이름
-            IPAddress[] addresses = Dns.GetHostAddresses(hostName);
-            IPEndPoint endPoint = new IPEndPoint(addresses[1], 5555);
-            IPEndPoint UendPoint = new IPEndPoint(addresses[1], 5556);
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(IpConfigManager.Instance.ipConfig.TCPIPEndPoint.IPAddress), IpConfigManager.Instance.ipConfig.TCPIPEndPoint.Port);
+            IPEndPoint UendPoint = new IPEndPoint(IPAddress.Parse(IpConfigManager.Instance.ipConfig.UDPIPEndPoint.IPAddress), IpConfigManager.Instance.ipConfig.UDPIPEndPoint.Port);
 
             _listener.Start(endPoint, new Listener.OnListenerCallback(ClientSessionManager.Instance.Generate));
             UClientSession.Start(UendPoint);

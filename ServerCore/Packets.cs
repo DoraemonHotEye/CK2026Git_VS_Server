@@ -139,6 +139,7 @@ namespace MakePacketTemplate.Packets
          MAINSERVER_NOROOMCALLBACK = 23,
          MAINSERVER_SENDPEERUSER = 24,
          MAINSERVER_GAMESTARTSUCC = 25,
+         MAINSERVER_SENDPBENDPOINT = 26,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -1795,9 +1796,10 @@ namespace MakePacketTemplate.Packets
     {
         public MsgID MsgID = MsgID.MAINSERVER_SENDPEERUSER;
 
-        public string endPointStr;
         public int SessionID;
         public string LocalAddress;
+        public string PublicAddress;
+        public int Port;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -1812,16 +1814,18 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
-            ushort endPointStrLength = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            endPointStr = Encoding.UTF8.GetString(buffer, start + offset, endPointStrLength);
-            offset += (ushort)endPointStrLength;
             SessionID = BitConverter.ToInt32(buffer, start + offset);
             offset += sizeof(int);
             ushort LocalAddressLength = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             LocalAddress = Encoding.UTF8.GetString(buffer, start + offset, LocalAddressLength);
             offset += (ushort)LocalAddressLength;
+            ushort PublicAddressLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            PublicAddress = Encoding.UTF8.GetString(buffer, start + offset, PublicAddressLength);
+            offset += (ushort)PublicAddressLength;
+            Port = BitConverter.ToInt32(buffer, start + offset);
+            offset += sizeof(int);
             
         }
 
@@ -1832,12 +1836,14 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
 
-            size += sizeof(ushort);
-            size += (ushort)Encoding.UTF8.GetByteCount(endPointStr);
             size += sizeof(int);
             
             size += sizeof(ushort);
             size += (ushort)Encoding.UTF8.GetByteCount(LocalAddress);
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(PublicAddress);
+            size += sizeof(int);
+            
             
 
             return size;
@@ -1855,11 +1861,6 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
-            byte[] endPointStrBytes = Encoding.UTF8.GetBytes(endPointStr);
-            BitConverter.GetBytes((ushort)endPointStrBytes.Length).CopyTo(buffer, offset);
-            offset += sizeof(ushort);
-            endPointStrBytes.CopyTo(buffer, offset);
-            offset += (ushort)endPointStrBytes.Length;
             BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
             offset += sizeof(int);
             byte[] LocalAddressBytes = Encoding.UTF8.GetBytes(LocalAddress);
@@ -1867,6 +1868,13 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
             LocalAddressBytes.CopyTo(buffer, offset);
             offset += (ushort)LocalAddressBytes.Length;
+            byte[] PublicAddressBytes = Encoding.UTF8.GetBytes(PublicAddress);
+            BitConverter.GetBytes((ushort)PublicAddressBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            PublicAddressBytes.CopyTo(buffer, offset);
+            offset += (ushort)PublicAddressBytes.Length;
+            BitConverter.GetBytes(Port).CopyTo(buffer, offset);        
+            offset += sizeof(int);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
@@ -1925,6 +1933,76 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class MAINSERVER_SendPbEndPoint : PacketInterface
+    {
+        public MsgID MsgID = MsgID.MAINSERVER_SENDPBENDPOINT;
+
+        public string IPAddress;
+        public int Port;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort IPAddressLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            IPAddress = Encoding.UTF8.GetString(buffer, start + offset, IPAddressLength);
+            offset += (ushort)IPAddressLength;
+            Port = BitConverter.ToInt32(buffer, start + offset);
+            offset += sizeof(int);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(IPAddress);
+            size += sizeof(int);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            byte[] IPAddressBytes = Encoding.UTF8.GetBytes(IPAddress);
+            BitConverter.GetBytes((ushort)IPAddressBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            IPAddressBytes.CopyTo(buffer, offset);
+            offset += (ushort)IPAddressBytes.Length;
+            BitConverter.GetBytes(Port).CopyTo(buffer, offset);        
+            offset += sizeof(int);
             
 
             return new ArraySegment<byte>(buffer, 0, size);

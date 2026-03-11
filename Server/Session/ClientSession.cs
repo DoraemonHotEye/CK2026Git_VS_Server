@@ -29,6 +29,14 @@ namespace Server.Session
             _SessionID.SessionID = SessionID;
 
             Send(_SessionID.Serialize());
+
+            IPEndPoint myEndPoint = (IPEndPoint)endPoint;
+            MAINSERVER_SendPbEndPoint _PBSend = new MAINSERVER_SendPbEndPoint();
+            _PBSend.IPAddress = myEndPoint.Address.ToString();
+            _PBSend.Port = myEndPoint.Port;
+            Send(_PBSend.Serialize());
+
+            Console.WriteLine($"{myEndPoint.Address}:{myEndPoint.Port}");
         }
 
         public override void OnDisconnected(EndPoint endPoint)

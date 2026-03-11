@@ -52,9 +52,10 @@ public class PeerStationPackage
             return false;
 
         MAINSERVER_SendPeerUser peer = new MAINSERVER_SendPeerUser();
-        peer.endPointStr = EndPoint.endPoint.ToString();
+        peer.PublicAddress = EndPoint.endPoint.Address.ToString();
         peer.LocalAddress = EndPoint.LocalAddress;
         peer.SessionID = EndPoint.SessionID;
+        peer.Port = EndPoint.endPoint.Port;
 
         BroadCastMessage(peer);
 

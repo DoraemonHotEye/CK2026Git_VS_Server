@@ -174,7 +174,8 @@ namespace PacketDesignTool.SubWinformConfs
 
             PrjNameTextBox.Text = item.Name.ToString();
             PrjDescriptionTextBox.Text = item.Description.ToString();
-            PrjTagTextBox.Text = item.tag.ToString();
+            PrjPathTextBox.Text = item.Path;
+            PrjTagTextBox.Text = item.tag.Type.ToString();
             isUseUDPCheckBox.Checked = item.isUseUDP;
         }
 
@@ -182,6 +183,35 @@ namespace PacketDesignTool.SubWinformConfs
         {
             var item = SettingsManager.Inst.SettingProfilers[AddedCompeletedProjectsList.SelectedItem.ToString()];
             item.isUseUDP = isUseUDPCheckBox.Checked;
+        }
+
+        private void RePath_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+
+            DialogResult result = folderBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                var item = SettingsManager.Inst.SettingProfilers[AddedCompeletedProjectsList.SelectedItem.ToString()];
+
+                if (item != null)
+                {
+                    item.Path = folderBrowserDialog.SelectedPath;
+
+                    var MBresult = MessageBox.Show("정말로 경로를 변경하시겠습니까?", "설정", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (MBresult == DialogResult.Yes)
+                    {
+                        var MB2Result = MessageBox.Show("정말로요?", "설정", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+                        if (MB2Result == DialogResult.Yes)
+                        {
+                            Refresh();
+                        }
+                    }
+                }
+            }
         }
     }
 }
