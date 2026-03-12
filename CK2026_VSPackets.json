@@ -522,6 +522,33 @@
           }
         ],
         "MProtoType": 0
+      },
+      "GAMECLIENT_MONSTERSETTARGET": {
+        "packer": {
+          "Name": "MonsterSetTarget",
+          "MemberTypes": [
+            "single:int"
+          ],
+          "MemberNames": [
+            "TargetSessionID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERSETTARGET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
       }
     },
     "profiler": {
