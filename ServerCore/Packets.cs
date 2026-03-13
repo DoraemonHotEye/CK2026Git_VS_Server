@@ -838,7 +838,7 @@ namespace MakePacketTemplate.Packets
     {
         public MsgID MsgID = MsgID.GAMECLIENT_PEERPINGACK;
 
-        public ushort timeout;
+        public ushort SessionID;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -853,7 +853,7 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
-            timeout = BitConverter.ToUInt16(buffer, start + offset);
+            SessionID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
         }
@@ -884,7 +884,7 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
-            BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
+            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
 

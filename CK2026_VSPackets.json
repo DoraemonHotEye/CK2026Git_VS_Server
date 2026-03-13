@@ -364,7 +364,7 @@
             "single:ushort"
           ],
           "MemberNames": [
-            "timeout"
+            "SessionID"
           ]
         },
         "PacketID": "GAMECLIENT_PEERPINGACK",
