@@ -582,6 +582,35 @@
           }
         ],
         "MProtoType": 1
+      },
+      "GAMECLIENT_UDOWNJUMPPACKET": {
+        "packer": {
+          "Name": "UDownJumpPacket",
+          "MemberTypes": [
+            "single:float",
+            "single:float"
+          ],
+          "MemberNames": [
+            "duration",
+            "downSpeed"
+          ]
+        },
+        "PacketID": "GAMECLIENT_UDOWNJUMPPACKET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
       }
     },
     "profiler": {
