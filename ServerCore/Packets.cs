@@ -132,17 +132,18 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_MONSTERMOVESYNC = 16,
          GAMECLIENT_MONSTERSYNCPOS = 17,
          GAMECLIENT_UDOWNJUMPPACKET = 18,
-         MAINSERVER_SENDSESSIONID = 19,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 20,
-         MAINSERVER_SENDROOMLIST = 21,
-         MAINSERVER_JOINROOMSUCC = 22,
-         MAINSERVER_ROOMMASTERCHANGED = 23,
-         MAINSERVER_ROOMEXITSUCC = 24,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 25,
-         MAINSERVER_NOROOMCALLBACK = 26,
-         MAINSERVER_SENDPEERUSER = 27,
-         MAINSERVER_GAMESTARTSUCC = 28,
-         MAINSERVER_SENDPBENDPOINT = 29,
+         GAMECLIENT_ENEMYPROJECTILEFIRE = 19,
+         MAINSERVER_SENDSESSIONID = 20,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 21,
+         MAINSERVER_SENDROOMLIST = 22,
+         MAINSERVER_JOINROOMSUCC = 23,
+         MAINSERVER_ROOMMASTERCHANGED = 24,
+         MAINSERVER_ROOMEXITSUCC = 25,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 26,
+         MAINSERVER_NOROOMCALLBACK = 27,
+         MAINSERVER_SENDPEERUSER = 28,
+         MAINSERVER_GAMESTARTSUCC = 29,
+         MAINSERVER_SENDPBENDPOINT = 30,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -1398,6 +1399,85 @@ namespace MakePacketTemplate.Packets
             BitConverter.GetBytes(duration).CopyTo(buffer, offset);        
             offset += sizeof(float);
             BitConverter.GetBytes(downSpeed).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_EnemyProjectileFire : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_ENEMYPROJECTILEFIRE;
+
+        public ushort OwnerID;
+        public ushort NetID;
+        public float dirX;
+        public float dirY;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            OwnerID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            NetID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            dirX = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            dirY = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            
+            size += sizeof(float);
+            
+            size += sizeof(float);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(OwnerID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(dirX).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(dirY).CopyTo(buffer, offset);        
             offset += sizeof(float);
             
 
