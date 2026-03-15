@@ -133,17 +133,18 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_MONSTERSYNCPOS = 17,
          GAMECLIENT_UDOWNJUMPPACKET = 18,
          GAMECLIENT_ENEMYPROJECTILEFIRE = 19,
-         MAINSERVER_SENDSESSIONID = 20,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 21,
-         MAINSERVER_SENDROOMLIST = 22,
-         MAINSERVER_JOINROOMSUCC = 23,
-         MAINSERVER_ROOMMASTERCHANGED = 24,
-         MAINSERVER_ROOMEXITSUCC = 25,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 26,
-         MAINSERVER_NOROOMCALLBACK = 27,
-         MAINSERVER_SENDPEERUSER = 28,
-         MAINSERVER_GAMESTARTSUCC = 29,
-         MAINSERVER_SENDPBENDPOINT = 30,
+         GAMECLIENT_PLAYERATTACK = 20,
+         MAINSERVER_SENDSESSIONID = 21,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 22,
+         MAINSERVER_SENDROOMLIST = 23,
+         MAINSERVER_JOINROOMSUCC = 24,
+         MAINSERVER_ROOMMASTERCHANGED = 25,
+         MAINSERVER_ROOMEXITSUCC = 26,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 27,
+         MAINSERVER_NOROOMCALLBACK = 28,
+         MAINSERVER_SENDPEERUSER = 29,
+         MAINSERVER_GAMESTARTSUCC = 30,
+         MAINSERVER_SENDPBENDPOINT = 31,
          
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
@@ -1479,6 +1480,71 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(float);
             BitConverter.GetBytes(dirY).CopyTo(buffer, offset);        
             offset += sizeof(float);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_PlayerAttack : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_PLAYERATTACK;
+
+        public ushort NetID;
+        public ushort Combo;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            NetID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            Combo = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(Combo).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
