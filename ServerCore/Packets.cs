@@ -153,13 +153,15 @@ namespace MakePacketTemplate.Packets
          MAINSERVER_GAMESTARTSUCC = 37,
          MAINSERVER_SENDPBENDPOINT = 38,
          
+         DGRAM_SERVER_ACKSEQ = 25563,
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
     }
 
-    public class DGRAM_SERVER_Ping : PacketInterface
+    public class DGRAM_SERVER_AckSeq : PacketInterface
     {
-        public MsgID MsgID = MsgID.DGRAM_SERVER_PING;
+        public MsgID MsgID = MsgID.DGRAM_SERVER_ACKSEQ;
+        public ushort SeqNum;
 
         public void Desrialize(ArraySegment<byte> data)
         {
@@ -172,6 +174,9 @@ namespace MakePacketTemplate.Packets
 
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(uint);
         }
 
         public ushort GetSize()
@@ -180,6 +185,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); //SeqNum
 
             return size;
         }
@@ -196,6 +202,60 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((uint)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+
+    public class DGRAM_SERVER_Ping : PacketInterface
+    {
+        public MsgID MsgID = MsgID.DGRAM_SERVER_PING;
+        public ushort SeqNum;
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(uint);
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); //SeqNum
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((uint)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             return new ArraySegment<byte>(buffer, 0, size);
         }
     }
@@ -204,6 +264,7 @@ namespace MakePacketTemplate.Packets
     public class DGRAM_SERVER_ConnectPacket : PacketInterface
     {
         public MsgID MsgID = MsgID.DGRAM_SERVER_CONNECTPACKET;
+        public ushort SeqNum;
         public uint SessionID;
 
         public void Desrialize(ArraySegment<byte> data)
@@ -218,6 +279,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             SessionID = BitConverter.ToUInt32(buffer, start + offset);
             offset += sizeof(uint);
         }
@@ -228,6 +292,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); //SeqNum
             size += sizeof(uint);
 
             return size;
@@ -245,6 +310,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             Array.Copy(BitConverter.GetBytes(SessionID), 0, buffer, offset, sizeof(uint));
             offset += sizeof(uint);
 
@@ -256,6 +324,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_DisconnectUDP : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_DISCONNECTUDP;
+        public uint SeqNum;
 
         public ushort timeout;
         
@@ -272,6 +341,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             timeout = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
@@ -283,6 +355,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -303,6 +376,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
@@ -314,6 +390,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_USessionIDMatch : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_USESSIONIDMATCH;
+        public uint SeqNum;
 
         public int SessionID;
         
@@ -330,6 +407,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             SessionID = BitConverter.ToInt32(buffer, start + offset);
             offset += sizeof(int);
             
@@ -341,6 +421,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(int);
             
@@ -359,6 +440,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
@@ -667,6 +751,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_UMovepacket : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_UMOVEPACKET;
+        public uint SeqNum;
 
         public short XDir;
         
@@ -683,6 +768,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             XDir = BitConverter.ToInt16(buffer, start + offset);
             offset += sizeof(short);
             
@@ -694,6 +782,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(short);
             
@@ -714,6 +803,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(XDir).CopyTo(buffer, offset);        
             offset += sizeof(short);
             
@@ -725,6 +817,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_UPosSyncPacket : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_UPOSSYNCPACKET;
+        public uint SeqNum;
 
         public float x;
         public float y;
@@ -742,6 +835,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             x = BitConverter.ToSingle(buffer, start + offset);
             offset += sizeof(float);
             y = BitConverter.ToSingle(buffer, start + offset);
@@ -755,6 +851,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(float);
             
@@ -777,6 +874,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(x).CopyTo(buffer, offset);        
             offset += sizeof(float);
             BitConverter.GetBytes(y).CopyTo(buffer, offset);        
@@ -790,6 +890,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_PeerPingPacket : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_PEERPINGPACKET;
+        public uint SeqNum;
 
         public ushort timeout;
         
@@ -806,6 +907,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             timeout = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
@@ -817,6 +921,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -837,6 +942,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(timeout).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
@@ -848,6 +956,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_PeerPingACK : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_PEERPINGACK;
+        public uint SeqNum;
 
         public ushort SessionID;
         
@@ -864,6 +973,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             SessionID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
@@ -875,6 +987,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -895,6 +1008,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
@@ -906,6 +1022,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_UJumpPacket : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_UJUMPPACKET;
+        public uint SeqNum;
 
         public float JumpPos;
         
@@ -922,6 +1039,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             JumpPos = BitConverter.ToSingle(buffer, start + offset);
             offset += sizeof(float);
             
@@ -933,6 +1053,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(float);
             
@@ -953,6 +1074,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(JumpPos).CopyTo(buffer, offset);        
             offset += sizeof(float);
             
@@ -964,6 +1088,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_UJumpEndPacket : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_UJUMPENDPACKET;
+        public uint SeqNum;
 
         public float currY;
         public float currX;
@@ -981,6 +1106,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             currY = BitConverter.ToSingle(buffer, start + offset);
             offset += sizeof(float);
             currX = BitConverter.ToSingle(buffer, start + offset);
@@ -994,6 +1122,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(float);
             
@@ -1016,6 +1145,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(currY).CopyTo(buffer, offset);        
             offset += sizeof(float);
             BitConverter.GetBytes(currX).CopyTo(buffer, offset);        
@@ -1029,6 +1161,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_RandingSyncPos : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_RANDINGSYNCPOS;
+        public uint SeqNum;
 
         public float x;
         public float y;
@@ -1046,6 +1179,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             x = BitConverter.ToSingle(buffer, start + offset);
             offset += sizeof(float);
             y = BitConverter.ToSingle(buffer, start + offset);
@@ -1059,6 +1195,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(float);
             
@@ -1079,6 +1216,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(x).CopyTo(buffer, offset);        
@@ -1215,6 +1355,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_MonsterMoveSync : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_MONSTERMOVESYNC;
+        public uint SeqNum;
 
         public short XDir;
         public ushort NetID;
@@ -1232,6 +1373,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             XDir = BitConverter.ToInt16(buffer, start + offset);
             offset += sizeof(short);
             NetID = BitConverter.ToUInt16(buffer, start + offset);
@@ -1245,6 +1389,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(short);
             
@@ -1267,6 +1412,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(XDir).CopyTo(buffer, offset);        
             offset += sizeof(short);
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
@@ -1280,6 +1428,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_MonsterSyncPos : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_MONSTERSYNCPOS;
+        public uint SeqNum;
 
         public float x;
         public float y;
@@ -1298,6 +1447,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             x = BitConverter.ToSingle(buffer, start + offset);
             offset += sizeof(float);
             y = BitConverter.ToSingle(buffer, start + offset);
@@ -1313,6 +1465,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(float);
             
@@ -1337,6 +1490,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(x).CopyTo(buffer, offset);        
             offset += sizeof(float);
             BitConverter.GetBytes(y).CopyTo(buffer, offset);        
@@ -1352,6 +1508,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_UDownJumpPacket : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_UDOWNJUMPPACKET;
+        public uint SeqNum;
 
         public float duration;
         public float downSpeed;
@@ -1369,6 +1526,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             duration = BitConverter.ToSingle(buffer, start + offset);
             offset += sizeof(float);
             downSpeed = BitConverter.ToSingle(buffer, start + offset);
@@ -1382,6 +1542,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(float);
             
@@ -1404,6 +1565,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(duration).CopyTo(buffer, offset);        
             offset += sizeof(float);
             BitConverter.GetBytes(downSpeed).CopyTo(buffer, offset);        
@@ -1417,6 +1581,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_EnemyProjectileFire : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_ENEMYPROJECTILEFIRE;
+        public uint SeqNum;
 
         public ushort OwnerID;
         public ushort NetID;
@@ -1436,6 +1601,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             OwnerID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             NetID = BitConverter.ToUInt16(buffer, start + offset);
@@ -1453,6 +1621,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1477,6 +1646,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(OwnerID).CopyTo(buffer, offset);        
@@ -1496,6 +1668,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_PlayerAttack : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_PLAYERATTACK;
+        public uint SeqNum;
 
         public ushort NetID;
         public ushort Combo;
@@ -1514,6 +1687,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             Combo = BitConverter.ToUInt16(buffer, start + offset);
@@ -1529,6 +1705,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1551,6 +1728,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
@@ -1568,6 +1748,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_MonsterLockFlip : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_MONSTERLOCKFLIP;
+        public uint SeqNum;
 
         public short LockType;
         public ushort NetID;
@@ -1585,6 +1766,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             LockType = BitConverter.ToInt16(buffer, start + offset);
             offset += sizeof(short);
             NetID = BitConverter.ToUInt16(buffer, start + offset);
@@ -1598,6 +1782,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(short);
             
@@ -1620,6 +1805,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(LockType).CopyTo(buffer, offset);        
             offset += sizeof(short);
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
@@ -1633,6 +1821,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_MonsterAttack : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_MONSTERATTACK;
+        public uint SeqNum;
 
         public ushort NetID;
         
@@ -1649,6 +1838,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
@@ -1660,6 +1852,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1678,6 +1871,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
@@ -1691,6 +1887,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_MonsterAttackStop : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_MONSTERATTACKSTOP;
+        public uint SeqNum;
 
         public ushort NetID;
         
@@ -1707,6 +1904,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
@@ -1718,6 +1918,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1738,6 +1939,9 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
@@ -1749,6 +1953,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_TakeDamageMonster : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_TAKEDAMAGEMONSTER;
+        public uint SeqNum;
 
         public ushort NetID;
         public ushort SessionID;
@@ -1766,6 +1971,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             SessionID = BitConverter.ToUInt16(buffer, start + offset);
@@ -1779,6 +1987,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1799,6 +2008,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
@@ -1814,6 +2026,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_MonsterDie : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_MONSTERDIE;
+        public uint SeqNum;
 
         public ushort NetID;
         public ushort SessionID;
@@ -1831,6 +2044,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             SessionID = BitConverter.ToUInt16(buffer, start + offset);
@@ -1844,6 +2060,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1864,6 +2081,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
@@ -1879,6 +2099,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_PlayerHit : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_PLAYERHIT;
+        public uint SeqNum;
 
         public ushort NetID;
         public ushort SessionID;
@@ -1896,6 +2117,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             SessionID = BitConverter.ToUInt16(buffer, start + offset);
@@ -1909,6 +2133,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1929,6 +2154,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
@@ -1944,6 +2172,7 @@ namespace MakePacketTemplate.Packets
     public class GAMECLIENT_PlayerDie : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_PLAYERDIE;
+        public uint SeqNum;
 
         public ushort NetID;
         public ushort SessionID;
@@ -1961,6 +2190,9 @@ namespace MakePacketTemplate.Packets
             ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             SessionID = BitConverter.ToUInt16(buffer, start + offset);
@@ -1974,6 +2206,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort); // PacketSize
             size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
             
@@ -1994,6 +2227,9 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        

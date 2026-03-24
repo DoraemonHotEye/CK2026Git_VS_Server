@@ -12,21 +12,26 @@ namespace UDgramCore
 {
     public abstract class UPacketSession : USession
     {
+        ushort _sendSeq = 0;
         public static readonly int HeaderSize = 2;
 
         // [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ]
         public sealed override int OnRecv(ArraySegment<byte> buffer)
         {
             int processLen = 0;
+            int offset = 0;
 
             // 최소한 헤더는 파싱할 수 있는지 확인
             if (buffer.Count < HeaderSize)
                 return 0;
 
             //패킷이 완전체로 도착했는지 확인
-            ushort dataSize = BitConverter.ToUInt16(buffer.Array, buffer.Offset);
+            ushort dataSize = BitConverter.ToUInt16(buffer.Array, offset);
+            offset += sizeof(ushort);
+            offset += sizeof(ushort);
+
             if (buffer.Count < dataSize)
-                return 0; ;
+                return 0;
 
             // 여기까지 왔으면 패킷 조립 가능
             OnRecvPacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, buffer.Count));
@@ -35,11 +40,42 @@ namespace UDgramCore
         }
         public void Send(PacketInterface packet, IPEndPoint endPoint, bool RUDPUse = false)
         {
-            var sendBuffer = packet.Serialize();
+            ArraySegment<byte> sendBuffer = packet.Serialize();
 
             try
             {
-                _server.BeginSend(sendBuffer.Array, sendBuffer.Count, endPoint, udpSendCallback, _server);
+                // ArraySegment를 독립 byte[]로 복사해서 안전하게 사용
+                byte[] sendBytes = new byte[sendBuffer.Count];
+                Buffer.BlockCopy(sendBuffer.Array, sendBuffer.Offset, sendBytes, 0, sendBuffer.Count);
+
+                if (RUDPUse)
+                {
+                    int offset = 0;
+
+                    // [dataSize:2]
+                    ushort dataSize = BitConverter.ToUInt16(sendBytes, offset);
+                    offset += sizeof(ushort);
+
+                    // [packetId:2]
+                    ushort packetId = BitConverter.ToUInt16(sendBytes, offset);
+                    offset += sizeof(ushort);
+
+                    // [seqNum:2] 위치에 기록
+                    ushort seqNum = _sendSeq++;
+                    Buffer.BlockCopy(BitConverter.GetBytes(seqNum), 0, sendBytes, offset, sizeof(ushort));
+                    offset += sizeof(ushort);
+
+                    // 재전송용으로 "완성된 바이트"를 그대로 보관
+                    byte[] resendBytes = new byte[sendBytes.Length];
+                    Buffer.BlockCopy(sendBytes, 0, resendBytes, 0, sendBytes.Length);
+
+                    sendTable.Add(seqNum, packet, (ps, seq) =>
+                    {
+                        _server.BeginSend(resendBytes, resendBytes.Length, endPoint, udpSendCallback, _server);
+                    });
+                }
+
+                _server.BeginSend(sendBytes, sendBytes.Length, endPoint, udpSendCallback, _server);
                 OnSend(true);
             }
             catch (Exception e)
@@ -54,6 +90,7 @@ namespace UDgramCore
 
     public abstract class USession
     {
+        public RudpSendTable sendTable = new RudpSendTable();
         public int SessionId = -1;
 
         //TODO PacketHandler 쪽에서 처리하게 추가하도록 처리함

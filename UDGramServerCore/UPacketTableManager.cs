@@ -1,82 +1,75 @@
 ﻿using MakePacketTemplate.Packets;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
-namespace UDGramServerCore
+public class RudpSendTable
 {
-    public class UPacketTableManager
+    public delegate void ResendCallback(PacketInterface packet, uint seqNum);
+
+    private class SendEntry
     {
-        private class ROUNDING_TABLE_PACKET
+        public uint SeqNum;
+        public PacketInterface Packet;
+        public long LastSendTimeMs;
+        public int RetryCount;
+        public int RetryIntervalMs;
+        public ResendCallback Callback;
+
+        public SendEntry(uint seqNum, PacketInterface packet, long nowMs, int retryIntervalMs, ResendCallback callback)
         {
-            private ushort PacketIDKey;
-            private uint seqNum;
-
-            private PacketInterface RoundingPacket;
-        
-            public ROUNDING_TABLE_PACKET(ushort PacketIDKey, uint seqNum, PacketInterface roundpacket)
-            {
-                this.PacketIDKey = PacketIDKey;
-                this.seqNum = seqNum;
-                this.RoundingPacket = roundpacket;
-            }
-
-            public void RemoveSelf()
-            {
-                UPacketTableManager.inst.EnterDestroyKey(PacketIDKey);
-            }
+            SeqNum = seqNum;
+            Packet = packet;
+            LastSendTimeMs = nowMs;
+            RetryCount = 0;
+            RetryIntervalMs = retryIntervalMs;
+            Callback = callback;
         }
+    }
 
-        private static UPacketTableManager inst = null;
-        public static UPacketTableManager Instance
+    private readonly object _lock = new object();
+    private readonly Dictionary<uint, SendEntry> _sendTable = new Dictionary<uint, SendEntry>();
+    private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+
+    public void Add(uint seqNum, PacketInterface packet, ResendCallback callback, int retryIntervalMs = 500)
+    {
+        lock (_lock)
         {
-            get
-            {
-                if (inst == null)
-                    inst = new UPacketTableManager();
-
-                return inst;
-            }
+            _sendTable[seqNum] = new SendEntry(seqNum, packet, _stopwatch.ElapsedMilliseconds, retryIntervalMs, callback);
         }
+    }
 
-        private object _lock = new object();
-
-        private Dictionary<int, ROUNDING_TABLE_PACKET> _roundPacketTable = new Dictionary<int, ROUNDING_TABLE_PACKET>();
-        private List<int> DestroyKeys = new List<int>();
-
-        public void EnterTablePacket(ushort PacketIDKey, uint seqNum, PacketInterface roundingPacket)
+    public bool Ack(uint seqNum)
+    {
+        lock (_lock)
         {
-            lock (_lock)
-            {
-                _roundPacketTable.Add(PacketIDKey, new ROUNDING_TABLE_PACKET(PacketIDKey, seqNum, roundingPacket));
-            }
+            return _sendTable.Remove(seqNum);
         }
+    }
 
-        public void EnterDestroyKey(ushort PacketIDKey)
+    public void Update()
+    {
+        List<SendEntry> resendList = new List<SendEntry>();
+        long nowMs = _stopwatch.ElapsedMilliseconds;
+
+        lock (_lock)
         {
-            lock (_lock)
+            foreach (var kv in _sendTable)
             {
-                if (_roundPacketTable.ContainsKey(PacketIDKey))
-                    return;
+                SendEntry entry = kv.Value;
 
-                DestroyKeys.Add(PacketIDKey);
-            }
-        }
-
-        public void Update()
-        {
-            lock (_lock)
-            {
-                if (DestroyKeys.Count > 0)
+                if (nowMs - entry.LastSendTimeMs >= entry.RetryIntervalMs)
                 {
-                    foreach(var key in DestroyKeys)
-                    {
-                        _roundPacketTable.Remove(key);
-                    }
+                    entry.LastSendTimeMs = nowMs;
+                    entry.RetryCount++;
+                    resendList.Add(entry);
                 }
             }
+        }
+
+        foreach (var entry in resendList)
+        {
+            entry.Callback?.Invoke(entry.Packet, entry.SeqNum);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Server
     public class Program
     {
         static Listener _listener = new Listener();
-        static UClientSession UClientSession = new UClientSession();
+        public static UClientSession UClientSession = new UClientSession();
         static void FlushPingUDP()
         {
             PeerJobTimerSender.Instance.BroadCast();
@@ -40,6 +40,7 @@ namespace Server
             while (true)
             {
                 JobTimer.Instance.Flush();
+                UClientSession.sendTable.Update();
             }
         }
     }

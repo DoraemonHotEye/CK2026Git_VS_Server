@@ -170,8 +170,11 @@ namespace PacketDesignTool.Managers
                         OutPutDeserializeFormat += PacketFormatsCSharp.GetFormatDeserialize(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]);
                     }
 
-                    outputEventpackets += string.Format(PacketFormatsCSharp.GetEventPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
-
+                    if (packer.MProtoType == PROTOCOL_MSG_TYPE.TCP)
+                        outputEventpackets += string.Format(PacketFormatsCSharp.GetEventPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
+                    else
+                        outputEventpackets += string.Format(PacketFormatsCSharp.GetEventUDPPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
+                    
                     outputenumtype += EnumFormat + "\n" + "         ";
                 }
             }

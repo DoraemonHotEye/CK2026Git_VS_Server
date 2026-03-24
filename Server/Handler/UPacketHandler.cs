@@ -1,4 +1,5 @@
 ﻿using MakePacketTemplate.Packets;
+using Server;
 using Server.Session;
 using Server.Session.Manager;
 using ServerCore;
@@ -16,6 +17,16 @@ public class UPacketHandler
     public static void DGRAM_SERVER_PingHandler(IPEndPoint Sender, USession session, PacketInterface message)
     {
         Console.WriteLine($"[Ping Packet] {Sender}");
+    }
+
+    public static void DGRAM_SERVER_AckSeqHandler(IPEndPoint Sender, USession session, PacketInterface message)
+    {
+        DGRAM_SERVER_AckSeq _ack = message as DGRAM_SERVER_AckSeq;
+
+        if (_ack != null)
+        {
+            Program.UClientSession.sendTable.Ack(_ack.SeqNum);
+        }
     }
 
     public static void DGRAM_SERVER_ConnectPacketHandler(IPEndPoint Sender, USession session, PacketInterface message)
