@@ -84,9 +84,69 @@ namespace MakePacketTemplate.Packets
 
     public enum MsgID : ushort
     {{{2}
+         DGRAM_SERVER_REQUESTACK = 25562,
          DGRAM_SERVER_ACKSEQ = 25563,
          DGRAM_SERVER_PING = 25564,
          DGRAM_SERVER_CONNECTPACKET = 25565
+    }}
+
+    public class DGRAM_SERVER_RequestAck : PacketInterface
+    {{
+        public MsgID MsgID = MsgID.DGRAM_SERVER_REQUESTACK;
+        public ushort SeqNum;
+        public ushort ReqSeqNum;
+
+        public void Desrialize(ArraySegment<byte> data)
+        {{
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ReqSeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+        }}
+
+        public ushort GetSize()
+        {{
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); //SeqNum
+            size += sizeof(ushort); //ReqSeqNum
+
+            return size;
+        }}
+
+        public ArraySegment<byte> Serialize()
+        {{
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)ReqSeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }}
     }}
 
     public class DGRAM_SERVER_AckSeq : PacketInterface
@@ -107,7 +167,7 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             SeqNum = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(uint);
+            offset += sizeof(ushort);
         }}
 
         public ushort GetSize()
@@ -158,7 +218,7 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             SeqNum = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(uint);
+            offset += sizeof(ushort);
         }}
 
         public ushort GetSize()
@@ -501,7 +561,7 @@ namespace MakePacketTemplate.Packets
     public class {0} : PacketInterface
     {{
         public MsgID MsgID = MsgID.{1};
-        public uint SeqNum;
+        public ushort SeqNum;
 
         {2}
 
@@ -588,6 +648,8 @@ public class UPacketManager
 	    _handler.Add((ushort)MsgID.DGRAM_SERVER_PING, UPacketHandler.DGRAM_SERVER_PingHandler);
 	    _makeFunc.Add((ushort)MsgID.DGRAM_SERVER_ACKSEQ, MakePacket<DGRAM_SERVER_AckSeq>);
 	    _handler.Add((ushort)MsgID.DGRAM_SERVER_ACKSEQ, UPacketHandler.DGRAM_SERVER_AckSeqHandler);
+	    _makeFunc.Add((ushort)MsgID.DGRAM_SERVER_REQUESTACK, MakePacket<DGRAM_SERVER_RequestAck>);
+	    _handler.Add((ushort)MsgID.DGRAM_SERVER_REQUESTACK, UPacketHandler.DGRAM_SERVER_RequestAckHandler);
 	    {0}
     }}
 
@@ -602,6 +664,23 @@ public class UPacketManager
         ushort SeqNum = BitConverter.ToUInt16(buffer.Array, buffer.Offset + count);
         count += sizeof(ushort);
 
+        if (SeqNum != 0)
+        {{
+            bool succ = usession.requestTable.TryAdd(SeqNum);
+
+            if (succ == true)
+            {{
+                //TODO ACK 처리
+                DGRAM_SERVER_AckSeq ackSeq = new DGRAM_SERVER_AckSeq();
+                ackSeq.SeqNum = SeqNum;
+                usession._server.Send(ackSeq.Serialize().Array, ackSeq.GetSize(), ipendPoint);
+            }}
+            else 
+            {{
+                return;
+            }}
+        }}
+
         Func<IPEndPoint, USession, ArraySegment<byte>, PacketInterface> func = null;
         if (_makeFunc.TryGetValue(id, out func))
         {{
@@ -610,14 +689,6 @@ public class UPacketManager
                 onRecvCallback.Invoke(ipendPoint, usession, packet);
             else
                 HandlePacket(ipendPoint, usession, packet, id);
-
-            if (SeqNum != 0)
-            {{
-                //TODO ACK 처리
-                DGRAM_SERVER_AckSeq ackSeq = new DGRAM_SERVER_AckSeq();
-                ackSeq.SeqNum = SeqNum;
-                usession._server.Send(ackSeq.Serialize().Array, ackSeq.GetSize(), ipendPoint);
-            }}
         }}
     }}
 

@@ -25,7 +25,25 @@ public class UPacketHandler
 
         if (_ack != null)
         {
-            Program.UClientSession.sendTable.Ack(_ack.SeqNum);
+            bool ackremove = session.sendTable.Ack(_ack.SeqNum);
+        
+            if (ackremove == true)
+            {
+                DGRAM_SERVER_RequestAck requestAck = new DGRAM_SERVER_RequestAck();
+                requestAck.SeqNum = _ack.SeqNum;
+
+                session.SendServer.BeginSend(requestAck.Serialize().Array, requestAck.GetSize(), Sender, session.udpSendCallback, session.SendServer);
+            }
+        }
+    }
+
+    public static void DGRAM_SERVER_RequestAckHandler(IPEndPoint Sender, USession session, PacketInterface message)
+    {
+        DGRAM_SERVER_RequestAck _req = message as DGRAM_SERVER_RequestAck;
+
+        if (_req != null)
+        {
+            session.requestTable.Remove(_req.SeqNum);
         }
     }
 

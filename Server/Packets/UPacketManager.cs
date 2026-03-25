@@ -27,6 +27,8 @@ public class UPacketManager
 	    _handler.Add((ushort)MsgID.DGRAM_SERVER_PING, UPacketHandler.DGRAM_SERVER_PingHandler);
 	    _makeFunc.Add((ushort)MsgID.DGRAM_SERVER_ACKSEQ, MakePacket<DGRAM_SERVER_AckSeq>);
 	    _handler.Add((ushort)MsgID.DGRAM_SERVER_ACKSEQ, UPacketHandler.DGRAM_SERVER_AckSeqHandler);
+	    _makeFunc.Add((ushort)MsgID.DGRAM_SERVER_REQUESTACK, MakePacket<DGRAM_SERVER_RequestAck>);
+	    _handler.Add((ushort)MsgID.DGRAM_SERVER_REQUESTACK, UPacketHandler.DGRAM_SERVER_RequestAckHandler);
 	    _makeFunc.Add((ushort)MsgID.GAMECLIENT_DISCONNECTUDP, MakePacket<GAMECLIENT_DisconnectUDP>);
         _handler.Add((ushort)MsgID.GAMECLIENT_DISCONNECTUDP, UPacketHandler.GAMECLIENT_DisconnectUDPHandler);
         _makeFunc.Add((ushort)MsgID.GAMECLIENT_USESSIONIDMATCH, MakePacket<GAMECLIENT_USessionIDMatch>);
@@ -45,6 +47,23 @@ public class UPacketManager
         ushort SeqNum = BitConverter.ToUInt16(buffer.Array, buffer.Offset + count);
         count += sizeof(ushort);
 
+        if (SeqNum != 0)
+        {
+            bool succ = usession.requestTable.TryAdd(SeqNum);
+
+            if (succ == true)
+            {
+                //TODO ACK 처리
+                DGRAM_SERVER_AckSeq ackSeq = new DGRAM_SERVER_AckSeq();
+                ackSeq.SeqNum = SeqNum;
+                usession._server.Send(ackSeq.Serialize().Array, ackSeq.GetSize(), ipendPoint);
+            }
+            else 
+            {
+                return;
+            }
+        }
+
         Func<IPEndPoint, USession, ArraySegment<byte>, PacketInterface> func = null;
         if (_makeFunc.TryGetValue(id, out func))
         {
@@ -53,14 +72,6 @@ public class UPacketManager
                 onRecvCallback.Invoke(ipendPoint, usession, packet);
             else
                 HandlePacket(ipendPoint, usession, packet, id);
-
-            if (SeqNum != 0)
-            {
-                //TODO ACK 처리
-                DGRAM_SERVER_AckSeq ackSeq = new DGRAM_SERVER_AckSeq();
-                ackSeq.SeqNum = SeqNum;
-                usession._server.Send(ackSeq.Serialize().Array, ackSeq.GetSize(), ipendPoint);
-            }
         }
     }
 

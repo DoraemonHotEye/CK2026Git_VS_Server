@@ -73,3 +73,91 @@ public class RudpSendTable
         }
     }
 }
+
+public class RudpRequestTable
+{
+    private class RequestEntry
+    {
+        public uint SeqNum;
+        public long ReceivedTimeMs;
+
+        public RequestEntry(uint seqNum, long receivedTimeMs)
+        {
+            SeqNum = seqNum;
+            ReceivedTimeMs = receivedTimeMs;
+        }
+    }
+
+    private readonly object _lock = new object();
+    private readonly Dictionary<uint, RequestEntry> _requestTable = new Dictionary<uint, RequestEntry>();
+    private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+
+    private readonly int _keepAliveMs;
+
+    public RudpRequestTable(int keepAliveMs = 5000)
+    {
+        _keepAliveMs = keepAliveMs;
+    }
+    public bool TryAdd(uint seqNum)
+    {
+        long nowMs = _stopwatch.ElapsedMilliseconds;
+
+        lock (_lock)
+        {
+            if (_requestTable.ContainsKey(seqNum))
+            {
+                return false; // 이미 처리한 요청
+            }
+
+            _requestTable[seqNum] = new RequestEntry(seqNum, nowMs);
+            return true; // 처음 들어온 요청
+        }
+    }
+    public bool Contains(uint seqNum)
+    {
+        lock (_lock)
+        {
+            return _requestTable.ContainsKey(seqNum);
+        }
+    }
+
+    public bool Remove(uint seqNum)
+    {
+        lock (_lock)
+        {
+            return _requestTable.Remove(seqNum);
+        }
+    }
+
+    public void Update()
+    {
+        long nowMs = _stopwatch.ElapsedMilliseconds;
+        List<uint> expiredList = new List<uint>();
+
+        lock (_lock)
+        {
+            foreach (var kv in _requestTable)
+            {
+                RequestEntry entry = kv.Value;
+
+                if (nowMs - entry.ReceivedTimeMs >= _keepAliveMs)
+                {
+                    expiredList.Add(entry.SeqNum);
+                }
+            }
+
+            foreach (uint seqNum in expiredList)
+            {
+                _requestTable.Remove(seqNum);
+            }
+        }
+    }
+
+    public void Clear()
+    {
+        lock (_lock)
+        {
+            _requestTable.Clear();
+        }
+    }
+}

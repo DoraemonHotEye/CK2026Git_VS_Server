@@ -91,6 +91,8 @@ namespace UDgramCore
     public abstract class USession
     {
         public RudpSendTable sendTable = new RudpSendTable();
+        public RudpRequestTable requestTable = new RudpRequestTable();
+
         public int SessionId = -1;
 
         //TODO PacketHandler 쪽에서 처리하게 추가하도록 처리함
