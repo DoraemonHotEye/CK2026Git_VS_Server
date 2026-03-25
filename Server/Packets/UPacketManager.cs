@@ -49,7 +49,10 @@ public class UPacketManager
 
         if (SeqNum != 0)
         {
-            bool succ = usession.requestTable.TryAdd(SeqNum);
+            if (!usession.PeerRequestTable.ContainsKey(ipendPoint.ToString()))
+                usession.PeerRequestTable.Add(ipendPoint.ToString(), new RudpRequestTable());
+
+            bool succ = usession.PeerRequestTable[ipendPoint.ToString()].TryAdd(SeqNum);
 
             if (succ == true)
             {

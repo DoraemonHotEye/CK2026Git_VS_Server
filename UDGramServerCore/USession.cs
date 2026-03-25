@@ -91,7 +91,7 @@ namespace UDgramCore
     public abstract class USession
     {
         public RudpSendTable sendTable = new RudpSendTable();
-        public RudpRequestTable requestTable = new RudpRequestTable();
+        public Dictionary<string, RudpRequestTable> PeerRequestTable = new Dictionary<string, RudpRequestTable>();
 
         public int SessionId = -1;
 
@@ -103,7 +103,6 @@ namespace UDgramCore
 
         public IPEndPoint _holePunchServer;
         public IPEndPoint _recvServer;
-        RecvBuffer _recvBuffer = new RecvBuffer(65535);
 
         public object _lock = new object();
         Queue<ArraySegment<byte>> _sendQueue = new Queue<ArraySegment<byte>>();
@@ -118,6 +117,17 @@ namespace UDgramCore
             {
                 _sendQueue.Clear();
                 _pendingList.Clear();
+            }
+        }
+
+        public void UpdateRequestTable()
+        {
+            lock (_lock)
+            {
+                foreach (var item in PeerRequestTable.Values)
+                {
+                    item.Update();
+                }
             }
         }
 

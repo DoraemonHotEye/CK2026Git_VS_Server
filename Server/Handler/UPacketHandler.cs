@@ -43,7 +43,7 @@ public class UPacketHandler
 
         if (_req != null)
         {
-            session.requestTable.Remove(_req.SeqNum);
+            session.PeerRequestTable[Sender.ToString()].Remove(_req.SeqNum);
         }
     }
 
