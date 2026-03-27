@@ -619,13 +619,19 @@
             "single:ushort",
             "single:ushort",
             "single:float",
-            "single:float"
+            "single:float",
+            "single:float",
+            "single:float",
+            "single:ushort"
           ],
           "MemberNames": [
             "OwnerID",
             "NetID",
             "dirX",
-            "dirY"
+            "dirY",
+            "posX",
+            "posY",
+            "CarrierIdx"
           ]
         },
         "PacketID": "GAMECLIENT_ENEMYPROJECTILEFIRE",
@@ -859,6 +865,178 @@
           ]
         },
         "PacketID": "GAMECLIENT_PLAYERDIE",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERJUMP": {
+        "packer": {
+          "Name": "MonsterJump",
+          "MemberTypes": [
+            "single:float",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "JumpPower",
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERJUMP",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERUSEGRAVITY": {
+        "packer": {
+          "Name": "MonsterUseGravity",
+          "MemberTypes": [
+            "single:ushort",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "switchtype",
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERUSEGRAVITY",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERSWITCHANIM": {
+        "packer": {
+          "Name": "MonsterSwitchAnim",
+          "MemberTypes": [
+            "single:ushort",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "NetID",
+            "AnimCode"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERSWITCHANIM",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_PROJECTILESTOP": {
+        "packer": {
+          "Name": "ProjectileStop",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PROJECTILESTOP",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERVELOCITYSET": {
+        "packer": {
+          "Name": "MonsterVelocitySet",
+          "MemberTypes": [
+            "single:float",
+            "single:float",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "x",
+            "y",
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERVELOCITYSET",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_PROJECTILEDISABLECALL": {
+        "packer": {
+          "Name": "ProjectileDisableCall",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PROJECTILEDISABLECALL",
         "LinkedProfilers": [
           {
             "Name": "GameClient",
