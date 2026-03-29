@@ -6,6 +6,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include "../Headers/ServerStaticHeaders.h"
+#include "../RecvBuffer/RecvBuffer.h"
 
 // Forward declaration
 class PacketInterface;
@@ -47,7 +48,11 @@ public:
 
     void Reset();
 
+protected:
+    RecvBuffer _recvBuffer{ 8192 }; // 사이즈 적당히
+
 private:
+
     SOCKET _socket;
     HANDLE _iocp;
 

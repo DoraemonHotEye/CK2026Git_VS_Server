@@ -96,6 +96,9 @@ void CSession::RegisterRecv()
 
     ZeroMemory(&_recvContext->overlapped, sizeof(OVERLAPPED));
 
+    _recvContext->wsaBuf.buf = reinterpret_cast<char*>(_recvBuffer.WritePtr());
+    _recvContext->wsaBuf.len = (ULONG)_recvBuffer.FreeSize();
+
     int ret = WSARecv(
         _socket,
         &_recvContext->wsaBuf,
@@ -151,14 +154,37 @@ void CSession::RegisterSend()
 
 void CSession::ProcessRecv(int bytes)
 {
-    int processLen = OnRecv(_recvContext->buffer, bytes);
-
-    if (processLen <= 0)
+    // 1. Write 커서 이동
+    if (_recvBuffer.OnWrite(bytes) == false)
     {
         Disconnect();
         return;
     }
 
+    // 2. RecvBuffer 기준으로 처리
+    int processLen = OnRecv(
+        reinterpret_cast<char*>(_recvBuffer.ReadPtr()),
+        (int)_recvBuffer.DataSize()
+    );
+
+    // 3. 처리 검증
+    if (processLen < 0 || _recvBuffer.DataSize() < (size_t)processLen)
+    {
+        Disconnect();
+        return;
+    }
+
+    // 4. Read 커서 이동
+    if (_recvBuffer.OnRead(processLen) == false)
+    {
+        Disconnect();
+        return;
+    }
+
+    // 5. 버퍼 정리
+    _recvBuffer.Clean();
+
+    // 6. 다시 recv 등록
     RegisterRecv();
 }
 
