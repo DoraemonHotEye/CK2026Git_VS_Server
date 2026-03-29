@@ -13,7 +13,6 @@ public:
     {
         if (context->type == IOContext::Type::Connect)
         {
-            std::cout << "[Connector Dispatch]\n";
             ProcessConnect(reinterpret_cast<ConnectContext*>(context));
         }
     }

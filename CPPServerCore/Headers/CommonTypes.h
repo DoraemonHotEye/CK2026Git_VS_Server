@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <winsock2.h>
+#include <vector>
 
 class CSession;
 

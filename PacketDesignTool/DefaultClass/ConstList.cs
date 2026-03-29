@@ -18,6 +18,11 @@ namespace PacketDesignTool.DefaultClass
             }
         }
 
+        public bool isContains(T type)
+        {
+            return values.Contains(type);
+        }
+
         public int Length { get { return values.Count; } }
 
         public T this[int index]

@@ -123,7 +123,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Handler\PacketHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Manager\CPacketManager.cpp" />
     <ClCompile Include="Session\ClientSession.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +134,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Handler\PacketHandler.h" />
+    <ClInclude Include="Manager\CPacketManager.h" />
     <ClInclude Include="Session\ClientSession.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

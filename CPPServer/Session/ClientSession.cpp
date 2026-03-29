@@ -3,6 +3,7 @@
 #include <iostream>
 #include <winsock2.h>
 #include <WS2tcpip.h>
+#include "../Manager/CPacketManager.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -33,4 +34,9 @@ void ClientSession::OnDisconnected(SOCKADDR_IN addr)
 
 void ClientSession::OnRecvPacket(char* buffer, int len)
 {
+    // char* buffer를 std::vector<uint8_t>로 변환
+    std::vector<uint8_t> vecBuffer(buffer, buffer + len);
+
+    // PacketManager 호출
+    PacketManager::Instance().OnRecvPacket(this, vecBuffer);
 }

@@ -11,7 +11,6 @@ class Listener : public IocpObject
 public:
     void Dispatch(IOContext* context, int bytes)
     {
-        std::cout << "[Listener Dispatch]\n";
         if (context->type == IOContext::Type::Accept)
         {
             ProcessAccept(static_cast<AcceptContext*>(context));

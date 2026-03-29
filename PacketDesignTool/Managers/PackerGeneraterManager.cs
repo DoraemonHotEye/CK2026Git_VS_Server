@@ -217,7 +217,109 @@ namespace PacketDesignTool.Managers
 
         public void GenerateCodeCPP(string Path)
         {
+            int i = 0;
 
+            string outputenumtype = "\n    ";
+            string outputclass = "";
+            string outputstruct = "";
+            string outputEventpackets = "";
+
+            foreach (var classpacker in ClassPackerManager.Inst.PackerList.Values)
+            {
+                string OutPutMembersFormat = "";
+                string OutPutSerializeFormat = "";
+                string OutPutGetSizeFormat = "";
+                string OutPutDeserializeFormat = "";
+
+                for (int j = 0; j < classpacker.MemberTypes.Count; ++j)
+                {
+                    //OutPutMembersFormat += PacketFormatsCSharp.GetMemberTypeStringFormat(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n        ";
+                    //OutPutSerializeFormat += PacketFormatsCSharp.GetFormatPacker(classpacker.MemberTypes[j], classpacker.MemberNames[j]);
+                    //OutPutGetSizeFormat += PacketFormatsCSharp.GetFormatPackerSizeble(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n            ";
+                    //OutPutDeserializeFormat += PacketFormatsCSharp.GetFormatDeserialize(classpacker.MemberTypes[j], classpacker.MemberNames[j]);
+                }
+                //outputclass += string.Format(PacketFormatsCSharp.ObjectFormat, "class", classpacker.Name, OutPutMembersFormat, OutPutGetSizeFormat, OutPutSerializeFormat, OutPutDeserializeFormat) + "\n";
+            }
+
+            foreach (var structpacker in StructPackerManager.Inst.PackerList.Values)
+            {
+                string OutPutMembersFormat = "";
+                string OutPutSerializeFormat = "";
+                string OutPutGetSizeFormat = "";
+                string OutPutDeserializeFormat = "";
+
+                for (int j = 0; j < structpacker.MemberTypes.Count; ++j)
+                {
+                    OutPutMembersFormat += PacketFormatsCPP.GetMemberTypeStringFormat(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n        ";
+                    OutPutSerializeFormat += PacketFormatsCPP.GetFormatPacker(structpacker.MemberTypes[j], structpacker.MemberNames[j]);
+                    OutPutGetSizeFormat += PacketFormatsCPP.GetFormatPackerSizeble(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n            ";
+                    OutPutDeserializeFormat += PacketFormatsCPP.GetDeserializeFormat(structpacker.MemberTypes[j], structpacker.MemberNames[j]);
+                }
+                outputstruct += string.Format(PacketFormatsCPP.ObjectFormat, "struct", structpacker.Name, OutPutMembersFormat, OutPutGetSizeFormat, OutPutSerializeFormat, OutPutDeserializeFormat) + "\n";
+            }
+
+            Dictionary<string, Dictionary<PROTOCOL_MSG_TYPE, string>> OutPutPacketManagers = new Dictionary<string, Dictionary<PROTOCOL_MSG_TYPE, string>>();
+
+            foreach (var Profiler in SettingsManager.Inst.SettingProfilers.Values)
+            {
+                OutPutPacketManagers.Add(Profiler.Name, new Dictionary<PROTOCOL_MSG_TYPE, string>());
+                OutPutPacketManagers[Profiler.Name].Add(PROTOCOL_MSG_TYPE.TCP, "");
+                OutPutPacketManagers[Profiler.Name].Add(PROTOCOL_MSG_TYPE.UDP, "");
+            }
+
+            foreach (var projectpacket in EventPacketManager.Inst.ProjectPackets.Values)
+            {
+                foreach (var packer in projectpacket.Packers.Values)
+                {
+                    foreach (var linked in packer.LinkedProfilers)
+                    {
+                        if (OutPutPacketManagers.TryGetValue(linked.Name, out var value))
+                        {
+                            if (value.TryGetValue(packer.MProtoType, out string strvalue))
+                            {
+                                if (packer.MProtoType == PROTOCOL_MSG_TYPE.TCP)
+                                {
+                                    //strvalue += PacketFormatsCSharp.GetFormatManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                }
+                                else
+                                {
+                                    //strvalue += PacketFormatsCSharp.GetFormatUManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                }
+                                OutPutPacketManagers[linked.Name][packer.MProtoType] = strvalue;
+                            }
+                            OutPutPacketManagers[linked.Name] = value;
+                        }
+                    }
+
+                    string OutPutMembersFormat = "";
+                    string OutPutGetSizeFormat = "";
+                    string OutPutSerializeFormat = "";
+                    string OutPutDeserializeFormat = "";
+
+                    string EnumFormat = string.Format(PacketFormatsCPP.MsgIDFormat,
+                        packer.PacketID, i);
+
+                    i++;
+
+                    for (int j = 0; j < packer.packer.MemberTypes.Count; ++j)
+                    {
+                        OutPutMembersFormat += PacketFormatsCPP.GetMemberTypeStringFormat(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n        ";
+                        OutPutSerializeFormat += PacketFormatsCPP.GetFormatPacker(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]);
+                        OutPutGetSizeFormat += PacketFormatsCPP.GetFormatPackerSizeble(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n            ";
+                        OutPutDeserializeFormat += PacketFormatsCPP.GetDeserializeFormat(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]);
+                    }
+
+                    if (packer.MProtoType == PROTOCOL_MSG_TYPE.TCP)
+                        outputEventpackets += string.Format(PacketFormatsCPP.GetEventPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
+                    //else
+                    //    outputEventpackets += string.Format(PacketFormatsCSharp.GetEventUDPPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
+
+                    outputenumtype += EnumFormat + "\n" + "    ";
+                }
+            }
+
+            string output_code = string.Format(PacketFormatsCPP.fileformat, outputclass, outputstruct, outputenumtype, outputEventpackets);
+            System.IO.File.WriteAllText(Path, output_code);
         }
 
         public void OnEnable(object sender, object EventKeyword)

@@ -668,6 +668,7 @@ namespace PacketDesignTool
         private void ST_File_GenerateCode_Click(object sender, EventArgs e)
         {
             PackerGeneraterManager.Inst.GenerateCode(EOutPutType.CSharp, "../../../ServerCore/Packets.cs");
+            PackerGeneraterManager.Inst.GenerateCode(EOutPutType.CPP, "../../../CPPServerCore/Headers/Packets.h");
         }
     }
 }

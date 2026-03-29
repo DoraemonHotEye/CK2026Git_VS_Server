@@ -67,6 +67,7 @@
     <Compile Include="Managers\EventPacketManager.cs" />
     <Compile Include="Managers\ManagerInterface.cs" />
     <Compile Include="Managers\SettingsManager.cs" />
+    <Compile Include="Managers\Supports\PacketFormatsCPP.cs" />
     <Compile Include="Managers\Supports\PathProfilerSupportClass.cs" />
     <Compile Include="SubWinformConfs\AddLinkedProfiler.cs">
       <SubType>Form</SubType>

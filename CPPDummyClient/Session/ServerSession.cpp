@@ -17,13 +17,9 @@ void ServerSession::OnConnected(SOCKADDR_IN addr)
         << ip << ":" << ntohs(addr.sin_port)
         << std::endl;
 
-    //DGRAM_SERVER_RequestAck* _packet = new DGRAM_SERVER_RequestAck();
-    //_packet->ReqSeqNum = 1;
-    //_packet->SeqNum = 1;
-    //Send(*_packet);
-    //
-    //delete _packet;
-    //_packet = nullptr;
+    //MAINSERVER_SendRoomList roomList = MAINSERVER_SendRoomList();
+    //roomList.RoomHashDatas.Enter("Hash20202021");
+    //Send(roomList);
 }
 
 void ServerSession::OnSend(int len)
