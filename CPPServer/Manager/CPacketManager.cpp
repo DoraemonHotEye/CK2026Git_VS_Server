@@ -11,6 +11,9 @@ void PacketManager::Register()
 
     _makeFunc[(uint16_t)MsgID::MAINSERVER_SENDROOMLIST] = MakePacket<MAINSERVER_SendRoomList>;
     RegisterHandler((uint16_t)MsgID::MAINSERVER_SENDROOMLIST, PacketHandler::MAIN_SERVER_SendRoomListPacketHandler);
+
+    _makeFunc[(uint16_t)MsgID::MAINSERVER_JOINROOMSUCC] = MakePacket<MAINSERVER_JoinRoomSucc>;
+    RegisterHandler((uint16_t)MsgID::MAINSERVER_JOINROOMSUCC, PacketHandler::MAINSERVER_JoinRoomSuccPacketHandler);
 }
 
 void PacketManager::OnRecvPacket(CPacketSession* session, const std::vector<uint8_t>& buffer, HandlerFunc onRecvCallback)

@@ -26,3 +26,19 @@ void PacketHandler::MAIN_SERVER_SendRoomListPacketHandler(CPacketSession* sessio
 		std::cout << "RoomHash: " << room << std::endl;
 	}
 }
+
+void PacketHandler::MAINSERVER_JoinRoomSuccPacketHandler(CPacketSession* session, PacketInterface* message)
+{
+	ClientSession* _session = dynamic_cast<ClientSession*>(session);
+	MAINSERVER_JoinRoomSucc* _packet = dynamic_cast<MAINSERVER_JoinRoomSucc*>(message);
+	
+	std::cout << "MasterPlayer: " << _packet->MasterPlayer.SessionID << std::endl;
+	std::cout << "MaxPlayerCount: " << _packet->MaxPlayerCount << std::endl;
+	std::cout << "RoomHashData: " << _packet->RoomHashData << std::endl;
+	std::cout << "OtherPlayerCount: " << _packet->OtherPlayers.GetCount() << std::endl;
+
+	for (auto pl : _packet->OtherPlayers.Values)
+	{
+		std::cout << "OtherPlayer: " << pl.SessionID << std::endl;
+	}
+}
