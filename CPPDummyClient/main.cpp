@@ -6,13 +6,14 @@
 #include "Session/ServerSession.h"
 #include "../CPPServerCore/Headers/CommonTypes.h"
 #include "../CPPServerCore/Connector/CConnector.h"
+#include "../CPPServerCore/Managers/SessionManager.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
 
-// ⭐ IOCP WorkerThread
-void WorkerThread(HANDLE iocp)
+//IOCP WorkerThread
+void workerThread(HANDLE iocp)
 {
     while (true)
     {
@@ -34,7 +35,8 @@ void WorkerThread(HANDLE iocp)
         IocpObject* obj = reinterpret_cast<IocpObject*>(key);
         IOContext* context = reinterpret_cast<IOContext*>(overlapped);
 
-        obj->Dispatch(context, bytes);
+        if (context->icopObj != nullptr)
+            context->icopObj->Dispatch(context, bytes);
     }
 }
 
@@ -49,16 +51,25 @@ int main()
     // 2. WorkerThread 실행
     for (int i = 0; i < 4; i++)
     {
-        std::thread(WorkerThread, iocp).detach();
+        std::thread(workerThread, iocp).detach();
     }
 
     // 3. Connector 생성
     Connector connector;
 
     // 4. Session 생성 콜백
-    OnConnectCallback createSession = [](SOCKET socket) -> CSession*
+    OnAcceptCallback createSession = [](SOCKET socket) -> CSession*
         {
-            return new ServerSession();
+            // 풀에서 ClientSession 가져오기
+            auto session = SessionManager::Instance().AcquireSession([]() {
+                return std::make_unique<ServerSession>(); // 생성 콜백
+                });
+
+            // 활성 세션 리스트에 등록
+            CSession* rawPtr = session.get();
+            SessionManager::Instance().AddSession(std::move(session));
+
+            return rawPtr; // IOCP에서 raw pointer 사용
         };
 
     // 5. 서버 주소 설정
@@ -68,7 +79,7 @@ int main()
     addr.sin_port = htons(7777);                     // 서버 포트
 
     // 6. 연결 시도
-    connector.Start(addr, iocp, createSession, 1);
+    connector.Start(addr, iocp, createSession, 15);
 
     cout << "Client Connecting...\n";
 

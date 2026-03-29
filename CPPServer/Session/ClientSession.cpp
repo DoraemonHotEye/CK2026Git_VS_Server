@@ -21,9 +21,14 @@ void ClientSession::OnSend(int len)
     std::cout << "[Send] Bytes: " << len << std::endl;
 }
 
-void ClientSession::OnDisconnected()
+void ClientSession::OnDisconnected(SOCKADDR_IN addr)
 {
-    std::cout << "[Disconnected]" << std::endl;
+    char ip[INET_ADDRSTRLEN] = { 0 };
+    inet_ntop(AF_INET, &addr.sin_addr, ip, sizeof(ip));
+
+    std::cout << "[Disconnected] " 
+        << ip << ":" << ntohs(addr.sin_port)
+        << std::endl;
 }
 
 void ClientSession::OnRecvPacket(char* buffer, int len)

@@ -7,7 +7,7 @@ public:
 	// PacketSession을(를) 통해 상속됨
 	void OnConnected(SOCKADDR_IN addr) override;
 	void OnSend(int len) override;
-	void OnDisconnected() override;
+	void OnDisconnected(SOCKADDR_IN addr) override;
 	void OnRecvPacket(char* buffer, int len) override;
 };
 

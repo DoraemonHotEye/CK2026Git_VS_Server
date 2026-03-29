@@ -39,6 +39,7 @@ bool Listener::Start(SOCKADDR_IN addr, HANDLE iocp, OnAcceptCallback callback)
 void Listener::RegisterAccept()
 {
     AcceptContext* context = new AcceptContext();
+    context->icopObj = this;
 
     ZeroMemory(&context->overlapped, sizeof(OVERLAPPED));
 
@@ -64,6 +65,7 @@ void Listener::RegisterAccept()
         {
             std::cout << "AcceptEx failed: " << err << std::endl;
             delete context;
+            context = nullptr;
         }
     }
 }
@@ -105,6 +107,7 @@ void Listener::ProcessAccept(AcceptContext* context)
 
     //여기서 삭제 (WorkerThread에서 삭제하면 안됨)
     delete context;
+    context = nullptr;
 
     //다음 Accept
     RegisterAccept();

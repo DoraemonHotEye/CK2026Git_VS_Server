@@ -1,4 +1,5 @@
 #include "CSession.h"
+#include <iostream>
 
 class CPacketSession : public CSession
 {
@@ -15,6 +16,8 @@ public:
                 break;
 
             uint16_t dataSize = *(uint16_t*)buffer;
+
+            std::cout << "[Session*]: " << dataSize << "{Size}" << std::endl;
 
             if (len < dataSize)
                 break;

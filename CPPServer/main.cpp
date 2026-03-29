@@ -4,6 +4,7 @@
 #include "Session/ClientSession.h"
 #include "../CPPServerCore/Listener/CListener.h"
 #include "../CPPServerCore/Headers/CommonTypes.h"
+#include "../CPPServerCore/Managers/SessionManager.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -29,26 +30,8 @@ void workerThread(HANDLE iocp)
         IocpObject* obj = reinterpret_cast<IocpObject*>(key);
         IOContext* context = reinterpret_cast<IOContext*>(overlapped);
 
-        // ⭐ 타입 먼저 확인
-        if (context->type == IOContext::Type::Accept)
-        {
-            // Accept는 bytes == 0 정상
-            if (!ret)
-                continue;
-
-            obj->Dispatch(context, bytes);
-            continue;
-        }
-
-        // ⭐ Session 계열 (Recv/Send)
-        if (!ret || bytes == 0)
-        {
-            CSession* session = static_cast<CSession*>(obj);
-            session->Disconnect();
-            continue;
-        }
-
-        obj->Dispatch(context, bytes);
+        if (context->icopObj != nullptr)
+            context->icopObj->Dispatch(context, bytes);
     }
 }
 
@@ -70,10 +53,21 @@ int main()
     Listener listener;
 
     // 4. 콜백 설정 (Session 생성)
-    OnAcceptCallback createSession = [](SOCKET socket)
+    OnAcceptCallback createSession = [](SOCKET socket) -> CSession*
         {
-            return new ClientSession();
+            // 풀에서 ClientSession 가져오기
+            auto session = SessionManager::Instance().AcquireSession([]() {
+                return std::make_unique<ClientSession>(); // 생성 콜백
+                });
+    
+            // 활성 세션 리스트에 등록
+            CSession* rawPtr = session.get();
+            SessionManager::Instance().AddSession(std::move(session));
+    
+            return rawPtr; // IOCP에서 raw pointer 사용
         };
+
+    
 
     // 5. 주소 설정
     SOCKADDR_IN addr;

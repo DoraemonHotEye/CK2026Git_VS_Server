@@ -4,13 +4,18 @@
 #include <functional>
 #include "../Headers/CommonTypes.h"
 #include "../Headers/ServerStaticHeaders.h"
+#include <iostream>
 
 class Connector : public IocpObject
 {
 public:
     void Dispatch(IOContext* context, int bytes)
     {
-        ProcessConnect(reinterpret_cast<ConnectContext*>(context));
+        if (context->type == IOContext::Type::Connect)
+        {
+            std::cout << "[Connector Dispatch]\n";
+            ProcessConnect(reinterpret_cast<ConnectContext*>(context));
+        }
     }
 
 public:

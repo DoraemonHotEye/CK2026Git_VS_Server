@@ -1,4 +1,14 @@
+#pragma once
 #include "CSession.h"
+#include "../Headers/Packets.h"
+#include <memory>
+#include <queue>
+#include <vector>
+#include <mutex>
+#include <atomic>
+#include <winsock2.h>
+#include <windows.h>
+#include "../Managers/SessionManager.h"
 
 void CSession::Start(SOCKET socket, HANDLE iocp)
 {
@@ -7,25 +17,51 @@ void CSession::Start(SOCKET socket, HANDLE iocp)
 
     CreateIoCompletionPort((HANDLE)_socket, iocp, (ULONG_PTR)this, 0);
 
-    _recvContext.type = IOContext::Type::Recv;
-    _recvContext.wsaBuf.buf = _recvContext.buffer;
-    _recvContext.wsaBuf.len = sizeof(_recvContext.buffer);
+    // 풀에서 나온 세션이면 Reset() 호출 후 다시 초기화
+    Reset();
+
+    _recvContext = std::make_unique<RecvContext>();
+    _recvContext->icopObj = this;
+    _recvContext->wsaBuf.buf = _recvContext->buffer;
+    _recvContext->wsaBuf.len = sizeof(_recvContext->buffer);
+
+    _sendContext = std::make_unique<SendContext>();
 
     RegisterRecv();
 }
 
-void CSession::Send(std::vector<char> data)
+void CSession::Reset()
+{
+    // 1. 남은 I/O 취소
+    CancelIoEx((HANDLE)_socket, nullptr);
+
+    // 2. 플래그 초기화
+    _disconnected.store(0);
+
+    // 3. 큐 및 버퍼 초기화
+    {
+        std::lock_guard<std::mutex> lock(_sendLock);
+        std::queue<std::vector<uint8_t>> emptyQueue;
+        std::swap(_sendQueue, emptyQueue);
+    }
+    _pendingBuffer.clear();
+
+    // 4. 기존 컨텍스트 삭제
+    _recvContext.reset();
+    _sendContext.reset();
+}
+
+void CSession::Send(PacketInterface& packet)
 {
     if (_disconnected) return;
 
-    std::lock_guard<std::mutex> lock(_sendLock);
+    std::vector<uint8_t> serialized = packet.Serialize();
 
-    _sendQueue.push(std::move(data));
+    std::lock_guard<std::mutex> lock(_sendLock);
+    _sendQueue.push(std::move(serialized));
 
     if (_pendingBuffer.empty())
-    {
         RegisterSend();
-    }
 }
 
 void CSession::Disconnect()
@@ -33,35 +69,45 @@ void CSession::Disconnect()
     if (_disconnected.exchange(1))
         return;
 
+    SOCKADDR_IN clientAddr = {};
+    int addrLen = sizeof(clientAddr);
+    if (getpeername(_socket, (SOCKADDR*)&clientAddr, &addrLen) == SOCKET_ERROR)
+    {
+        ZeroMemory(&clientAddr, sizeof(clientAddr));
+        printf("getpeername failed: %d\n", WSAGetLastError());
+    }
+
     shutdown(_socket, SD_BOTH);
     closesocket(_socket);
 
-    OnDisconnected();
+    Reset(); // 안전하게 초기화
+
+    SessionManager::Instance().RemoveSession(this);
+
+    OnDisconnected(clientAddr);
 }
 
 void CSession::RegisterRecv()
-{if (_disconnected) return;
+{
+    if (_disconnected) return;
 
     DWORD recvBytes = 0;
     DWORD flags = 0;
 
-    ZeroMemory(&_recvContext.overlapped, sizeof(OVERLAPPED));
+    ZeroMemory(&_recvContext->overlapped, sizeof(OVERLAPPED));
 
     int ret = WSARecv(
         _socket,
-        &_recvContext.wsaBuf,
+        &_recvContext->wsaBuf,
         1,
         &recvBytes,
         &flags,
-        &_recvContext.overlapped,
+        &_recvContext->overlapped,
         NULL
     );
 
-    if (ret == SOCKET_ERROR)
-    {
-        if (WSAGetLastError() != WSA_IO_PENDING)
-            Disconnect();
-    }
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
+        Disconnect();
 }
 
 void CSession::RegisterSend()
@@ -81,34 +127,31 @@ void CSession::RegisterSend()
     if (_pendingBuffer.empty())
         return;
 
-    _sendContext.type = IOContext::Type::Send;
-    _sendContext.wsaBuf.buf = _pendingBuffer.data();
-    _sendContext.wsaBuf.len = (ULONG)_pendingBuffer.size();
+    _sendContext->type = IOContext::Type::Send;
+    _sendContext->icopObj = this;
+    _sendContext->wsaBuf.buf = reinterpret_cast<char*>(_pendingBuffer.data());
+    _sendContext->wsaBuf.len = static_cast<ULONG>(_pendingBuffer.size());
 
     DWORD sendBytes = 0;
-
-    ZeroMemory(&_sendContext.overlapped, sizeof(OVERLAPPED));
+    ZeroMemory(&_sendContext->overlapped, sizeof(OVERLAPPED));
 
     int ret = WSASend(
         _socket,
-        &_sendContext.wsaBuf,
+        &_sendContext->wsaBuf,
         1,
         &sendBytes,
         0,
-        &_sendContext.overlapped,
+        &_sendContext->overlapped,
         NULL
     );
 
-    if (ret == SOCKET_ERROR)
-    {
-        if (WSAGetLastError() != WSA_IO_PENDING)
-            Disconnect();
-    }
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
+        Disconnect();
 }
 
 void CSession::ProcessRecv(int bytes)
 {
-    int processLen = OnRecv(_recvContext.buffer, bytes);
+    int processLen = OnRecv(_recvContext->buffer, bytes);
 
     if (processLen <= 0)
     {

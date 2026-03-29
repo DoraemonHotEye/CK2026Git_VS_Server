@@ -40,7 +40,7 @@ bool Connector::Start(SOCKADDR_IN addr, HANDLE iocp, OnConnectCallback callback,
 void Connector::RegisterConnect()
 {
     ConnectContext* context = new ConnectContext();
-
+    context->icopObj = this;
     context->socket = socket(AF_INET, SOCK_STREAM, 0);
 
     // 반드시 bind 필요 (ConnectEx 규칙)
@@ -74,8 +74,6 @@ void Connector::RegisterConnect()
 void Connector::ProcessConnect(ConnectContext* context)
 {
     SOCKET sock = context->socket;
-
-    // ⭐ 필수
     setsockopt(sock, SOL_SOCKET, SO_UPDATE_CONNECT_CONTEXT, NULL, 0);
 
     if (_callback)

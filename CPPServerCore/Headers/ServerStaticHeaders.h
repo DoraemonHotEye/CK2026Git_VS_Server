@@ -2,15 +2,19 @@
 #include <minwinbase.h>
 #include <WinSock2.h>
 
+class IocpObject;
+
 struct IOContext
 {
     OVERLAPPED overlapped;
+    IocpObject* icopObj;
 
     enum class Type
     {
         Recv,
         Send,
-        Accept
+        Accept,
+        Connect
     } type;
 };
 
@@ -21,8 +25,8 @@ struct AcceptContext : public IOContext
 
     AcceptContext()
     {
-        type = IOContext::Type::Accept;
         ZeroMemory(buffer, sizeof(buffer));
+        type = IOContext::Type::Accept;
     }
 };
 
@@ -33,6 +37,7 @@ struct RecvContext : public IOContext
 
     RecvContext()
     {
+        ZeroMemory(&overlapped, sizeof(OVERLAPPED));
         type = Type::Recv;
         wsaBuf.buf = buffer;
         wsaBuf.len = sizeof(buffer);
@@ -45,18 +50,20 @@ struct SendContext : public IOContext
 
     SendContext()
     {
+        ZeroMemory(&overlapped, sizeof(OVERLAPPED));
         type = Type::Send;
     }
 };
 
-struct ConnectContext
+struct ConnectContext : public IOContext
 {
-    OVERLAPPED overlapped;
     SOCKET socket;
 
     ConnectContext()
     {
-        ZeroMemory(this, sizeof(ConnectContext));
+        ZeroMemory(&overlapped, sizeof(OVERLAPPED));
+        type = Type::Connect;
+        socket = INVALID_SOCKET;
     }
 };
 
