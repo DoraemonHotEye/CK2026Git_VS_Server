@@ -139,6 +139,7 @@
     <ClInclude Include="Headers\CommonTypes.h" />
     <ClInclude Include="Headers\Packets.h" />
     <ClInclude Include="Headers\ServerStaticHeaders.h" />
+    <ClInclude Include="Headers\StaticMethods.h" />
     <ClInclude Include="Listener\CListener.h" />
     <ClInclude Include="Managers\SessionManager.h" />
     <ClInclude Include="Session\CPacketSession.h" />
