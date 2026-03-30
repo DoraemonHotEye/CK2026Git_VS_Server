@@ -190,6 +190,9 @@ namespace PacketDesignTool.Managers
 
                 ProjectSettingProfiler currProfiler = SettingsManager.Inst.SettingProfilers[Managers];
 
+                if (currProfiler.Language == EOutPutType.CPP)
+                    continue;
+
                 if (currProfiler.tag.Type == TYPE.UNITY)
                 {
                     savepath = currProfiler.Path + "/Assets" + "/Scripts/ServerCore/Packets";
@@ -259,12 +262,20 @@ namespace PacketDesignTool.Managers
             }
 
             Dictionary<string, Dictionary<PROTOCOL_MSG_TYPE, string>> OutPutPacketManagers = new Dictionary<string, Dictionary<PROTOCOL_MSG_TYPE, string>>();
+            Dictionary<string, Dictionary<PROTOCOL_MSG_TYPE, string>> OutPutPacketHandlers = new Dictionary<string, Dictionary<PROTOCOL_MSG_TYPE, string>>();
 
             foreach (var Profiler in SettingsManager.Inst.SettingProfilers.Values)
             {
                 OutPutPacketManagers.Add(Profiler.Name, new Dictionary<PROTOCOL_MSG_TYPE, string>());
                 OutPutPacketManagers[Profiler.Name].Add(PROTOCOL_MSG_TYPE.TCP, "");
                 OutPutPacketManagers[Profiler.Name].Add(PROTOCOL_MSG_TYPE.UDP, "");
+            }
+
+            foreach (var Profiler in SettingsManager.Inst.SettingProfilers.Values)
+            {
+                OutPutPacketHandlers.Add(Profiler.Name, new Dictionary<PROTOCOL_MSG_TYPE, string>());
+                OutPutPacketHandlers[Profiler.Name].Add(PROTOCOL_MSG_TYPE.TCP, "");
+                OutPutPacketHandlers[Profiler.Name].Add(PROTOCOL_MSG_TYPE.UDP, "");
             }
 
             foreach (var projectpacket in EventPacketManager.Inst.ProjectPackets.Values)
@@ -279,7 +290,7 @@ namespace PacketDesignTool.Managers
                             {
                                 if (packer.MProtoType == PROTOCOL_MSG_TYPE.TCP)
                                 {
-                                    //strvalue += PacketFormatsCSharp.GetFormatManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                    strvalue += PacketFormatsCPP.GetFormatManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
                                 }
                                 else
                                 {
@@ -288,6 +299,23 @@ namespace PacketDesignTool.Managers
                                 OutPutPacketManagers[linked.Name][packer.MProtoType] = strvalue;
                             }
                             OutPutPacketManagers[linked.Name] = value;
+                        }
+
+                        if (OutPutPacketHandlers.TryGetValue(linked.Name, out var value2))
+                        {
+                            if (value2.TryGetValue(packer.MProtoType, out string strvalue))
+                            {
+                                if (packer.MProtoType == PROTOCOL_MSG_TYPE.TCP)
+                                {
+                                    strvalue += PacketFormatsCPP.GetFormatHandlerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                }
+                                else
+                                {
+                                    //strvalue += PacketFormatsCSharp.GetFormatUManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                }
+                                OutPutPacketHandlers[linked.Name][packer.MProtoType] = strvalue;
+                            }
+                            OutPutPacketHandlers[linked.Name] = value2;
                         }
                     }
 
@@ -319,6 +347,77 @@ namespace PacketDesignTool.Managers
             }
 
             string output_code = string.Format(PacketFormatsCPP.fileformat, outputclass, outputstruct, outputenumtype, outputEventpackets);
+
+            foreach (var Managers in OutPutPacketManagers.Keys)
+            {
+                string output_PacketManager = string.Format(PacketFormatsCPP.PacketManagerFormat, OutPutPacketManagers[Managers][PROTOCOL_MSG_TYPE.TCP]);
+                //string output_UPacketManager = string.Format(PacketFormatsCSharp.UPacketManagerFormat, OutPutPacketManagers[Managers][PROTOCOL_MSG_TYPE.UDP]);
+
+                string savepath = "";
+
+                ProjectSettingProfiler currProfiler = SettingsManager.Inst.SettingProfilers[Managers];
+
+                if (currProfiler.Language == EOutPutType.CSharp)
+                    continue;
+
+                if (currProfiler.tag.Type == TYPE.UNITY)
+                {
+                    //savepath = currProfiler.Path + "/Assets" + "/Scripts/ServerCore/Packets";
+                    //System.IO.File.WriteAllText(savepath + "/Packets.cs", output_code);
+                }
+                else
+                {
+                    savepath = currProfiler.Path + "/Manager";
+                }
+
+                if (!Directory.Exists(savepath))
+                {
+                    Directory.CreateDirectory(savepath);
+                }
+
+                System.IO.File.WriteAllText(savepath + "/CPacketManager.cpp", output_PacketManager);
+
+                if (currProfiler.isUseUDP == true)
+                {
+                    //System.IO.File.WriteAllText(savepath + "/UPacketManager.cs", output_UPacketManager);
+                }
+            }
+
+            foreach (var Handlers in OutPutPacketHandlers.Keys)
+            {
+                string output_PacketHandler = string.Format(PacketFormatsCPP.PacketHandlerFormat, OutPutPacketHandlers[Handlers][PROTOCOL_MSG_TYPE.TCP]);
+                //string output_UPacketManager = string.Format(PacketFormatsCSharp.UPacketManagerFormat, OutPutPacketManagers[Managers][PROTOCOL_MSG_TYPE.UDP]);
+
+                string savepath = "";
+
+                ProjectSettingProfiler currProfiler = SettingsManager.Inst.SettingProfilers[Handlers];
+
+                if (currProfiler.Language == EOutPutType.CSharp)
+                    continue;
+
+                if (currProfiler.tag.Type == TYPE.UNITY)
+                {
+                    //savepath = currProfiler.Path + "/Assets" + "/Scripts/ServerCore/Packets";
+                    //System.IO.File.WriteAllText(savepath + "/Packets.cs", output_code);
+                }
+                else
+                {
+                    savepath = currProfiler.Path + "/Handler";
+                }
+
+                if (!Directory.Exists(savepath))
+                {
+                    Directory.CreateDirectory(savepath);
+                }
+
+                System.IO.File.WriteAllText(savepath + "/PacketHandler.h", output_PacketHandler);
+
+                if (currProfiler.isUseUDP == true)
+                {
+                    //System.IO.File.WriteAllText(savepath + "/UPacketManager.cs", output_UPacketManager);
+                }
+            }
+
             System.IO.File.WriteAllText(Path, output_code);
         }
 

@@ -22,7 +22,6 @@ namespace PacketDesignTool.Managers
     {
         public string Name;
         public TYPE Type;
-        public EOutPutType Language = EOutPutType.CSharp;
         public ushort ClientSeed;
         public string Description;
 
@@ -36,12 +35,11 @@ namespace PacketDesignTool.Managers
 
         }
 
-        public Tag(string name, TYPE TagType, ushort SeedNumber, string description, EOutPutType outPutType = EOutPutType.CSharp)
+        public Tag(string name, TYPE TagType, ushort SeedNumber, string description)
         {
             this.Name = name;
             this.Type = TagType;
             this.ClientSeed = SeedNumber;
-            this.Language = outPutType;
             Description = description;
         }
 
@@ -51,7 +49,6 @@ namespace PacketDesignTool.Managers
             this.Type = tag.Type;
             this.ClientSeed = tag.ClientSeed;
             this.Description = tag.Description;
-            this.Language = tag.Language;
         }
     }
 
@@ -93,7 +90,6 @@ namespace PacketDesignTool.Managers
 
             //TODO 알고리즘 => Random Picker (Marcoff Chain)
             Tag _tag = new Tag(name, tag, (ushort)TagMap.Count, Description);
-
             TagMap.Add(name, _tag);
 
             if (OnSuccEventHandler != null)

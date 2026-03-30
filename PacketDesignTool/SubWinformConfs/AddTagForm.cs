@@ -53,22 +53,9 @@ namespace PacketDesignTool.SubWinformConfs
                     TagTypeDropDown.Items.Add(type);
             }
 
-            AllTypes = Enum.GetNames(typeof(EOutPutType));
-
-            foreach (string type in AllTypes)
-            {
-                if (type != "NONE")
-                    LanguagesBox.Items.Add(type);
-            }
-
             if (TagTypeDropDown.Items.Count > 0)
             {
                 TagTypeDropDown.SelectedIndex = 0;
-            }
-
-            if (LanguagesBox.Items.Count > 0)
-            {
-                LanguagesBox.SelectedIndex = 0;
             }
         }
     }

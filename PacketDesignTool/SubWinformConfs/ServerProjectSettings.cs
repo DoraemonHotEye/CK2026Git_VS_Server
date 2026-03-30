@@ -37,6 +37,14 @@ namespace PacketDesignTool.SubWinformConfs
             if (OnEnterHandler != null)
                 OnEnterHandler(this, EventArgs.Empty);
 
+            var AllTypes = Enum.GetNames(typeof(EOutPutType));
+            
+            foreach (string type in AllTypes)
+            {
+                if (type != "NONE")
+                    LanguageBox.Items.Add(type);
+            }
+
             Refresh();
         }
 
@@ -69,7 +77,7 @@ namespace PacketDesignTool.SubWinformConfs
                 return;
             }
 
-            ProjectSettingProfiler profiler = new ProjectSettingProfiler(ProjectNameTextBox.Text, ProjectDescTextBox.Text, PathTextBox.Text, TagManager.Inst.GetTag(TagComboBox.SelectedItem.ToString()));
+            ProjectSettingProfiler profiler = new ProjectSettingProfiler(ProjectNameTextBox.Text, ProjectDescTextBox.Text, PathTextBox.Text, TagManager.Inst.GetTag(TagComboBox.SelectedItem.ToString()), (EOutPutType)LanguageBox.SelectedIndex);
 
             //TODO 등록 완료 프로젝트 추가 코드
             SettingsManager.Inst.Enter(profiler, this, new SettingsManager.OnSettingManagerEventHandler(OnCompeletedAddProfiler), 

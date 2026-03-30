@@ -39,8 +39,6 @@
             this.TagTypeDropDown = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.TagNameTextBox = new System.Windows.Forms.TextBox();
-            this.Language = new System.Windows.Forms.Label();
-            this.LanguagesBox = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -80,8 +78,6 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.Language);
-            this.tabPage1.Controls.Add(this.LanguagesBox);
             this.tabPage1.Controls.Add(this.TagCreateButton);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.TagDescriptionTextBox);
@@ -132,7 +128,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(48, 86);
+            this.label2.Location = new System.Drawing.Point(48, 96);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 21);
             this.label2.TabIndex = 3;
@@ -144,7 +140,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TagTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.TagTypeDropDown.FormattingEnabled = true;
-            this.TagTypeDropDown.Location = new System.Drawing.Point(166, 83);
+            this.TagTypeDropDown.Location = new System.Drawing.Point(166, 93);
             this.TagTypeDropDown.Name = "TagTypeDropDown";
             this.TagTypeDropDown.Size = new System.Drawing.Size(905, 29);
             this.TagTypeDropDown.TabIndex = 2;
@@ -166,26 +162,6 @@
             this.TagNameTextBox.Name = "TagNameTextBox";
             this.TagNameTextBox.Size = new System.Drawing.Size(905, 32);
             this.TagNameTextBox.TabIndex = 0;
-            // 
-            // Language
-            // 
-            this.Language.AutoSize = true;
-            this.Language.Location = new System.Drawing.Point(48, 126);
-            this.Language.Name = "Language";
-            this.Language.Size = new System.Drawing.Size(52, 21);
-            this.Language.TabIndex = 8;
-            this.Language.Text = "언어";
-            // 
-            // LanguagesBox
-            // 
-            this.LanguagesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.LanguagesBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.LanguagesBox.FormattingEnabled = true;
-            this.LanguagesBox.Location = new System.Drawing.Point(166, 123);
-            this.LanguagesBox.Name = "LanguagesBox";
-            this.LanguagesBox.Size = new System.Drawing.Size(905, 29);
-            this.LanguagesBox.TabIndex = 7;
             // 
             // AddTagForm
             // 
@@ -222,7 +198,5 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox TagDescriptionTextBox;
         private System.Windows.Forms.Button TagCreateButton;
-        private System.Windows.Forms.Label Language;
-        private System.Windows.Forms.ComboBox LanguagesBox;
     }
 }

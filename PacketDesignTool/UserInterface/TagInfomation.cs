@@ -49,11 +49,20 @@ namespace PacketDesignTool.UserInterface
         {
             MatchProfiler = copyprofiler;
 
+            var AllTypes = Enum.GetNames(typeof(EOutPutType));
+
+            foreach (string type in AllTypes)
+            {
+                if (type != "NONE")
+                    LanguagesBox.Items.Add(type);
+            }
+
             if (MatchProfiler == null)
             {
                 ProfilerNameTextBox.Text = "None";
                 ProfilerPathTextBox.Text = "None";
                 ProfilerDescriptionTextBox.Text = "None";
+                LanguagesBox.SelectedIndex = 0;
 
                 return;
             }
@@ -61,6 +70,18 @@ namespace PacketDesignTool.UserInterface
             ProfilerNameTextBox.Text = MatchProfiler.Name;
             ProfilerPathTextBox.Text = MatchProfiler.Path;
             ProfilerDescriptionTextBox.Text = MatchProfiler.Description;
+            LanguagesBox.SelectedIndex = (int)MatchProfiler.Language;
+        }
+
+        private void LanguagesBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (MatchProfiler == null)
+                return;
+
+            if (LanguagesBox.SelectedIndex == -1)
+                return;
+
+            MatchProfiler.Language = (EOutPutType)LanguagesBox.SelectedIndex;
         }
     }
 }

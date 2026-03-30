@@ -31,31 +31,33 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.ConnectedInfo = new System.Windows.Forms.GroupBox();
+            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.ProfilerDescriptionTextBox = new System.Windows.Forms.TextBox();
+            this.ProfilerPathTextBox = new System.Windows.Forms.TextBox();
+            this.ProfilerNameTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.DescriptionTextBox = new System.Windows.Forms.TextBox();
             this.TagServerTypeTextBox = new System.Windows.Forms.TextBox();
             this.TagSeedTextBox = new System.Windows.Forms.TextBox();
             this.TagNameTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.DescriptionTextBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.ProfilerNameTextBox = new System.Windows.Forms.TextBox();
-            this.ProfilerPathTextBox = new System.Windows.Forms.TextBox();
-            this.ProfilerDescriptionTextBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
+            this.LanguagesBox = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.ConnectedInfo.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -89,6 +91,102 @@
             this.ConnectedInfo.TabStop = false;
             this.ConnectedInfo.Text = "Connected Info";
             // 
+            // tabControl2
+            // 
+            this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl2.Controls.Add(this.tabPage2);
+            this.tabControl2.Location = new System.Drawing.Point(6, 31);
+            this.tabControl2.Name = "tabControl2";
+            this.tabControl2.SelectedIndex = 0;
+            this.tabControl2.Size = new System.Drawing.Size(632, 436);
+            this.tabControl2.TabIndex = 0;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.groupBox2);
+            this.tabPage2.Location = new System.Drawing.Point(4, 31);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(624, 401);
+            this.tabPage2.TabIndex = 0;
+            this.tabPage2.Text = "결속된 정보";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.LanguagesBox);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.ProfilerDescriptionTextBox);
+            this.groupBox2.Controls.Add(this.ProfilerPathTextBox);
+            this.groupBox2.Controls.Add(this.ProfilerNameTextBox);
+            this.groupBox2.Location = new System.Drawing.Point(18, 17);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(588, 361);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Connected Profiler";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(27, 84);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(55, 21);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Path:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(27, 187);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(104, 21);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Description";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(27, 48);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(65, 21);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "Name:";
+            // 
+            // ProfilerDescriptionTextBox
+            // 
+            this.ProfilerDescriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProfilerDescriptionTextBox.Location = new System.Drawing.Point(24, 220);
+            this.ProfilerDescriptionTextBox.Multiline = true;
+            this.ProfilerDescriptionTextBox.Name = "ProfilerDescriptionTextBox";
+            this.ProfilerDescriptionTextBox.ReadOnly = true;
+            this.ProfilerDescriptionTextBox.Size = new System.Drawing.Size(543, 119);
+            this.ProfilerDescriptionTextBox.TabIndex = 2;
+            // 
+            // ProfilerPathTextBox
+            // 
+            this.ProfilerPathTextBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.ProfilerPathTextBox.Location = new System.Drawing.Point(140, 81);
+            this.ProfilerPathTextBox.Name = "ProfilerPathTextBox";
+            this.ProfilerPathTextBox.ReadOnly = true;
+            this.ProfilerPathTextBox.Size = new System.Drawing.Size(427, 32);
+            this.ProfilerPathTextBox.TabIndex = 1;
+            // 
+            // ProfilerNameTextBox
+            // 
+            this.ProfilerNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.ProfilerNameTextBox.Location = new System.Drawing.Point(140, 43);
+            this.ProfilerNameTextBox.Name = "ProfilerNameTextBox";
+            this.ProfilerNameTextBox.ReadOnly = true;
+            this.ProfilerNameTextBox.Size = new System.Drawing.Size(427, 32);
+            this.ProfilerNameTextBox.TabIndex = 0;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label4);
@@ -105,6 +203,26 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Basic Info";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(30, 190);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(104, 21);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Description";
+            // 
+            // DescriptionTextBox
+            // 
+            this.DescriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.DescriptionTextBox.Location = new System.Drawing.Point(30, 224);
+            this.DescriptionTextBox.Multiline = true;
+            this.DescriptionTextBox.Name = "DescriptionTextBox";
+            this.DescriptionTextBox.ReadOnly = true;
+            this.DescriptionTextBox.Size = new System.Drawing.Size(405, 221);
+            this.DescriptionTextBox.TabIndex = 6;
             // 
             // TagServerTypeTextBox
             // 
@@ -163,119 +281,26 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Name:";
             // 
-            // tabControl2
+            // LanguagesBox
             // 
-            this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.LanguagesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl2.Controls.Add(this.tabPage2);
-            this.tabControl2.Location = new System.Drawing.Point(6, 31);
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(632, 436);
-            this.tabControl2.TabIndex = 0;
+            this.LanguagesBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LanguagesBox.FormattingEnabled = true;
+            this.LanguagesBox.Location = new System.Drawing.Point(140, 125);
+            this.LanguagesBox.Name = "LanguagesBox";
+            this.LanguagesBox.Size = new System.Drawing.Size(427, 29);
+            this.LanguagesBox.TabIndex = 8;
+            this.LanguagesBox.SelectedIndexChanged += new System.EventHandler(this.LanguagesBox_SelectedIndexChanged);
             // 
-            // tabPage2
+            // label8
             // 
-            this.tabPage2.Controls.Add(this.groupBox2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 31);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(624, 401);
-            this.tabPage2.TabIndex = 0;
-            this.tabPage2.Text = "결속된 정보";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // DescriptionTextBox
-            // 
-            this.DescriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.DescriptionTextBox.Location = new System.Drawing.Point(30, 224);
-            this.DescriptionTextBox.Multiline = true;
-            this.DescriptionTextBox.Name = "DescriptionTextBox";
-            this.DescriptionTextBox.ReadOnly = true;
-            this.DescriptionTextBox.Size = new System.Drawing.Size(405, 221);
-            this.DescriptionTextBox.TabIndex = 6;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(30, 190);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(104, 21);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Description";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.ProfilerDescriptionTextBox);
-            this.groupBox2.Controls.Add(this.ProfilerPathTextBox);
-            this.groupBox2.Controls.Add(this.ProfilerNameTextBox);
-            this.groupBox2.Location = new System.Drawing.Point(18, 17);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(588, 361);
-            this.groupBox2.TabIndex = 0;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Connected Profiler";
-            // 
-            // ProfilerNameTextBox
-            // 
-            this.ProfilerNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.ProfilerNameTextBox.Location = new System.Drawing.Point(140, 43);
-            this.ProfilerNameTextBox.Name = "ProfilerNameTextBox";
-            this.ProfilerNameTextBox.ReadOnly = true;
-            this.ProfilerNameTextBox.Size = new System.Drawing.Size(427, 32);
-            this.ProfilerNameTextBox.TabIndex = 0;
-            // 
-            // ProfilerPathTextBox
-            // 
-            this.ProfilerPathTextBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.ProfilerPathTextBox.Location = new System.Drawing.Point(140, 81);
-            this.ProfilerPathTextBox.Name = "ProfilerPathTextBox";
-            this.ProfilerPathTextBox.ReadOnly = true;
-            this.ProfilerPathTextBox.Size = new System.Drawing.Size(427, 32);
-            this.ProfilerPathTextBox.TabIndex = 1;
-            // 
-            // ProfilerDescriptionTextBox
-            // 
-            this.ProfilerDescriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ProfilerDescriptionTextBox.Location = new System.Drawing.Point(24, 160);
-            this.ProfilerDescriptionTextBox.Multiline = true;
-            this.ProfilerDescriptionTextBox.Name = "ProfilerDescriptionTextBox";
-            this.ProfilerDescriptionTextBox.ReadOnly = true;
-            this.ProfilerDescriptionTextBox.Size = new System.Drawing.Size(543, 179);
-            this.ProfilerDescriptionTextBox.TabIndex = 2;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(27, 48);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 21);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Name:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(27, 136);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(104, 21);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Description";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(27, 84);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(55, 21);
-            this.label7.TabIndex = 5;
-            this.label7.Text = "Path:";
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(27, 128);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(59, 21);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "언어:";
             // 
             // TagInfomation
             // 
@@ -289,12 +314,12 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.ConnectedInfo.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.tabControl2.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -322,5 +347,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox LanguagesBox;
     }
 }

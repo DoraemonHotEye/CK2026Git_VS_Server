@@ -1,4 +1,5 @@
 ﻿using PacketDesignTool.DefaultClass;
+using PacketDesignTool.Managers.Parents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -479,6 +480,64 @@ public:
     }}
 }};";
 
+        public static string PacketManagerFormat = @"
+#include ""CPacketManager.h""
+#include ""../../CPPServerCore/Headers/Packets.h""
+#include ""../../CPPServerCore/Session/CPacketSession.h""
+#include ""../Handler/PacketHandler.h""
+
+
+void PacketManager::Register()
+{{
+    {0}
+}}
+
+void PacketManager::OnRecvPacket(CPacketSession* session, const std::vector<uint8_t>& buffer, HandlerFunc onRecvCallback)
+{{
+    size_t offset = 0;
+
+    if (buffer.size() < 4) return; // 최소 크기 체크
+
+    uint16_t size = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
+    offset += sizeof(uint16_t);
+
+    uint16_t id = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
+    offset += sizeof(uint16_t);
+
+    auto it = _makeFunc.find(id);
+    if (it != _makeFunc.end())
+    {{
+        std::unique_ptr<PacketInterface> packet = it->second(session, buffer);
+
+        if (onRecvCallback)
+            onRecvCallback(session, packet.get());
+        else
+            HandlePacket(session, packet.get(), id);
+    }}
+}}
+
+void PacketManager::RegisterHandler(uint16_t id, HandlerFunc func)
+{{
+    _handler[id] = func;
+}}";
+
+        public static string PacketHandlerFormat = @"
+#pragma once
+
+class PacketHandler 
+{{
+public:
+	{0}
+}};";
+        public static string MakeHandlerMethodFormat = 
+            @"static void {0}Handler(class CPacketSession* session, class PacketInterface* message);
+    ";
+
+        public static string MakeFuncManagerFormat =
+            @"_makeFunc[(uint16_t)MsgID::{0}] = MakePacket<{1}>;
+    RegisterHandler((uint16_t)MsgID::{0}, PacketHandler::{1}Handler);
+    ";
+
         #region MemberType Offset Formats (C++)
 
         public static string StringOffsetFormatSerializeSingle =
@@ -642,6 +701,16 @@ public:
         public static string MemberTypeList = @"PacketConvertList<{0}> {1};";
 
         public static string MsgIDFormat = @"{0} = {1},";
+
+        public static string GetFormatManagerMakeFunc(Packer packer, ProjectSettingProfiler profiler, string MsgID)
+        {
+            return string.Format(MakeFuncManagerFormat, MsgID, ToolStaticLibrary.GetHashSCCode(packer.Name, profiler) + "_" + packer.Name);
+        }
+
+        public static string GetFormatHandlerMakeFunc(Packer packer, ProjectSettingProfiler profiler, string MsgID)
+        {
+            return string.Format(MakeHandlerMethodFormat, ToolStaticLibrary.GetHashSCCode(packer.Name, profiler) + "_" + packer.Name);
+        }
 
         public static string GetMemberTypeStringFormat(string MemberType, string MemberName)
         {

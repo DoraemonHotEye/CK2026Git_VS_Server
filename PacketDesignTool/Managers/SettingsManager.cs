@@ -18,6 +18,7 @@ namespace PacketDesignTool.Managers
         public string Path;
         public Tag tag;
         public bool isUseUDP;
+        public EOutPutType Language = EOutPutType.CSharp;
 
         [JsonIgnore]
         public Tag GetCopyTag
@@ -34,12 +35,13 @@ namespace PacketDesignTool.Managers
         {
 
         }
-        public ProjectSettingProfiler(string name, string description, string path, Tag tag)
+        public ProjectSettingProfiler(string name, string description, string path, Tag tag, EOutPutType Language = EOutPutType.CSharp)
         {
             this.Name = name;
             this.Description = description;
             this.Path = path;
             this.tag = tag;
+            this.Language = Language;
         }
 
         public ProjectSettingProfiler(ProjectSettingProfiler copyobj)
@@ -48,6 +50,7 @@ namespace PacketDesignTool.Managers
             this.Description = copyobj.Description;
             this.Path = copyobj.Path;
             this.tag = copyobj.tag;
+            this.Language = copyobj.Language;
         }
 
         public ProjectSettingProfiler GetCopy()
@@ -92,7 +95,7 @@ namespace PacketDesignTool.Managers
             return false;
         }
 
-        public bool Enter(string name, string description, string path, Tag tag, bool isUseUdp = false,  object sender = null, OnSettingManagerEventHandler OnSuccEventHandler = null, OnSettingManagerEventHandler OnFailedEventHandler = null)
+        public bool Enter(string name, string description, string path, Tag tag, bool isUseUdp = false, EOutPutType Lang = EOutPutType.CSharp,  object sender = null, OnSettingManagerEventHandler OnSuccEventHandler = null, OnSettingManagerEventHandler OnFailedEventHandler = null)
         {
             if (SettingProfilers.ContainsKey(name))
             {
@@ -102,7 +105,7 @@ namespace PacketDesignTool.Managers
                 return false;
             }
 
-            ProjectSettingProfiler profiler = new ProjectSettingProfiler(name, description, path, tag);
+            ProjectSettingProfiler profiler = new ProjectSettingProfiler(name, description, path, tag, Lang);
             profiler.isUseUDP = isUseUdp;
             SettingProfilers.Add(name, profiler);
             EventPacketManager.Inst.Enter(profiler, null);
@@ -124,7 +127,7 @@ namespace PacketDesignTool.Managers
             foreach (var Packer in CopyPackers)
             {
                 ProjectSettingProfiler packer = Packer.Value;
-                Enter(packer.Name, packer.Description, packer.Path, packer.GetCopyTag, packer.isUseUDP);
+                Enter(packer.Name, packer.Description, packer.Path, packer.GetCopyTag, packer.isUseUDP, packer.Language);
             }
         }
 
