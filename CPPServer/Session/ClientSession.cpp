@@ -17,6 +17,8 @@ void ClientSession::OnConnected(SOCKADDR_IN addr)
     log += ip;
     log += ":";
     log += std::to_string(ntohs(addr.sin_port));
+    log += ":: Session ID: ";
+    log += std::to_string(sessionID);
 
     PrintLogThread::Instance().Log(log);
 }

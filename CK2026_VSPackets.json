@@ -1052,6 +1052,66 @@
           }
         ],
         "MProtoType": 1
+      },
+      "GAMECLIENT_GROUNDCHECK": {
+        "packer": {
+          "Name": "GroundCheck",
+          "MemberTypes": [
+            "single:ushort",
+            "single:int"
+          ],
+          "MemberNames": [
+            "NetID",
+            "GroundLayer"
+          ]
+        },
+        "PacketID": "GAMECLIENT_GROUNDCHECK",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERGRAB": {
+        "packer": {
+          "Name": "MonsterGrab",
+          "MemberTypes": [
+            "single:ushort",
+            "single:float",
+            "single:float"
+          ],
+          "MemberNames": [
+            "NetID",
+            "x",
+            "y"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERGRAB",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true
+          }
+        ],
+        "MProtoType": 1
       }
     },
     "profiler": {
