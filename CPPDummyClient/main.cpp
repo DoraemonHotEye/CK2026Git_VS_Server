@@ -8,6 +8,7 @@
 #include "../CPPServerCore/Connector/CConnector.h"
 #include "../CPPServerCore/Managers/SessionManager.h"
 #include "../CPPServerCore/Headers/StaticMethods.h"
+#include "../CPPServerCore/ServerSupports/PrintLogThread.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -15,6 +16,9 @@ using namespace std;
 
 int main()
 {
+    //Logger Start
+    PrintLogThread::Instance().Start();
+
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
@@ -52,7 +56,7 @@ int main()
     addr.sin_port = htons(7777);                     // 서버 포트
 
     // 6. 연결 시도
-    connector.Start(addr, iocp, createSession, 1);
+    connector.Start(addr, iocp, createSession, 15000);
 
     cout << "Client Connecting...\n";
 
@@ -63,5 +67,8 @@ int main()
     }
 
     WSACleanup();
+
+    PrintLogThread::Instance().Stop();
+
     return 0;
 }

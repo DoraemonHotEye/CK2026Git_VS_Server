@@ -143,6 +143,8 @@
     <ClInclude Include="Listener\CListener.h" />
     <ClInclude Include="Managers\SessionManager.h" />
     <ClInclude Include="RecvBuffer\RecvBuffer.h" />
+    <ClInclude Include="ServerSupports\LockFreeStack.h" />
+    <ClInclude Include="ServerSupports\PrintLogThread.h" />
     <ClInclude Include="Session\CPacketSession.h" />
     <ClInclude Include="Session\CSession.h" />
   </ItemGroup>
@@ -151,6 +153,8 @@
     <ClCompile Include="Listener\CListener.cpp" />
     <ClCompile Include="Managers\SessionManager.cpp" />
     <ClCompile Include="RecvBuffer\RecvBuffer.cpp" />
+    <ClCompile Include="ServerSupports\LockFreeStack.cpp" />
+    <ClCompile Include="ServerSupports\PrintLogThread.cpp" />
     <ClCompile Include="Session\CSession.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

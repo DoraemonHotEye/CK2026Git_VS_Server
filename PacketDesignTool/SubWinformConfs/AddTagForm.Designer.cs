@@ -32,13 +32,15 @@
             this.ST_Close = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.TagNameTextBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.TagTypeDropDown = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.TagDescriptionTextBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.TagCreateButton = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.TagDescriptionTextBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.TagTypeDropDown = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.TagNameTextBox = new System.Windows.Forms.TextBox();
+            this.Language = new System.Windows.Forms.Label();
+            this.LanguagesBox = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -53,14 +55,14 @@
             this.ST_Close});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1140, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1140, 38);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // ST_Close
             // 
             this.ST_Close.Name = "ST_Close";
-            this.ST_Close.Size = new System.Drawing.Size(73, 38);
+            this.ST_Close.Size = new System.Drawing.Size(73, 34);
             this.ST_Close.Text = "닫기";
             this.ST_Close.Click += new System.EventHandler(this.ST_Close_Click);
             // 
@@ -78,6 +80,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.Language);
+            this.tabPage1.Controls.Add(this.LanguagesBox);
             this.tabPage1.Controls.Add(this.TagCreateButton);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.TagDescriptionTextBox);
@@ -93,43 +97,26 @@
             this.tabPage1.Text = "Tools";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // TagNameTextBox
+            // TagCreateButton
             // 
-            this.TagNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.TagCreateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TagNameTextBox.Location = new System.Drawing.Point(166, 42);
-            this.TagNameTextBox.Name = "TagNameTextBox";
-            this.TagNameTextBox.Size = new System.Drawing.Size(905, 32);
-            this.TagNameTextBox.TabIndex = 0;
+            this.TagCreateButton.Location = new System.Drawing.Point(52, 342);
+            this.TagCreateButton.Name = "TagCreateButton";
+            this.TagCreateButton.Size = new System.Drawing.Size(1019, 41);
+            this.TagCreateButton.TabIndex = 6;
+            this.TagCreateButton.Text = "만들기";
+            this.TagCreateButton.UseVisualStyleBackColor = true;
+            this.TagCreateButton.Click += new System.EventHandler(this.TagCreateButton_Click);
             // 
-            // label1
+            // label3
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(48, 45);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 21);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "태그 이름";
-            // 
-            // TagTypeDropDown
-            // 
-            this.TagTypeDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.TagTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.TagTypeDropDown.FormattingEnabled = true;
-            this.TagTypeDropDown.Location = new System.Drawing.Point(166, 107);
-            this.TagTypeDropDown.Name = "TagTypeDropDown";
-            this.TagTypeDropDown.Size = new System.Drawing.Size(905, 29);
-            this.TagTypeDropDown.TabIndex = 2;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(48, 110);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(101, 21);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "태그 타입";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(52, 167);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(52, 21);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "설명";
             // 
             // TagDescriptionTextBox
             // 
@@ -142,26 +129,63 @@
             this.TagDescriptionTextBox.Size = new System.Drawing.Size(1019, 126);
             this.TagDescriptionTextBox.TabIndex = 4;
             // 
-            // label3
+            // label2
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(52, 167);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(52, 21);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "설명";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(48, 86);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(101, 21);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "태그 타입";
             // 
-            // TagCreateButton
+            // TagTypeDropDown
             // 
-            this.TagCreateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.TagTypeDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TagCreateButton.Location = new System.Drawing.Point(52, 342);
-            this.TagCreateButton.Name = "TagCreateButton";
-            this.TagCreateButton.Size = new System.Drawing.Size(1019, 41);
-            this.TagCreateButton.TabIndex = 6;
-            this.TagCreateButton.Text = "만들기";
-            this.TagCreateButton.UseVisualStyleBackColor = true;
-            this.TagCreateButton.Click += new System.EventHandler(this.TagCreateButton_Click);
+            this.TagTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TagTypeDropDown.FormattingEnabled = true;
+            this.TagTypeDropDown.Location = new System.Drawing.Point(166, 83);
+            this.TagTypeDropDown.Name = "TagTypeDropDown";
+            this.TagTypeDropDown.Size = new System.Drawing.Size(905, 29);
+            this.TagTypeDropDown.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(48, 45);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(101, 21);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "태그 이름";
+            // 
+            // TagNameTextBox
+            // 
+            this.TagNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.TagNameTextBox.Location = new System.Drawing.Point(166, 42);
+            this.TagNameTextBox.Name = "TagNameTextBox";
+            this.TagNameTextBox.Size = new System.Drawing.Size(905, 32);
+            this.TagNameTextBox.TabIndex = 0;
+            // 
+            // Language
+            // 
+            this.Language.AutoSize = true;
+            this.Language.Location = new System.Drawing.Point(48, 126);
+            this.Language.Name = "Language";
+            this.Language.Size = new System.Drawing.Size(52, 21);
+            this.Language.TabIndex = 8;
+            this.Language.Text = "언어";
+            // 
+            // LanguagesBox
+            // 
+            this.LanguagesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.LanguagesBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LanguagesBox.FormattingEnabled = true;
+            this.LanguagesBox.Location = new System.Drawing.Point(166, 123);
+            this.LanguagesBox.Name = "LanguagesBox";
+            this.LanguagesBox.Size = new System.Drawing.Size(905, 29);
+            this.LanguagesBox.TabIndex = 7;
             // 
             // AddTagForm
             // 
@@ -198,5 +222,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox TagDescriptionTextBox;
         private System.Windows.Forms.Button TagCreateButton;
+        private System.Windows.Forms.Label Language;
+        private System.Windows.Forms.ComboBox LanguagesBox;
     }
 }

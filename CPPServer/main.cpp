@@ -1,16 +1,22 @@
 ﻿#include <iostream>
 #include <thread>
 #include <winsock2.h>
+
 #include "Session/ClientSession.h"
+
 #include "../CPPServerCore/Listener/CListener.h"
 #include "../CPPServerCore/Headers/CommonTypes.h"
 #include "../CPPServerCore/Managers/SessionManager.h"
 #include "../CPPServerCore/Headers/StaticMethods.h"
+#include "../CPPServerCore/ServerSupports/PrintLogThread.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
 int main()
 {
+    //Logger Start
+    PrintLogThread::Instance().Start();
+
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
@@ -61,5 +67,8 @@ int main()
     }
 
     WSACleanup();
+
+    PrintLogThread::Instance().Stop();
+
     return 0;
 }

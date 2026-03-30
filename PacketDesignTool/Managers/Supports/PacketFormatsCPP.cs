@@ -415,6 +415,70 @@ public:
     }}
 }};";
 
+        public static string GetEventUPacketClassFormat = @"
+class {0} : public PacketInterface
+{{
+public:
+    MsgID MsgIDValue = MsgID::{1};
+    uint16_t SeqNum = 0;
+
+    {2}
+
+    virtual void Deserialize(const std::vector<uint8_t>& data) override
+    {{
+        if (data.size() < GetSize())
+            return;
+
+        size_t offset = 0;
+
+        uint16_t packetSize;
+        std::memcpy(&packetSize, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t packetId;
+        std::memcpy(&packetId, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&SeqNum, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        {3}
+    }}
+
+    virtual uint16_t GetSize() const override
+    {{
+        uint16_t size = 0;
+        size += sizeof(uint16_t); // PacketSize
+        size += sizeof(uint16_t); // PacketID
+        size += sizeof(uint16_t); // SeqNum
+        {4}        
+        
+        return size;
+    }}
+
+    virtual std::vector<uint8_t> Serialize() override
+    {{
+        uint16_t size = GetSize();
+        std::vector<uint8_t> buffer(size);
+
+        size_t offset = 0;
+
+        std::memcpy(&buffer[offset], &size, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t msgId = static_cast<uint16_t>(MsgIDValue);
+        std::memcpy(&buffer[offset], &msgId, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &SeqNum, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        {5}
+
+        return buffer;
+    }}
+}};";
+
         #region MemberType Offset Formats (C++)
 
         public static string StringOffsetFormatSerializeSingle =

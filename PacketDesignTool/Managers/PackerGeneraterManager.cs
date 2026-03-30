@@ -233,12 +233,12 @@ namespace PacketDesignTool.Managers
 
                 for (int j = 0; j < classpacker.MemberTypes.Count; ++j)
                 {
-                    //OutPutMembersFormat += PacketFormatsCSharp.GetMemberTypeStringFormat(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n        ";
-                    //OutPutSerializeFormat += PacketFormatsCSharp.GetFormatPacker(classpacker.MemberTypes[j], classpacker.MemberNames[j]);
-                    //OutPutGetSizeFormat += PacketFormatsCSharp.GetFormatPackerSizeble(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n            ";
-                    //OutPutDeserializeFormat += PacketFormatsCSharp.GetFormatDeserialize(classpacker.MemberTypes[j], classpacker.MemberNames[j]);
+                    OutPutMembersFormat += PacketFormatsCPP.GetMemberTypeStringFormat(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n    ";
+                    OutPutSerializeFormat += PacketFormatsCPP.GetFormatPacker(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n        ";
+                    OutPutGetSizeFormat += PacketFormatsCPP.GetFormatPackerSizeble(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n        ";
+                    OutPutDeserializeFormat += PacketFormatsCPP.GetDeserializeFormat(classpacker.MemberTypes[j], classpacker.MemberNames[j]) + "\n        ";
                 }
-                //outputclass += string.Format(PacketFormatsCSharp.ObjectFormat, "class", classpacker.Name, OutPutMembersFormat, OutPutGetSizeFormat, OutPutSerializeFormat, OutPutDeserializeFormat) + "\n";
+                outputclass += string.Format(PacketFormatsCPP.ObjectFormat, "class", classpacker.Name, OutPutMembersFormat, OutPutGetSizeFormat, OutPutSerializeFormat, OutPutDeserializeFormat) + "\n";
             }
 
             foreach (var structpacker in StructPackerManager.Inst.PackerList.Values)
@@ -250,10 +250,10 @@ namespace PacketDesignTool.Managers
 
                 for (int j = 0; j < structpacker.MemberTypes.Count; ++j)
                 {
-                    OutPutMembersFormat += PacketFormatsCPP.GetMemberTypeStringFormat(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n        ";
-                    OutPutSerializeFormat += PacketFormatsCPP.GetFormatPacker(structpacker.MemberTypes[j], structpacker.MemberNames[j]);
-                    OutPutGetSizeFormat += PacketFormatsCPP.GetFormatPackerSizeble(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n            ";
-                    OutPutDeserializeFormat += PacketFormatsCPP.GetDeserializeFormat(structpacker.MemberTypes[j], structpacker.MemberNames[j]);
+                    OutPutMembersFormat += PacketFormatsCPP.GetMemberTypeStringFormat(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n    ";
+                    OutPutSerializeFormat += PacketFormatsCPP.GetFormatPacker(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n        ";
+                    OutPutGetSizeFormat += PacketFormatsCPP.GetFormatPackerSizeble(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n        ";
+                    OutPutDeserializeFormat += PacketFormatsCPP.GetDeserializeFormat(structpacker.MemberTypes[j], structpacker.MemberNames[j]) + "\n        ";
                 }
                 outputstruct += string.Format(PacketFormatsCPP.ObjectFormat, "struct", structpacker.Name, OutPutMembersFormat, OutPutGetSizeFormat, OutPutSerializeFormat, OutPutDeserializeFormat) + "\n";
             }
@@ -303,16 +303,16 @@ namespace PacketDesignTool.Managers
 
                     for (int j = 0; j < packer.packer.MemberTypes.Count; ++j)
                     {
-                        OutPutMembersFormat += PacketFormatsCPP.GetMemberTypeStringFormat(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n        ";
-                        OutPutSerializeFormat += PacketFormatsCPP.GetFormatPacker(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]);
-                        OutPutGetSizeFormat += PacketFormatsCPP.GetFormatPackerSizeble(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n            ";
-                        OutPutDeserializeFormat += PacketFormatsCPP.GetDeserializeFormat(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]);
+                        OutPutMembersFormat += PacketFormatsCPP.GetMemberTypeStringFormat(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n    ";
+                        OutPutSerializeFormat += PacketFormatsCPP.GetFormatPacker(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n        ";
+                        OutPutGetSizeFormat += PacketFormatsCPP.GetFormatPackerSizeble(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n        ";
+                        OutPutDeserializeFormat += PacketFormatsCPP.GetDeserializeFormat(packer.packer.MemberTypes[j], packer.packer.MemberNames[j]) + "\n        ";
                     }
 
                     if (packer.MProtoType == PROTOCOL_MSG_TYPE.TCP)
                         outputEventpackets += string.Format(PacketFormatsCPP.GetEventPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
-                    //else
-                    //    outputEventpackets += string.Format(PacketFormatsCSharp.GetEventUDPPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
+                    else
+                        outputEventpackets += string.Format(PacketFormatsCPP.GetEventUPacketClassFormat, ToolStaticLibrary.GetHashSCCode(packer.packer.Name, projectpacket.profiler) + "_" + packer.packer.Name, packer.PacketID, OutPutMembersFormat, OutPutDeserializeFormat, OutPutGetSizeFormat, OutPutSerializeFormat);
 
                     outputenumtype += EnumFormat + "\n" + "    ";
                 }

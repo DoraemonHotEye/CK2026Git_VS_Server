@@ -17,8 +17,6 @@ public:
 
             uint16_t dataSize = *(uint16_t*)buffer;
 
-            std::cout << "[Session*]: " << dataSize << "{Size}" << std::endl;
-
             if (len < dataSize)
                 break;
 
