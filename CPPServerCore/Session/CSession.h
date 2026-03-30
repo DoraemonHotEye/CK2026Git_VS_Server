@@ -29,6 +29,8 @@ public:
     }
 
 public:
+    int32_t sessionID = -1;
+
     virtual ~CSession() {}
 
     virtual void OnConnected(SOCKADDR_IN addr) = 0;

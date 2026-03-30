@@ -56,7 +56,7 @@ int main()
     addr.sin_port = htons(7777);                     // 서버 포트
 
     // 6. 연결 시도
-    connector.Start(addr, iocp, createSession, 15000);
+    connector.Start(addr, iocp, createSession, 1);
 
     cout << "Client Connecting...\n";
 

@@ -9,6 +9,8 @@
 class SessionManager
 {
 private:
+    int32_t sessionCount = 0;
+
     static SessionManager* inst;
 
     std::list<std::unique_ptr<class CSession>> sessions;

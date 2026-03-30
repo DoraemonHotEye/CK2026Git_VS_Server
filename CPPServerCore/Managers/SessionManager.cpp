@@ -14,6 +14,7 @@ SessionManager& SessionManager::Instance()
 void SessionManager::AddSession(std::unique_ptr<CSession> session)
 {
     std::lock_guard<std::mutex> lock(mtx);
+    session.get()->sessionID = sessionCount++;
     sessions.push_back(std::move(session));
 }
 

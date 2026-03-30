@@ -9,10 +9,21 @@
 
 void PacketHandler::GAMECLIENT_CreateRoomCallHandler(CPacketSession* session, PacketInterface* message)
 {
-
+	
 }
 
 void PacketHandler::GAMECLIENT_RoomSendCallHandler(CPacketSession* session, PacketInterface* message)
+{
+	ClientSession* _session = dynamic_cast<ClientSession*>(session);
+	GAMECLIENT_RoomSendCall* _packet = dynamic_cast<GAMECLIENT_RoomSendCall*>(message);
+
+	std::stringstream ss;
+	ss << "SessionID: " << _session->sessionID << "	||	GAMECLIENT_RoomSendCallPacket	||	timeOut: " << _packet->timeout;
+
+	PrintLogThread::Instance().Log(ss.str());
+}
+
+void PacketHandler::GAMECLIENT_JoinRoomCallHandler(CPacketSession* session, PacketInterface* message)
 {
 
 }

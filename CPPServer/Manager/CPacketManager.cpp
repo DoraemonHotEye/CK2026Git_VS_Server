@@ -11,6 +11,8 @@ void PacketManager::Register()
     RegisterHandler((uint16_t)MsgID::GAMECLIENT_CREATEROOMCALL, PacketHandler::GAMECLIENT_CreateRoomCallHandler);
     _makeFunc[(uint16_t)MsgID::GAMECLIENT_ROOMSENDCALL] = MakePacket<GAMECLIENT_RoomSendCall>;
     RegisterHandler((uint16_t)MsgID::GAMECLIENT_ROOMSENDCALL, PacketHandler::GAMECLIENT_RoomSendCallHandler);
+    _makeFunc[(uint16_t)MsgID::GAMECLIENT_JOINROOMCALL] = MakePacket<GAMECLIENT_JoinRoomCall>;
+    RegisterHandler((uint16_t)MsgID::GAMECLIENT_JOINROOMCALL, PacketHandler::GAMECLIENT_JoinRoomCallHandler);
     
 }
 
