@@ -9,6 +9,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include "../Managers/SessionManager.h"
+#include "../ServerSupports/PrintLogThread.h"
 
 void CSession::Start(SOCKET socket, HANDLE iocp)
 {
@@ -154,38 +155,45 @@ void CSession::RegisterSend()
 
 void CSession::ProcessRecv(int bytes)
 {
-    // 1. Write 커서 이동
-    if (_recvBuffer.OnWrite(bytes) == false)
+    try
     {
-        Disconnect();
-        return;
+
+        // 1. Write 커서 이동
+        if (_recvBuffer.OnWrite(bytes) == false)
+        {
+            Disconnect();
+            return;
+        }
+
+        // 2. RecvBuffer 기준으로 처리
+        int processLen = OnRecv(
+            reinterpret_cast<char*>(_recvBuffer.ReadPtr()),
+            (int)_recvBuffer.DataSize()
+        );
+
+        // 3. 처리 검증
+        if (processLen < 0 || _recvBuffer.DataSize() < (size_t)processLen)
+        {
+            Disconnect();
+            return;
+        }
+
+        // 4. Read 커서 이동
+        if (_recvBuffer.OnRead(processLen) == false)
+        {
+            Disconnect();
+            return;
+        }
+
+        // 5. 버퍼 정리
+        _recvBuffer.Clean();
+
+        RegisterRecv();
     }
-
-    // 2. RecvBuffer 기준으로 처리
-    int processLen = OnRecv(
-        reinterpret_cast<char*>(_recvBuffer.ReadPtr()),
-        (int)_recvBuffer.DataSize()
-    );
-
-    // 3. 처리 검증
-    if (processLen < 0 || _recvBuffer.DataSize() < (size_t)processLen)
+    catch (const std::exception& exec)
     {
-        Disconnect();
-        return;
+        LOG(exec.what());
     }
-
-    // 4. Read 커서 이동
-    if (_recvBuffer.OnRead(processLen) == false)
-    {
-        Disconnect();
-        return;
-    }
-
-    // 5. 버퍼 정리
-    _recvBuffer.Clean();
-
-    // 6. 다시 recv 등록
-    RegisterRecv();
 }
 
 void CSession::ProcessSend(int bytes)

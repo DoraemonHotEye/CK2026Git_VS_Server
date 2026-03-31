@@ -40,7 +40,7 @@ public:
         return pkt;
     }
 
-    void HandlePacket(class CPacketSession* session, PacketInterface* packet, uint16_t id)
+    inline void HandlePacket(class CPacketSession* session, PacketInterface* packet, uint16_t id)
     {
         auto it = _handler.find(id);
         if (it != _handler.end())

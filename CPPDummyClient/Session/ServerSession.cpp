@@ -19,7 +19,7 @@ void ServerSession::OnConnected(SOCKADDR_IN addr)
     log += ":";
     log += std::to_string(ntohs(addr.sin_port));
 
-    PrintLogThread::Instance().Log(log);
+    LOG(log);
 
     GAMECLIENT_RoomSendCall call = GAMECLIENT_RoomSendCall();
     call.timeout = 40;

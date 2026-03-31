@@ -20,7 +20,7 @@ void ClientSession::OnConnected(SOCKADDR_IN addr)
     log += ":: Session ID: ";
     log += std::to_string(sessionID);
 
-    PrintLogThread::Instance().Log(log);
+    LOG(log);
 }
 
 void ClientSession::OnSend(int len)
@@ -40,7 +40,7 @@ void ClientSession::OnDisconnected(SOCKADDR_IN addr)
     log += ":";
     log += std::to_string(ntohs(addr.sin_port));
 
-    PrintLogThread::Instance().Log(log);
+    LOG(log);
 }
 
 void ClientSession::OnRecvPacket(char* buffer, int len)
