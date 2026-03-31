@@ -2947,7 +2947,6 @@ public:
     uint16_t SeqNum = 0;
 
     uint16_t NetID;
-    int32_t GroundLayer;
     
 
     virtual void Deserialize(const std::vector<uint8_t>& data) override
@@ -2970,8 +2969,6 @@ public:
 
         std::memcpy(&NetID, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
-        std::memcpy(&GroundLayer, &data[offset], sizeof(int32_t));
-        offset += sizeof(int32_t);
         
     }
 
@@ -2982,8 +2979,6 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
-        
-        size += sizeof(int32_t);
         
                 
         
@@ -3009,9 +3004,6 @@ public:
         
         std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
         offset += sizeof(uint16_t);
-        
-        std::memcpy(&buffer[offset], &GroundLayer, sizeof(int32_t));
-        offset += sizeof(int32_t);
         
         
 

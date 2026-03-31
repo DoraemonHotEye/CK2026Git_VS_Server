@@ -2768,7 +2768,6 @@ namespace MakePacketTemplate.Packets
         public ushort SeqNum;
 
         public ushort NetID;
-        public int GroundLayer;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -2788,8 +2787,6 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            GroundLayer = BitConverter.ToInt32(buffer, start + offset);
-            offset += sizeof(int);
             
         }
 
@@ -2802,8 +2799,6 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // SeqNum
 
             size += sizeof(ushort);
-            
-            size += sizeof(int);
             
             
 
@@ -2827,8 +2822,6 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
-            BitConverter.GetBytes(GroundLayer).CopyTo(buffer, offset);        
-            offset += sizeof(int);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
