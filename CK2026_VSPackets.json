@@ -1148,6 +1148,38 @@
           }
         ],
         "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERTELEPORT": {
+        "packer": {
+          "Name": "MonsterTeleport",
+          "MemberTypes": [
+            "single:ushort",
+            "single:float",
+            "single:float"
+          ],
+          "MemberNames": [
+            "NetID",
+            "PosX",
+            "PosY"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERTELEPORT",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
       }
     },
     "profiler": {

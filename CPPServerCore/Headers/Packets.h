@@ -153,17 +153,20 @@ enum class MsgID : uint16_t
     GAMECLIENT_PROJECTILESTOP = 31,
     GAMECLIENT_MONSTERVELOCITYSET = 32,
     GAMECLIENT_PROJECTILEDISABLECALL = 33,
-    MAINSERVER_SENDSESSIONID = 34,
-    MAINSERVER_OTHERPLAYERROOMJOIN = 35,
-    MAINSERVER_SENDROOMLIST = 36,
-    MAINSERVER_JOINROOMSUCC = 37,
-    MAINSERVER_ROOMMASTERCHANGED = 38,
-    MAINSERVER_ROOMEXITSUCC = 39,
-    MAINSERVER_OTHERPLAYERROOMEXIT = 40,
-    MAINSERVER_NOROOMCALLBACK = 41,
-    MAINSERVER_SENDPEERUSER = 42,
-    MAINSERVER_GAMESTARTSUCC = 43,
-    MAINSERVER_SENDPBENDPOINT = 44,
+    GAMECLIENT_GROUNDCHECK = 34,
+    GAMECLIENT_MONSTERGRAB = 35,
+    GAMECLIENT_MONSTERTELEPORT = 36,
+    MAINSERVER_SENDSESSIONID = 37,
+    MAINSERVER_OTHERPLAYERROOMJOIN = 38,
+    MAINSERVER_SENDROOMLIST = 39,
+    MAINSERVER_JOINROOMSUCC = 40,
+    MAINSERVER_ROOMMASTERCHANGED = 41,
+    MAINSERVER_ROOMEXITSUCC = 42,
+    MAINSERVER_OTHERPLAYERROOMEXIT = 43,
+    MAINSERVER_NOROOMCALLBACK = 44,
+    MAINSERVER_SENDPEERUSER = 45,
+    MAINSERVER_GAMESTARTSUCC = 46,
+    MAINSERVER_SENDPBENDPOINT = 47,
     
     DGRAM_SERVER_REQUESTACK = 25562,
     DGRAM_SERVER_ACKSEQ = 25563,
@@ -2932,6 +2935,248 @@ public:
         
         std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
         offset += sizeof(uint16_t);
+        
+        
+
+        return buffer;
+    }
+};
+class GAMECLIENT_GroundCheck : public PacketInterface
+{
+public:
+    MsgID MsgIDValue = MsgID::GAMECLIENT_GROUNDCHECK;
+    uint16_t SeqNum = 0;
+
+    uint16_t NetID;
+    
+
+    virtual void Deserialize(const std::vector<uint8_t>& data) override
+    {
+        if (data.size() < GetSize())
+            return;
+
+        size_t offset = 0;
+
+        uint16_t packetSize;
+        std::memcpy(&packetSize, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t packetId;
+        std::memcpy(&packetId, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&SeqNum, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        std::memcpy(&NetID, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+    }
+
+    virtual uint16_t GetSize() const override
+    {
+        uint16_t size = 0;
+        size += sizeof(uint16_t); // PacketSize
+        size += sizeof(uint16_t); // PacketID
+        size += sizeof(uint16_t); // SeqNum
+        size += sizeof(uint16_t);
+        
+                
+        
+        return size;
+    }
+
+    virtual std::vector<uint8_t> Serialize() override
+    {
+        uint16_t size = GetSize();
+        std::vector<uint8_t> buffer(size);
+
+        size_t offset = 0;
+
+        std::memcpy(&buffer[offset], &size, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t msgId = static_cast<uint16_t>(MsgIDValue);
+        std::memcpy(&buffer[offset], &msgId, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &SeqNum, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        
+
+        return buffer;
+    }
+};
+class GAMECLIENT_MonsterGrab : public PacketInterface
+{
+public:
+    MsgID MsgIDValue = MsgID::GAMECLIENT_MONSTERGRAB;
+    uint16_t SeqNum = 0;
+
+    uint16_t NetID;
+    float x;
+    float y;
+    
+
+    virtual void Deserialize(const std::vector<uint8_t>& data) override
+    {
+        if (data.size() < GetSize())
+            return;
+
+        size_t offset = 0;
+
+        uint16_t packetSize;
+        std::memcpy(&packetSize, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t packetId;
+        std::memcpy(&packetId, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&SeqNum, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        std::memcpy(&NetID, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        std::memcpy(&x, &data[offset], sizeof(float));
+        offset += sizeof(float);
+        std::memcpy(&y, &data[offset], sizeof(float));
+        offset += sizeof(float);
+        
+    }
+
+    virtual uint16_t GetSize() const override
+    {
+        uint16_t size = 0;
+        size += sizeof(uint16_t); // PacketSize
+        size += sizeof(uint16_t); // PacketID
+        size += sizeof(uint16_t); // SeqNum
+        size += sizeof(uint16_t);
+        
+        size += sizeof(float);
+        
+        size += sizeof(float);
+        
+                
+        
+        return size;
+    }
+
+    virtual std::vector<uint8_t> Serialize() override
+    {
+        uint16_t size = GetSize();
+        std::vector<uint8_t> buffer(size);
+
+        size_t offset = 0;
+
+        std::memcpy(&buffer[offset], &size, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t msgId = static_cast<uint16_t>(MsgIDValue);
+        std::memcpy(&buffer[offset], &msgId, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &SeqNum, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &x, sizeof(float));
+        offset += sizeof(float);
+        
+        std::memcpy(&buffer[offset], &y, sizeof(float));
+        offset += sizeof(float);
+        
+        
+
+        return buffer;
+    }
+};
+class GAMECLIENT_MonsterTeleport : public PacketInterface
+{
+public:
+    MsgID MsgIDValue = MsgID::GAMECLIENT_MONSTERTELEPORT;
+    uint16_t SeqNum = 0;
+
+    uint16_t NetID;
+    float PosX;
+    float PosY;
+    
+
+    virtual void Deserialize(const std::vector<uint8_t>& data) override
+    {
+        if (data.size() < GetSize())
+            return;
+
+        size_t offset = 0;
+
+        uint16_t packetSize;
+        std::memcpy(&packetSize, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t packetId;
+        std::memcpy(&packetId, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&SeqNum, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        std::memcpy(&NetID, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        std::memcpy(&PosX, &data[offset], sizeof(float));
+        offset += sizeof(float);
+        std::memcpy(&PosY, &data[offset], sizeof(float));
+        offset += sizeof(float);
+        
+    }
+
+    virtual uint16_t GetSize() const override
+    {
+        uint16_t size = 0;
+        size += sizeof(uint16_t); // PacketSize
+        size += sizeof(uint16_t); // PacketID
+        size += sizeof(uint16_t); // SeqNum
+        size += sizeof(uint16_t);
+        
+        size += sizeof(float);
+        
+        size += sizeof(float);
+        
+                
+        
+        return size;
+    }
+
+    virtual std::vector<uint8_t> Serialize() override
+    {
+        uint16_t size = GetSize();
+        std::vector<uint8_t> buffer(size);
+
+        size_t offset = 0;
+
+        std::memcpy(&buffer[offset], &size, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t msgId = static_cast<uint16_t>(MsgIDValue);
+        std::memcpy(&buffer[offset], &msgId, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &SeqNum, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &PosX, sizeof(float));
+        offset += sizeof(float);
+        
+        std::memcpy(&buffer[offset], &PosY, sizeof(float));
+        offset += sizeof(float);
         
         
 
