@@ -521,6 +521,46 @@ void PacketManager::RegisterHandler(uint16_t id, HandlerFunc func)
     _handler[id] = func;
 }}";
 
+        public static string UPacketManagerFormat = @"
+#include ""CUPacketManager.h""
+#include ""../../CPPServerCore/Headers/Packets.h""
+#include ""../../CPPServerCore/Session/CPacketSession.h""
+#include ""../Handler/UPacketHandler.h""
+
+void UPacketManager::Register()
+{{
+    {0}
+}}
+
+void UPacketManager::OnRecvPacket(UPacketSession* session, SOCKADDR_IN& addr, const std::vector<uint8_t>& buffer, HandlerFunc onRecvCallback)
+{{
+    size_t offset = 0;
+
+    if (buffer.size() < 4) return; // 최소 크기 체크
+
+    uint16_t size = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
+    offset += sizeof(uint16_t);
+
+    uint16_t id = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
+    offset += sizeof(uint16_t);
+
+    auto it = _makeFunc.find(id);
+    if (it != _makeFunc.end())
+    {{
+        std::unique_ptr<PacketInterface> packet = it->second(session, addr, buffer);
+
+        if (onRecvCallback)
+            onRecvCallback(session, addr, packet.get());
+        else
+            HandlePacket(session, addr, packet.get(), id);
+    }}
+}}
+
+void UPacketManager::RegisterHandler(uint16_t id, HandlerFunc func)
+{{
+    _handler[id] = func;
+}}";
+
         public static string PacketHandlerFormat = @"
 #pragma once
 
@@ -529,8 +569,24 @@ class PacketHandler
 public:
 	{0}
 }};";
+
+        public static string UPacketHandlerFormat = @"
+#pragma once
+#include <WinSock2.h>
+
+class UPacketHandler
+{{
+public:
+    {0}
+
+}};";
+
         public static string MakeHandlerMethodFormat = 
             @"static void {0}Handler(class CPacketSession* session, class PacketInterface* message);
+    ";
+
+        public static string UMakeHandlerMethodFormat =
+            @"static void {0}Handler(class CPacketSession* session, SOCKADDR_IN& addr, class PacketInterface* message);
     ";
 
         public static string MakeFuncManagerFormat =
@@ -706,10 +762,13 @@ public:
         {
             return string.Format(MakeFuncManagerFormat, MsgID, ToolStaticLibrary.GetHashSCCode(packer.Name, profiler) + "_" + packer.Name);
         }
-
         public static string GetFormatHandlerMakeFunc(Packer packer, ProjectSettingProfiler profiler, string MsgID)
         {
             return string.Format(MakeHandlerMethodFormat, ToolStaticLibrary.GetHashSCCode(packer.Name, profiler) + "_" + packer.Name);
+        }
+        public static string GetUFormatHandlerMakeFunc(Packer packer, ProjectSettingProfiler profiler, string MsgID)
+        {
+            return string.Format(UMakeHandlerMethodFormat, ToolStaticLibrary.GetHashSCCode(packer.Name, profiler) + "_" + packer.Name);
         }
 
         public static string GetMemberTypeStringFormat(string MemberType, string MemberName)

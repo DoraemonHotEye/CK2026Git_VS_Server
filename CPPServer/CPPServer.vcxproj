@@ -124,8 +124,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Handler\PacketHandler.cpp" />
+    <ClCompile Include="Handler\UPacketHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager\CPacketManager.cpp" />
+    <ClCompile Include="Manager\CUPacketManager.cpp" />
     <ClCompile Include="Session\ClientSession.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Handler\PacketHandler.h" />
+    <ClInclude Include="Handler\UPacketHandler.h" />
     <ClInclude Include="Manager\CPacketManager.h" />
+    <ClInclude Include="Manager\CUPacketManager.h" />
     <ClInclude Include="Session\ClientSession.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -294,7 +294,7 @@ namespace PacketDesignTool.Managers
                                 }
                                 else
                                 {
-                                    //strvalue += PacketFormatsCSharp.GetFormatUManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                    strvalue += PacketFormatsCPP.GetFormatManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
                                 }
                                 OutPutPacketManagers[linked.Name][packer.MProtoType] = strvalue;
                             }
@@ -311,7 +311,7 @@ namespace PacketDesignTool.Managers
                                 }
                                 else
                                 {
-                                    //strvalue += PacketFormatsCSharp.GetFormatUManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                    strvalue += PacketFormatsCPP.GetUFormatHandlerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
                                 }
                                 OutPutPacketHandlers[linked.Name][packer.MProtoType] = strvalue;
                             }
@@ -351,7 +351,7 @@ namespace PacketDesignTool.Managers
             foreach (var Managers in OutPutPacketManagers.Keys)
             {
                 string output_PacketManager = string.Format(PacketFormatsCPP.PacketManagerFormat, OutPutPacketManagers[Managers][PROTOCOL_MSG_TYPE.TCP]);
-                //string output_UPacketManager = string.Format(PacketFormatsCSharp.UPacketManagerFormat, OutPutPacketManagers[Managers][PROTOCOL_MSG_TYPE.UDP]);
+                string output_UPacketManager = string.Format(PacketFormatsCPP.UPacketManagerFormat, OutPutPacketManagers[Managers][PROTOCOL_MSG_TYPE.UDP]);
 
                 string savepath = "";
 
@@ -379,7 +379,7 @@ namespace PacketDesignTool.Managers
 
                 if (currProfiler.isUseUDP == true)
                 {
-                    //System.IO.File.WriteAllText(savepath + "/UPacketManager.cs", output_UPacketManager);
+                    System.IO.File.WriteAllText(savepath + "/CUPacketManager.cs", output_UPacketManager);
                 }
             }
 
