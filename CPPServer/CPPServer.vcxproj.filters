@@ -27,10 +27,7 @@
     <ClCompile Include="Handler\PacketHandler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Manager\CUPacketManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Handler\UPacketHandler.cpp">
+    <ClCompile Include="Session\UClientSession.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,10 +41,7 @@
     <ClInclude Include="Handler\PacketHandler.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Manager\CUPacketManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Handler\UPacketHandler.h">
+    <ClInclude Include="Session\UClientSession.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

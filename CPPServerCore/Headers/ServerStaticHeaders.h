@@ -44,6 +44,35 @@ struct RecvContext : public IOContext
     }
 };
 
+struct URecvContext : public IOContext
+{
+    WSABUF wsaBuf;
+    char buffer[1024];
+    SOCKADDR_IN addr;
+    int addrLen = sizeof(addr);
+
+    URecvContext()
+    {
+        ZeroMemory(&overlapped, sizeof(OVERLAPPED));
+        type = Type::Recv;
+        wsaBuf.buf = buffer;
+        wsaBuf.len = sizeof(buffer);
+    }
+};
+
+struct USendContext : public IOContext
+{
+    WSABUF wsaBuf;
+    SOCKADDR_IN addr;
+    int addrLen = sizeof(addr);
+
+    USendContext()
+    {
+        ZeroMemory(&overlapped, sizeof(OVERLAPPED));
+        type = Type::Send;
+    }
+};
+
 struct SendContext : public IOContext
 {
     WSABUF wsaBuf;

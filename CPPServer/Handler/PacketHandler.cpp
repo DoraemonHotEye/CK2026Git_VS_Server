@@ -27,3 +27,13 @@ void PacketHandler::GAMECLIENT_JoinRoomCallHandler(CPacketSession* session, Pack
 {
 
 }
+
+void PacketHandler::GAMECLIENT_RoomExitCallHandler(CPacketSession* session, PacketInterface* message)
+{
+
+}
+
+void PacketHandler::GAMECLIENT_GameStartHandler(CPacketSession* session, PacketInterface* message)
+{
+
+}

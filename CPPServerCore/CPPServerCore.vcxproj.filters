@@ -51,6 +51,12 @@
     <ClInclude Include="ServerSupports\PrintLogThread.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="UDP\Session\CUSession.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UDP\Session\CUPacketSession.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Listener\CListener.cpp">
@@ -72,6 +78,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ServerSupports\PrintLogThread.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UDP\Session\CUSession.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
