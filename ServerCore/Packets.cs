@@ -147,17 +147,19 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_PROJECTILESTOP = 31,
          GAMECLIENT_MONSTERVELOCITYSET = 32,
          GAMECLIENT_PROJECTILEDISABLECALL = 33,
-         MAINSERVER_SENDSESSIONID = 34,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 35,
-         MAINSERVER_SENDROOMLIST = 36,
-         MAINSERVER_JOINROOMSUCC = 37,
-         MAINSERVER_ROOMMASTERCHANGED = 38,
-         MAINSERVER_ROOMEXITSUCC = 39,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 40,
-         MAINSERVER_NOROOMCALLBACK = 41,
-         MAINSERVER_SENDPEERUSER = 42,
-         MAINSERVER_GAMESTARTSUCC = 43,
-         MAINSERVER_SENDPBENDPOINT = 44,
+         GAMECLIENT_GROUNDCHECK = 34,
+         GAMECLIENT_MONSTERGRAB = 35,
+         MAINSERVER_SENDSESSIONID = 36,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 37,
+         MAINSERVER_SENDROOMLIST = 38,
+         MAINSERVER_JOINROOMSUCC = 39,
+         MAINSERVER_ROOMMASTERCHANGED = 40,
+         MAINSERVER_ROOMEXITSUCC = 41,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 42,
+         MAINSERVER_NOROOMCALLBACK = 43,
+         MAINSERVER_SENDPEERUSER = 44,
+         MAINSERVER_GAMESTARTSUCC = 45,
+         MAINSERVER_SENDPBENDPOINT = 46,
          
          DGRAM_SERVER_REQUESTACK = 25562,
          DGRAM_SERVER_ACKSEQ = 25563,
@@ -2754,6 +2756,159 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_GroundCheck : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_GROUNDCHECK;
+        public ushort SeqNum;
+
+        public ushort NetID;
+        public int GroundLayer;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            NetID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            GroundLayer = BitConverter.ToInt32(buffer, start + offset);
+            offset += sizeof(int);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
+
+            size += sizeof(ushort);
+            
+            size += sizeof(int);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(GroundLayer).CopyTo(buffer, offset);        
+            offset += sizeof(int);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_MonsterGrab : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_MONSTERGRAB;
+        public ushort SeqNum;
+
+        public ushort NetID;
+        public float x;
+        public float y;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            NetID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            x = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            y = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
+
+            size += sizeof(ushort);
+            
+            size += sizeof(float);
+            
+            size += sizeof(float);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(x).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(y).CopyTo(buffer, offset);        
+            offset += sizeof(float);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
