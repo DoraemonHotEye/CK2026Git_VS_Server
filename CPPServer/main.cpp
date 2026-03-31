@@ -9,6 +9,7 @@
 #include "../CPPServerCore/Managers/SessionManager.h"
 #include "../CPPServerCore/Headers/StaticMethods.h"
 #include "../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../CPPServerCore/UDP/Session/CUSession.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -47,7 +48,7 @@ int main()
             return rawPtr; // IOCP에서 raw pointer 사용
         };
 
-    
+    CUSession cusession;
 
     // 5. 주소 설정
     SOCKADDR_IN addr;
@@ -57,6 +58,7 @@ int main()
 
     // 6. Listener 시작
     listener.Start(addr, iocp, createSession);
+    cusession.Start(5556, iocp);
 
     std::cout << "Server Started (Port: 7777)\n";
 

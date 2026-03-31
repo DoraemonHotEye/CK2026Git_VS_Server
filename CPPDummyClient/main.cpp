@@ -9,6 +9,7 @@
 #include "../CPPServerCore/Managers/SessionManager.h"
 #include "../CPPServerCore/Headers/StaticMethods.h"
 #include "../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../CPPServerCore/UDP/Session/CUSession.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -31,6 +32,8 @@ int main()
         std::thread(workerThread, iocp).detach();
     }
 
+    CUSession cusession;
+
     // 3. Connector 생성
     Connector connector;
 
@@ -49,14 +52,25 @@ int main()
             return rawPtr; // IOCP에서 raw pointer 사용
         };
 
+    SOCKADDR_IN addru;
+    addru.sin_family = AF_INET;
+    inet_pton(AF_INET, "127.0.0.1", &addru.sin_addr); // 서버 IP
+    addru.sin_port = htons(5556);
+
+    cusession.StartClient(iocp);
+
+    char data[] = "asdsadsad";  // mutable copy
+    cusession.SendTo(addru, data, strlen(data));
+
     // 5. 서버 주소 설정
     SOCKADDR_IN addr;
     addr.sin_family = AF_INET;
     inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr); // 서버 IP
     addr.sin_port = htons(7777);                     // 서버 포트
 
+
     // 6. 연결 시도
-    connector.Start(addr, iocp, createSession, 100000);
+    connector.Start(addr, iocp, createSession, 1);
 
     cout << "Client Connecting...\n";
 
