@@ -294,7 +294,7 @@ namespace PacketDesignTool.Managers
                                 }
                                 else
                                 {
-                                    strvalue += PacketFormatsCPP.GetFormatManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
+                                    strvalue += PacketFormatsCPP.GetUFormatManagerMakeFunc(packer.packer, projectpacket.profiler, packer.PacketID.ToString());
                                 }
                                 OutPutPacketManagers[linked.Name][packer.MProtoType] = strvalue;
                             }
@@ -379,14 +379,14 @@ namespace PacketDesignTool.Managers
 
                 if (currProfiler.isUseUDP == true)
                 {
-                    System.IO.File.WriteAllText(savepath + "/CUPacketManager.cs", output_UPacketManager);
+                    System.IO.File.WriteAllText(savepath + "/CUPacketManager.cpp", output_UPacketManager);
                 }
             }
 
             foreach (var Handlers in OutPutPacketHandlers.Keys)
             {
                 string output_PacketHandler = string.Format(PacketFormatsCPP.PacketHandlerFormat, OutPutPacketHandlers[Handlers][PROTOCOL_MSG_TYPE.TCP]);
-                //string output_UPacketManager = string.Format(PacketFormatsCSharp.UPacketManagerFormat, OutPutPacketManagers[Managers][PROTOCOL_MSG_TYPE.UDP]);
+                string output_UPacketHandler = string.Format(PacketFormatsCPP.UPacketHandlerFormat, OutPutPacketHandlers[Handlers][PROTOCOL_MSG_TYPE.UDP]);
 
                 string savepath = "";
 
@@ -414,7 +414,7 @@ namespace PacketDesignTool.Managers
 
                 if (currProfiler.isUseUDP == true)
                 {
-                    //System.IO.File.WriteAllText(savepath + "/UPacketManager.cs", output_UPacketManager);
+                    System.IO.File.WriteAllText(savepath + "/UPacketHandler.h", output_UPacketHandler);
                 }
             }
 

@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../Manager/CUPacketManager.h"
 
 
 void UClientSession::OnSend(int len)
@@ -12,8 +13,7 @@ void UClientSession::OnSend(int len)
 
 void UClientSession::OnRecvPacket(char* buffer, int len, SOCKADDR_IN& addr)
 {
-	std::string log;
-	log += std::to_string(len);
+	std::vector<uint8_t> vecBuffer(buffer, buffer + len);
 
-	LOG(log);
+	UPacketManager::Instance().OnRecvPacket(this, addr, vecBuffer);
 }

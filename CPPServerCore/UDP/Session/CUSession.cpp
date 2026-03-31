@@ -4,6 +4,7 @@
 #include <WS2tcpip.h>
 
 #include "../../ServerSupports/PrintLogThread.h"
+#include "../../Headers/Packets.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -161,6 +162,13 @@ void CUSession::ProcessRecv(int bytes)
     {
         LOG(exec.what());
     }
+}
+
+void CUSession::Send(PacketInterface& packet, SOCKADDR_IN& addr)
+{
+    std::vector<uint8_t> serialized = packet.Serialize();
+
+    SendTo(addr, reinterpret_cast<char*>(serialized.data()), packet.GetSize());
 }
 
 void CUSession::SendTo(SOCKADDR_IN& addr, char* data, int len)

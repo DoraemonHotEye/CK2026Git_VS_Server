@@ -40,6 +40,7 @@ private:
     
 public:
     void SendTo(SOCKADDR_IN& addr, char* data, int len);
+    void Send(class PacketInterface& packet, SOCKADDR_IN& addr);
 
 protected:
     RecvBuffer _recvBuffer{ 8192 }; // 사이즈 적당히

@@ -1,13 +1,16 @@
 #include "UPacketHandler.h"
+#include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../../CPPServerCore/Headers/Packets.h"
 
-void UPacketHandler::GAMECLIENT_CreateRoomCallHandler(CPacketSession* session, SOCKADDR_IN& addr, PacketInterface* message)
-{
-}
+#include <string>
 
-void UPacketHandler::GAMECLIENT_RoomSendCallHandler(CPacketSession* session, SOCKADDR_IN& addr, PacketInterface* message)
+void UPacketHandler::GAMECLIENT_DisconnectUDPHandler(CUPacketSession* session, SOCKADDR_IN& addr, PacketInterface* message)
 {
-}
+	GAMECLIENT_DisconnectUDP* _packet = dynamic_cast<GAMECLIENT_DisconnectUDP*>(message);
 
-void UPacketHandler::GAMECLIENT_JoinRoomCallHandler(CPacketSession* session, SOCKADDR_IN& addr, PacketInterface* message)
-{
+	std::string msg;
+
+	msg += std::to_string(_packet->timeout);
+
+	LOG(msg);
 }

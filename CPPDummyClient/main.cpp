@@ -11,6 +11,7 @@
 #include "../CPPServerCore/ServerSupports/PrintLogThread.h"
 #include "../CPPServerCore/UDP/Session/CUSession.h"
 #include "Session/UServerSession.h"
+#include "../CPPServerCore/Headers/Packets.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -60,8 +61,9 @@ int main()
 
     cusession.StartClient(iocp);
 
-    char data[] = "asdsadsad";  // mutable copy
-    cusession.SendTo(addru, data, strlen(data));
+    GAMECLIENT_DisconnectUDP disconnect = GAMECLIENT_DisconnectUDP();
+    disconnect.timeout = 9941;
+    cusession.Send(disconnect, addru);
 
     // 5. 서버 주소 설정
     SOCKADDR_IN addr;

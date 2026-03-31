@@ -523,8 +523,10 @@ void PacketManager::RegisterHandler(uint16_t id, HandlerFunc func)
 
         public static string UPacketManagerFormat = @"
 #include ""CUPacketManager.h""
+
 #include ""../../CPPServerCore/Headers/Packets.h""
-#include ""../../CPPServerCore/Session/CPacketSession.h""
+#include ""../../CPPServerCore/UDP/Session/CUPacketSession.h""
+
 #include ""../Handler/UPacketHandler.h""
 
 void UPacketManager::Register()
@@ -532,7 +534,7 @@ void UPacketManager::Register()
     {0}
 }}
 
-void UPacketManager::OnRecvPacket(UPacketSession* session, SOCKADDR_IN& addr, const std::vector<uint8_t>& buffer, HandlerFunc onRecvCallback)
+void UPacketManager::OnRecvPacket(CUPacketSession* session, SOCKADDR_IN& addr, const std::vector<uint8_t>& buffer, HandlerFunc onRecvCallback)
 {{
     size_t offset = 0;
 
@@ -547,7 +549,7 @@ void UPacketManager::OnRecvPacket(UPacketSession* session, SOCKADDR_IN& addr, co
     auto it = _makeFunc.find(id);
     if (it != _makeFunc.end())
     {{
-        std::unique_ptr<PacketInterface> packet = it->second(session, addr, buffer);
+        std::unique_ptr<PacketInterface> packet = it->second(session, buffer);
 
         if (onRecvCallback)
             onRecvCallback(session, addr, packet.get());
@@ -586,12 +588,17 @@ public:
     ";
 
         public static string UMakeHandlerMethodFormat =
-            @"static void {0}Handler(class CPacketSession* session, SOCKADDR_IN& addr, class PacketInterface* message);
+            @"static void {0}Handler(class CUPacketSession* session, SOCKADDR_IN& addr, class PacketInterface* message);
     ";
 
         public static string MakeFuncManagerFormat =
             @"_makeFunc[(uint16_t)MsgID::{0}] = MakePacket<{1}>;
     RegisterHandler((uint16_t)MsgID::{0}, PacketHandler::{1}Handler);
+    ";
+
+        public static string MakeUFuncManagerFormat =
+            @"_makeFunc[(uint16_t)MsgID::{0}] = MakePacket<{1}>;
+    RegisterHandler((uint16_t)MsgID::{0}, UPacketHandler::{1}Handler);
     ";
 
         #region MemberType Offset Formats (C++)
@@ -761,6 +768,10 @@ public:
         public static string GetFormatManagerMakeFunc(Packer packer, ProjectSettingProfiler profiler, string MsgID)
         {
             return string.Format(MakeFuncManagerFormat, MsgID, ToolStaticLibrary.GetHashSCCode(packer.Name, profiler) + "_" + packer.Name);
+        }
+        public static string GetUFormatManagerMakeFunc(Packer packer, ProjectSettingProfiler profiler, string MsgID)
+        {
+            return string.Format(MakeUFuncManagerFormat, MsgID, ToolStaticLibrary.GetHashSCCode(packer.Name, profiler) + "_" + packer.Name);
         }
         public static string GetFormatHandlerMakeFunc(Packer packer, ProjectSettingProfiler profiler, string MsgID)
         {

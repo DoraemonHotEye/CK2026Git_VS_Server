@@ -28,22 +28,22 @@ private:
 
 public:
     using MakeFunc = 
-        std::function<std::unique_ptr<PacketInterface>(class UPacketSession*, SOCKADDR_IN&, const std::vector<uint8_t>&)>;
-    using HandlerFunc = std::function<void(class UPacketSession*, SOCKADDR_IN&, PacketInterface*)>;
+        std::function<std::unique_ptr<PacketInterface>(class CUPacketSession*, const std::vector<uint8_t>&)>;
+    using HandlerFunc = std::function<void(class CUPacketSession*, SOCKADDR_IN&, PacketInterface*)>;
 
     void Register();
 
-    void OnRecvPacket(class UPacketSession* session, SOCKADDR_IN& addr, const std::vector<uint8_t>& buffer, HandlerFunc onRecvCallback = nullptr);
+    void OnRecvPacket(class CUPacketSession* session, SOCKADDR_IN& addr, const std::vector<uint8_t>& buffer, HandlerFunc onRecvCallback = nullptr);
 
     template<typename T>
-    static std::unique_ptr<PacketInterface> MakePacket(class UPacketSession* session, const std::vector<uint8_t>& buffer)
+    static std::unique_ptr<PacketInterface> MakePacket(class CUPacketSession* session, const std::vector<uint8_t>& buffer)
     {
         auto pkt = std::make_unique<T>();
         pkt->Deserialize(buffer);
         return pkt;
     }
 
-    void HandlePacket(class UPacketSession* session, SOCKADDR_IN& addr, PacketInterface* packet, uint16_t id)
+    void HandlePacket(class CUPacketSession* session, SOCKADDR_IN& addr, PacketInterface* packet, uint16_t id)
     {
         auto it = _handler.find(id);
         if (it != _handler.end())
