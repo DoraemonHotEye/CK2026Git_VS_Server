@@ -127,6 +127,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager\CPacketManager.cpp" />
     <ClCompile Include="Session\ClientSession.cpp" />
+    <ClCompile Include="Session\UClientSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CPPServerCore\CPPServerCore.vcxproj">
@@ -137,6 +138,7 @@
     <ClInclude Include="Handler\PacketHandler.h" />
     <ClInclude Include="Manager\CPacketManager.h" />
     <ClInclude Include="Session\ClientSession.h" />
+    <ClInclude Include="Session\UClientSession.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

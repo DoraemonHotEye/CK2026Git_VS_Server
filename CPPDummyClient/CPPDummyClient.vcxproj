@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Session\ServerSession.cpp" />
+    <ClCompile Include="Session\UServerSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CPPServerCore\CPPServerCore.vcxproj">
@@ -133,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session\ServerSession.h" />
+    <ClInclude Include="Session\UServerSession.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

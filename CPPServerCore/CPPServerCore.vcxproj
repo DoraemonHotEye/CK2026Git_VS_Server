@@ -147,6 +147,7 @@
     <ClInclude Include="ServerSupports\PrintLogThread.h" />
     <ClInclude Include="Session\CPacketSession.h" />
     <ClInclude Include="Session\CSession.h" />
+    <ClInclude Include="UDP\Session\CUPacketSession.h" />
     <ClInclude Include="UDP\Session\CUSession.h" />
   </ItemGroup>
   <ItemGroup>

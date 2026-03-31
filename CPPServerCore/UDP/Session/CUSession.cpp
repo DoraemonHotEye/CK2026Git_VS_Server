@@ -7,28 +7,6 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
-void CUSession::OnRecvFrom(char* buffer, int len, SOCKADDR_IN& addr)
-{
-    char ipStr[INET_ADDRSTRLEN] = {};
-
-    InetNtopA(
-        AF_INET,
-        &addr.sin_addr,
-        ipStr,
-        INET_ADDRSTRLEN
-    );
-
-    std::string Log = "Received ";
-    Log += std::to_string(len);
-    Log += " bytes from: ";
-    Log += ipStr;
-
-    LOG(Log);
-
-    char data[] = "asdsadsad";  // mutable copy
-    SendTo(addr, data, strlen(data));
-}
-
 void CUSession::Start(u_short port, HANDLE Iocp)
 {
     _iocp = Iocp;
@@ -169,15 +147,20 @@ void CUSession::RegisterRecv()
 
 void CUSession::ProcessRecv(int bytes)
 {
-    SOCKADDR_IN clientAddr = _recvContext->addr;
+    try
+    {
+        SOCKADDR_IN clientAddr = _recvContext->addr;
 
-    OnRecvFrom(
-        _recvContext->buffer,
-        bytes,
-        clientAddr
-    );
+        // WSARecvFrom으로 받은 데이터 바로 처리
+        OnRecv(_recvContext->buffer, bytes, clientAddr);
 
-    RegisterRecv();
+        // 다음 Recv 등록
+        RegisterRecv();
+    }
+    catch (const std::exception& exec)
+    {
+        LOG(exec.what());
+    }
 }
 
 void CUSession::SendTo(SOCKADDR_IN& addr, char* data, int len)

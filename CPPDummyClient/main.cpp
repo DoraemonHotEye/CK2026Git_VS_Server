@@ -10,6 +10,7 @@
 #include "../CPPServerCore/Headers/StaticMethods.h"
 #include "../CPPServerCore/ServerSupports/PrintLogThread.h"
 #include "../CPPServerCore/UDP/Session/CUSession.h"
+#include "Session/UServerSession.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -32,7 +33,7 @@ int main()
         std::thread(workerThread, iocp).detach();
     }
 
-    CUSession cusession;
+    UServerSession cusession;
 
     // 3. Connector 생성
     Connector connector;

@@ -10,6 +10,7 @@
 #include "../CPPServerCore/Headers/StaticMethods.h"
 #include "../CPPServerCore/ServerSupports/PrintLogThread.h"
 #include "../CPPServerCore/UDP/Session/CUSession.h"
+#include "Session/UClientSession.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -48,7 +49,7 @@ int main()
             return rawPtr; // IOCP에서 raw pointer 사용
         };
 
-    CUSession cusession;
+    UClientSession cusession;
 
     // 5. 주소 설정
     SOCKADDR_IN addr;
