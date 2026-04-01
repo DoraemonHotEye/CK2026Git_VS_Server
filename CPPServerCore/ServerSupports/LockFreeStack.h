@@ -1,27 +1,59 @@
 #pragma once
 #include <atomic>
-#include <string>
+#include <iostream>
 
+template <typename T>
 class LockFreeStack
 {
 public:
     struct Node
     {
-        std::string data;
+        T data;
         Node* next;
 
-        Node(const std::string& d) : data(d), next(nullptr) {}
+        Node(const T& d) : data(d), next(nullptr) {}
     };
 
-private:
+public:
     std::atomic<Node*> _head;
 
 public:
     LockFreeStack() : _head(nullptr) {}
 
-    ~LockFreeStack();
+    ~LockFreeStack()
+    {
+        while (Node* node = Pop())
+        {
+            delete node;
+        }
+    }
+    void Push(const T& data)
+    {
+        Node* newNode = new Node(data);
 
-    void Push(const std::string& data);
+        newNode->next = _head.load();
 
-    Node* Pop();
+        while (!_head.compare_exchange_weak(newNode->next, newNode))
+        {
+
+        }
+    }
+
+    Node* Pop()
+    {
+        Node* oldHead = _head.load();
+
+        while (oldHead && !_head.compare_exchange_weak(oldHead, oldHead->next))
+        {
+
+        }
+
+        return oldHead;
+    }
+
+    // 4. 비었는지 확인
+    bool IsEmpty() const
+    {
+        return _head.load() == nullptr;
+    }
 };

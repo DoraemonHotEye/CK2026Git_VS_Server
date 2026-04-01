@@ -136,6 +136,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Connector\CConnector.h" />
+    <ClInclude Include="IPEndPointEntry\IPEndPointEntry.h" />
+    <ClInclude Include="Managers\UIPEndPointManager.h" />
+    <ClInclude Include="UDP\SubPart\CURequestTable.h" />
+    <ClInclude Include="UDP\SubPart\IRdupCallback.h" />
+    <ClInclude Include="UDP\SubPart\CUSendTable.h" />
     <ClInclude Include="Headers\CommonTypes.h" />
     <ClInclude Include="Headers\Packets.h" />
     <ClInclude Include="Headers\ServerStaticHeaders.h" />
@@ -152,10 +157,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Connector\CConnector.cpp" />
+    <ClCompile Include="Managers\UIPEndPointManager.cpp" />
+    <ClCompile Include="UDP\SubPart\CURequestTable.cpp" />
+    <ClCompile Include="UDP\SubPart\CUSendTable.cpp" />
     <ClCompile Include="Listener\CListener.cpp" />
     <ClCompile Include="Managers\SessionManager.cpp" />
     <ClCompile Include="RecvBuffer\RecvBuffer.cpp" />
-    <ClCompile Include="ServerSupports\LockFreeStack.cpp" />
     <ClCompile Include="ServerSupports\PrintLogThread.cpp" />
     <ClCompile Include="Session\CSession.cpp" />
     <ClCompile Include="UDP\Session\CUSession.cpp" />

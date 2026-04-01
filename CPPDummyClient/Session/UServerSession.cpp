@@ -4,15 +4,15 @@
 #include <string>
 
 #include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
-
-void UServerSession::OnSend(int len)
-{
-}
+#include "../Manager/CUPacketManager.h"
 
 void UServerSession::OnRecvPacket(char* buffer, int len, SOCKADDR_IN& addr)
 {
-	std::string log;
-	log += std::to_string(len);
+	std::vector<uint8_t> vecBuffer(buffer, buffer + len);
 
-	LOG(log);
+	UPacketManager::Instance().OnRecvPacket(this, addr, vecBuffer);
+}
+
+void UServerSession::OnSend(int len, SOCKADDR_IN& addr)
+{
 }

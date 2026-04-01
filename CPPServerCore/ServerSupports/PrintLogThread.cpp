@@ -41,24 +41,37 @@ void PrintLogThread::Run()
 
         if (node)
         {
-            std::cout << node->data << std::endl;
-            delete node;
+            // 임시 저장
+            _tempBuffer.push_back(node->data);
         }
         else
         {
-            // 바쁘게 도는거 방지 (CPU 100% 방지)
+            if (!_tempBuffer.empty())
+            {
+                // FIFO 순서로 출력
+                for (auto it = _tempBuffer.rbegin(); it != _tempBuffer.rend(); ++it)
+                {
+                    std::cout << (*it) << std::endl;
+                }
+                _tempBuffer.clear();
+            }
+            // CPU 100% 방지
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     }
 
-    // 종료 시 남은 로그 flush
+    // 종료 시 남은 로그 flush (FIFO)
     while (true)
     {
         auto node = _stack.Pop();
         if (!node)
             break;
-
-        std::cout << node->data << std::endl;
-        delete node;
+        _tempBuffer.push_back(node->data);
     }
+
+    for (auto it = _tempBuffer.rbegin(); it != _tempBuffer.rend(); ++it)
+    {
+        std::cout << (*it) << std::endl;
+    }
+    _tempBuffer.clear();
 }

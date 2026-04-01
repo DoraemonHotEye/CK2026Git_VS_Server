@@ -59,14 +59,16 @@ int main()
 
     // 6. Listener 시작
     listener.Start(addr, iocp, createSession);
-    cusession.Start(5556, iocp);
+    cusession.Start(5556);
 
     std::cout << "Server Started (Port: 7777)\n";
 
     // 서버 유지
     while (true)
     {
-        Sleep(1000);
+        cusession.Update();
+        UIPEndPointManager::Instance().Update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     WSACleanup();

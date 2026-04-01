@@ -3,6 +3,7 @@
 #include <atomic>
 #include "LockFreeStack.h"
 #include <string>
+#include <vector>
 
 #define LOG(msg) PrintLogThread::Instance().Log(msg)
 
@@ -23,7 +24,8 @@ private:
     void Run();
 
 private:
-    LockFreeStack _stack;
+    LockFreeStack<std::string> _stack;
+    std::vector<std::string> _tempBuffer;
 
     std::thread _thread;
     std::atomic<bool> _running = false;

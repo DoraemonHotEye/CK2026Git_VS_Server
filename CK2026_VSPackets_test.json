@@ -171,6 +171,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "MainServer C++",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 1

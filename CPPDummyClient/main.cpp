@@ -61,9 +61,13 @@ int main()
 
     cusession.StartClient(iocp);
 
-    GAMECLIENT_DisconnectUDP disconnect = GAMECLIENT_DisconnectUDP();
-    disconnect.timeout = 9941;
-    cusession.Send(disconnect, addru);
+    UIPEndPointManager::Instance().Add(addru);
+
+    GAMECLIENT_USessionIDMatch disconnect = GAMECLIENT_USessionIDMatch();
+    disconnect.SessionID = 241;
+
+    for(int i = 0; i < 1; ++i)
+        cusession.Send(disconnect, addru, true);
 
     // 5. 서버 주소 설정
     SOCKADDR_IN addr;
@@ -80,7 +84,9 @@ int main()
     // 유지
     while (true)
     {
-        Sleep(1000);
+        cusession.Update();
+        UIPEndPointManager::Instance().Update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     WSACleanup();

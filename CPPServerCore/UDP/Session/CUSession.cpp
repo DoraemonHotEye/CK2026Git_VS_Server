@@ -1,203 +1,147 @@
 #include "CUSession.h"
-#include <string>
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-
-#include "../../ServerSupports/PrintLogThread.h"
+#include <MSWSock.h>
 #include "../../Headers/Packets.h"
+#include "../../ServerSupports/PrintLogThread.h"
 
-#pragma comment(lib, "ws2_32.lib")
-
-void CUSession::Start(u_short port, HANDLE Iocp)
+void CUSession::Start(u_short port)
 {
-    _iocp = Iocp;
-
-    _socket = WSASocket(
-        AF_INET,
-        SOCK_DGRAM,
-        IPPROTO_UDP,
-        NULL,
-        0,
-        WSA_FLAG_OVERLAPPED
-    );
-
-    if (_socket == INVALID_SOCKET)
-    {
-        LOG("Socket creation failed");
+    _socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (_socket == INVALID_SOCKET) {
+        LOG("Socket creation failed: " + std::to_string(WSAGetLastError()));
         return;
     }
+
+    // Windows UDP 포트 에러(10054) 방지 옵션
+    DWORD dwBytesReturned = 0;
+    BOOL bNewBehavior = FALSE;
+    WSAIoctl(_socket, SIO_UDP_CONNRESET, &bNewBehavior, sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
 
     SOCKADDR_IN addr = {};
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(port);
 
-    if (bind(_socket, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR)
-    {
-        LOG("Bind failed");
+    if (bind(_socket, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+        LOG("Bind failed: " + std::to_string(WSAGetLastError()));
         closesocket(_socket);
         return;
     }
 
-    // 4. 소켓을 IOCP에 연결
-    if (CreateIoCompletionPort((HANDLE)_socket, _iocp, (ULONG_PTR)this, 0) == NULL)
-    {
-        LOG("IOCP bind failed");
-        closesocket(_socket);
-        return;
-    }
+    RegisterUpdateMethod();
 
-    // 5. RecvContext 초기화
-    _recvContext = std::make_unique<URecvContext>();
+    _stopThread = false;
+    _recvThread = std::thread(&CUSession::ReceiveLoop, this);
 
-    ZeroMemory(&_recvContext->overlapped, sizeof(OVERLAPPED));
-    _recvContext->icopObj = this;
-    _recvContext->wsaBuf.buf = _recvContext->buffer;
-    _recvContext->wsaBuf.len = sizeof(_recvContext->buffer);
-    _recvContext->addrLen = sizeof(_recvContext->addr);
-
-    // 6. 최초 Recv 등록
-    RegisterRecv();
-
-    std::string Log = "UDP Server started on port: ";
-    Log += std::to_string(port);
-
-    LOG(Log);
+    LOG("UDP Server Started (Blocking Mode) on Port: " + std::to_string(port));
 }
 
-void CUSession::StartClient(HANDLE Iocp)
+void CUSession::ReceiveLoop()
 {
-    _iocp = Iocp;
+    char recvBuffer[65535]; // UDP 최대 패킷 크기
+    SOCKADDR_IN clientAddr;
+    int addrLen = sizeof(clientAddr);
 
-    _socket = WSASocket(
-        AF_INET,
-        SOCK_DGRAM,
-        IPPROTO_UDP,
-        NULL,
-        0,
-        WSA_FLAG_OVERLAPPED
-    ); 
-    
-    SOCKADDR_IN addr = {};
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(0); // 자동 포트 할당
-
-    if (bind(_socket, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR)
+    while (!_stopThread)
     {
-        LOG("Client bind failed");
-        closesocket(_socket);
-        return;
+        // 데이터가 올 때까지 여기서 멈춤 (Blocking)
+        int bytesReceived = recvfrom(_socket, recvBuffer, sizeof(recvBuffer), 0, (SOCKADDR*)&clientAddr, &addrLen);
+
+        if (bytesReceived == SOCKET_ERROR) {
+            int err = WSAGetLastError();
+            if (_stopThread) break;
+            LOG("recvfrom error: " + std::to_string(err));
+            continue;
+        }
+
+        try {
+            // 데이터 처리
+            OnRecv(recvBuffer, bytesReceived, clientAddr);
+        }
+        catch (const std::exception& e) {
+            LOG("Exception in OnRecv: " + std::string(e.what()));
+        }
     }
-
-    if (_socket == INVALID_SOCKET)
-    {
-        LOG("Socket creation failed");
-        return;
-    }
-
-    // 소켓을 IOCP에 연결
-    if (CreateIoCompletionPort((HANDLE)_socket, _iocp, (ULONG_PTR)this, 0) == NULL)
-    {
-        LOG("IOCP bind failed");
-        closesocket(_socket);
-        return;
-    }
-
-    // RecvContext 초기화
-    _recvContext = std::make_unique<URecvContext>();
-
-    ZeroMemory(&_recvContext->overlapped, sizeof(OVERLAPPED));
-    _recvContext->icopObj = this;
-    _recvContext->wsaBuf.buf = _recvContext->buffer;
-    _recvContext->wsaBuf.len = sizeof(_recvContext->buffer);
-    _recvContext->addrLen = sizeof(_recvContext->addr);
-
-    // 서버 응답 받을거면 등록
-    RegisterRecv();
-
-    LOG("UDP Client started");
 }
 
-void CUSession::RegisterRecv() 
+void CUSession::SendTo(SOCKADDR_IN& addr, const char* data, int len)
 {
-    DWORD flags = 0;
-    DWORD recvBytes = 0;
+    if (_socket == INVALID_SOCKET) return;
 
-    ZeroMemory(&_recvContext->overlapped, sizeof(OVERLAPPED));
-    _recvContext->icopObj = this;
-    _recvContext->wsaBuf.buf = _recvContext->buffer;
-    _recvContext->wsaBuf.len = sizeof(_recvContext->buffer);
-    _recvContext->addrLen = sizeof(_recvContext->addr);
-
-    int ret = WSARecvFrom(
-        _socket,
-        &_recvContext->wsaBuf,
-        1,
-        &recvBytes,
-        &flags,
-        (SOCKADDR*)&_recvContext->addr,
-        &_recvContext->addrLen,
-        &_recvContext->overlapped,
-        NULL
-    );
-
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
-        LOG("RecvFrom Error");
+    int result = sendto(_socket, data, len, 0, (SOCKADDR*)&addr, sizeof(addr));
+    if (result == SOCKET_ERROR) {
+        LOG("sendto failed: " + std::to_string(WSAGetLastError()));
+    }
 }
 
-void CUSession::ProcessRecv(int bytes)
+void CUSession::Send(PacketInterface& packet, SOCKADDR_IN& addr, bool isUseRUDP)
 {
+    // 1. 패킷 직렬화 (이 작업은 락 밖에서 수행하여 성능 확보)
+    std::vector<uint8_t> sendBytes = packet.Serialize();
+    if (sendBytes.empty()) return;
+
     try
     {
-        SOCKADDR_IN clientAddr = _recvContext->addr;
+        if (isUseRUDP)
+        {
+            // RUDP 헤더 위치 파악 (dataSize:2, packetId:2, seqNum:2 순서라고 가정)
+            // 직렬화된 데이터의 4바이트 지점(seqNum)에 값을 덮어씌움
+            int seqOffset = sizeof(uint16_t) + sizeof(uint16_t);
 
-        // WSARecvFrom으로 받은 데이터 바로 처리
-        OnRecv(_recvContext->buffer, bytes, clientAddr);
+            if (sendBytes.size() >= seqOffset + sizeof(uint16_t))
+            {
+                // [seqNum:2] 생성 및 기록
+                uint16_t seqNum = ++_sendSeq; // atomic 증가
+                *reinterpret_cast<uint16_t*>(&sendBytes[seqOffset]) = seqNum;
 
-        // 다음 Recv 등록
-        RegisterRecv();
+                // 재전송을 위해 테이블에 추가 (멀티스레드 보호)
+                {
+                    std::lock_guard<std::mutex> lock(_tableMutex);
+                    // 복사본을 전달하여 재전송 시 사용
+                    sendTable.Add(seqNum, sendBytes, addr, this);
+                }
+            }
+            else {
+                LOG("Error: Packet size too small for RUDP seqNum");
+            }
+        }
+
+        // 2. 실제 소켓 전송
+        SendTo(addr, reinterpret_cast<const char*>(sendBytes.data()), (int)sendBytes.size());
+
+        // 성공 로그/콜백 (필요 시)
+        OnSend(true, addr);
     }
-    catch (const std::exception& exec)
+    catch (const std::exception& e)
     {
-        LOG(exec.what());
+        LOG("Exception in Send: " + std::string(e.what()));
+        OnSend(false, addr);
+    }
+    catch (...)
+    {
+        LOG("Unknown Error in Send");
+        OnSend(false, addr);
     }
 }
 
-void CUSession::Send(PacketInterface& packet, SOCKADDR_IN& addr)
+void CUSession::Update()
 {
-    std::vector<uint8_t> serialized = packet.Serialize();
+    // Update는 메인 스레드에서 호출되므로 맵 보호 필요
+    std::lock_guard<std::mutex> lock(_tableMutex);
 
-    SendTo(addr, reinterpret_cast<char*>(serialized.data()), packet.GetSize());
+    sendTable.Update();
+    for (auto& pair : RequestTables) {
+        pair.second->Update();
+    }
 }
 
-void CUSession::SendTo(SOCKADDR_IN& addr, char* data, int len)
+void CUSession::Stop()
 {
-    USendContext* ctx = new USendContext();
-    
-    ctx->icopObj = this;
-    ctx->wsaBuf.buf = new char[len];
-    memcpy(ctx->wsaBuf.buf, data, len);
-    ctx->wsaBuf.len = len;
-    ctx->addr = addr;
-    ctx->addrLen = sizeof(addr);
-    
-    ZeroMemory(&ctx->overlapped, sizeof(OVERLAPPED));
-    
-    DWORD sendBytes = 0;
-    
-    int ret = WSASendTo(
-        _socket,
-        &ctx->wsaBuf,
-        1,
-        &sendBytes,
-        0,
-        (SOCKADDR*)&ctx->addr,
-        ctx->addrLen,
-        &ctx->overlapped,
-        NULL
-    );
-    
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
-        LOG("SendTo Error\n");
+    _stopThread = true;
+    if (_socket != INVALID_SOCKET) {
+        closesocket(_socket);
+        _socket = INVALID_SOCKET;
+    }
+    if (_recvThread.joinable()) {
+        _recvThread.join();
+    }
 }

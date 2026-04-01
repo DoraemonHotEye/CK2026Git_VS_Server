@@ -531,6 +531,12 @@ void PacketManager::RegisterHandler(uint16_t id, HandlerFunc func)
 
 void UPacketManager::Register()
 {{
+    _makeFunc[(uint16_t)MsgID::DGRAM_SERVER_PING] = MakePacket<DGRAM_SERVER_Ping>;
+    RegisterHandler((uint16_t)MsgID::DGRAM_SERVER_PING, UPacketHandler::DGRAM_SERVER_PingHandler);
+    _makeFunc[(uint16_t)MsgID::DGRAM_SERVER_ACKSEQ] = MakePacket<DGRAM_SERVER_AckSeq>;
+    RegisterHandler((uint16_t)MsgID::DGRAM_SERVER_ACKSEQ, UPacketHandler::DGRAM_SERVER_AckSeqHandler);
+    _makeFunc[(uint16_t)MsgID::DGRAM_SERVER_REQUESTACK] = MakePacket<DGRAM_SERVER_RequestAck>;
+    RegisterHandler((uint16_t)MsgID::DGRAM_SERVER_REQUESTACK, UPacketHandler::DGRAM_SERVER_RequestAckHandler);
     {0}
 }}
 
@@ -545,6 +551,30 @@ void UPacketManager::OnRecvPacket(CUPacketSession* session, SOCKADDR_IN& addr, c
 
     uint16_t id = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
     offset += sizeof(uint16_t);
+
+    uint16_t seqNum = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
+    offset += sizeof(uint16_t);
+
+    if (seqNum != 0 && id != static_cast<uint16_t>(MsgID::DGRAM_SERVER_ACKSEQ))
+    {{
+        // 요청 테이블 확인
+        if (session->RequestTables.find(addr) == session->RequestTables.end()) {{
+            session->RequestTables[addr] = std::make_shared<RudpRequestTable>();
+        }}
+        bool succ = session->RequestTables[addr]->TryAdd(seqNum);
+        if (succ)
+        {{
+            // ACK 처리
+            DGRAM_SERVER_AckSeq ack = DGRAM_SERVER_AckSeq();
+            ack.SeqNum = seqNum;
+
+            session->Send(ack, addr);
+        }}
+        else
+        {{
+            return; // 이미 처리된 seqNum
+        }}
+    }}
 
     auto it = _makeFunc.find(id);
     if (it != _makeFunc.end())
@@ -579,6 +609,9 @@ public:
 class UPacketHandler
 {{
 public:
+    static void DGRAM_SERVER_PingHandler(class CUPacketSession* session, SOCKADDR_IN& addr, class PacketInterface* message);
+    static void DGRAM_SERVER_AckSeqHandler(class CUPacketSession* session, SOCKADDR_IN& addr, class PacketInterface* message);
+    static void DGRAM_SERVER_RequestAckHandler(class CUPacketSession* session, SOCKADDR_IN& addr, class PacketInterface* message);
     {0}
 
 }};";

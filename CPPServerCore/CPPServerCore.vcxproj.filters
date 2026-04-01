@@ -57,6 +57,21 @@
     <ClInclude Include="UDP\Session\CUPacketSession.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="UDP\SubPart\CUSendTable.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UDP\SubPart\IRdupCallback.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UDP\SubPart\CURequestTable.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UIPEndPointManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IPEndPointEntry\IPEndPointEntry.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Listener\CListener.cpp">
@@ -74,13 +89,19 @@
     <ClCompile Include="RecvBuffer\RecvBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ServerSupports\LockFreeStack.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ServerSupports\PrintLogThread.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UDP\Session\CUSession.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UDP\SubPart\CUSendTable.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UDP\SubPart\CURequestTable.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UIPEndPointManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

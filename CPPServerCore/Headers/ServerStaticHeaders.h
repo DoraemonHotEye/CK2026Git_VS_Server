@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <minwinbase.h>
+#include <unordered_map>
 #include <WinSock2.h>
+#include <ws2tcpip.h>
+#include <memory>
 
 class IocpObject;
 
@@ -100,4 +103,17 @@ class IocpObject
 {
 public:
     virtual void Dispatch(IOContext* context, int bytes) = 0;
+};
+
+struct SockAddrHash {
+    size_t operator()(const SOCKADDR_IN& addr) const {
+        return std::hash<uint32_t>()(addr.sin_addr.S_un.S_addr) ^ std::hash<uint16_t>()(addr.sin_port);
+    }
+};
+
+struct SockAddrEqual {
+    bool operator()(const SOCKADDR_IN& lhs, const SOCKADDR_IN& rhs) const {
+        return lhs.sin_addr.S_un.S_addr == rhs.sin_addr.S_un.S_addr &&
+            lhs.sin_port == rhs.sin_port;
+    }
 };

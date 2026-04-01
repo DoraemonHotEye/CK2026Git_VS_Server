@@ -157,7 +157,6 @@ void CSession::ProcessRecv(int bytes)
 {
     try
     {
-
         // 1. Write 커서 이동
         if (_recvBuffer.OnWrite(bytes) == false)
         {
