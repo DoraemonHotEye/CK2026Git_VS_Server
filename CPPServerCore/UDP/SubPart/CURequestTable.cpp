@@ -1,4 +1,5 @@
 #include "CURequestTable.h"
+#include "../../ServerSupports/PrintLogThread.h"
 
 RudpRequestTable::RequestEntry::RequestEntry(uint32_t seqNum, std::chrono::steady_clock::time_point receivedTime)
     : SeqNum(seqNum), ReceivedTime(receivedTime) {
@@ -38,16 +39,17 @@ bool RudpRequestTable::Remove(uint32_t seqNum) {
     if (!lock.try_lock_for(std::chrono::milliseconds(10))) {
         return false;
     }
+    std::string logMsg = "리퀘스트 삭제: SeqNum: ";
+    logMsg += std::to_string(seqNum);  // ipEndPoint가 ToString() 제공해야 함
+    LOG(logMsg);
     return _requestTable.erase(seqNum) > 0;
 }
 
 void RudpRequestTable::Update() {
     auto now = std::chrono::steady_clock::now();
 
-    // recursive_timed_mutex를 사용하면 같은 스레드가 다시 lock을 걸어도 데드락이 안 걸립니다.
     std::unique_lock<std::recursive_timed_mutex> lock(_mutex, std::defer_lock);
 
-    // 10ms만 시도해보고 안 되면 이번 프레임은 건너뜀 (Hard Deadlock 방지)
     if (!lock.try_lock_for(std::chrono::milliseconds(10))) {
         return;
     }
@@ -55,6 +57,11 @@ void RudpRequestTable::Update() {
     auto it = _requestTable.begin();
     while (it != _requestTable.end()) {
         if ((now - it->second.ReceivedTime) >= _keepAliveMs) {
+            // 삭제 전 로그
+            std::string logMsg = "리퀘스트 삭제: SeqNum: ";
+            logMsg += std::to_string(it->second.SeqNum);  // ipEndPoint가 ToString() 제공해야 함
+            LOG(logMsg);
+
             it = _requestTable.erase(it);
         }
         else {

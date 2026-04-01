@@ -51,6 +51,17 @@ bool UIPEndPointManager::Remove(const SOCKADDR_IN& addr)
     if (it != endpoints.end())
     {
         endpoints.erase(it);
+
+        char ip[INET_ADDRSTRLEN] = { 0 };
+        inet_ntop(AF_INET, &addr.sin_addr, ip, sizeof(ip));
+
+        std::string logMsg = "UIPEndPoint 삭제: IP = ";
+        logMsg += ip;
+        logMsg += ", Port = ";
+        logMsg += std::to_string(ntohs(it->Address.sin_port));
+
+        LOG(logMsg); // PrintLogThread.h의 LOG 사용
+
         return true;
     }
     return false;
@@ -85,6 +96,16 @@ void UIPEndPointManager::Update(double pingIntervalSec, double timeoutSec)
 
             if (sinceResponse >= timeoutSec)
             {
+                char ip[INET_ADDRSTRLEN] = { 0 };
+                inet_ntop(AF_INET, &it->Address.sin_addr, ip, sizeof(ip));
+
+                std::string logMsg = "UIPEndPoint 삭제: IP = ";
+                logMsg += ip;
+                logMsg += ", Port = ";
+                logMsg += std::to_string(ntohs(it->Address.sin_port));
+
+                LOG(logMsg); // PrintLogThread.h의 LOG 사용
+
                 it = endpoints.erase(it);
                 continue;
             }
