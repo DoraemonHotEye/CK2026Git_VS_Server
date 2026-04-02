@@ -59,7 +59,7 @@ int main()
     inet_pton(AF_INET, "127.0.0.1", &addru.sin_addr); // 서버 IP
     addru.sin_port = htons(5556);
 
-    cusession.StartClient(iocp);
+    cusession.StartClient("127.0.0.1", 5556);
 
     UIPEndPointManager::Instance().Add(addru);
 
@@ -77,7 +77,7 @@ int main()
 
 
     // 6. 연결 시도
-    connector.Start(addr, iocp, createSession, 1);
+    connector.Start(addr, iocp, createSession, 150);
 
     cout << "Client Connecting...\n";
 

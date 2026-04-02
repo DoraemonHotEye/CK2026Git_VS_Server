@@ -5,6 +5,8 @@
 #include <WS2tcpip.h>
 #include "../Manager/CPacketManager.h"
 #include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../Game/Player/CPlayer.h"
+#include "../Game/Player/CPlayerManager.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -21,6 +23,8 @@ void ClientSession::OnConnected(SOCKADDR_IN addr)
     log += std::to_string(sessionID);
 
     LOG(log);
+
+    PlayerManager::GetInstance().Generate(this);
 }
 
 void ClientSession::OnSend(int len)
@@ -41,6 +45,8 @@ void ClientSession::OnDisconnected(SOCKADDR_IN addr)
     log += std::to_string(ntohs(addr.sin_port));
 
     LOG(log);
+
+    PlayerManager::GetInstance().Remove(this);
 }
 
 void ClientSession::OnRecvPacket(char* buffer, int len)

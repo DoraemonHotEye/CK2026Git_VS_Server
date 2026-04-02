@@ -54,7 +54,6 @@ protected:
     RecvBuffer _recvBuffer{ 8192 }; // 사이즈 적당히
 
 private:
-
     SOCKET _socket;
     HANDLE _iocp;
 

@@ -123,6 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Player\CPlayer.cpp" />
+    <ClCompile Include="Game\Player\CPlayerManager.cpp" />
+    <ClCompile Include="Game\Room\CRoom.cpp" />
+    <ClCompile Include="Game\Room\CRoomManager.cpp" />
     <ClCompile Include="Handler\PacketHandler.cpp" />
     <ClCompile Include="Handler\UPacketHandler.cpp" />
     <ClCompile Include="main.cpp" />
@@ -137,6 +141,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Player\CPlayer.h" />
+    <ClInclude Include="Game\Player\CPlayerManager.h" />
+    <ClInclude Include="Game\Room\CRoom.h" />
+    <ClInclude Include="Game\Room\CRoomManager.h" />
     <ClInclude Include="Handler\PacketHandler.h" />
     <ClInclude Include="Handler\UPacketHandler.h" />
     <ClInclude Include="Manager\CPacketManager.h" />

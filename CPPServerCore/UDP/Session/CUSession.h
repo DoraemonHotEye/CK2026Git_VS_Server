@@ -24,6 +24,7 @@ public:
 
     // 소켓 시작 및 수신 스레드 실행
     void Start(u_short port);
+    void StartClient(const std::string& serverIP, u_short port);
     void Stop();
 
     virtual void OnSend(int len, SOCKADDR_IN& addr) = 0;
@@ -35,6 +36,7 @@ public:
 
 protected:
     virtual void RegisterUpdateMethod() { }
+    SOCKADDR_IN _serverAddr;
 
 protected:
     SOCKET _socket;

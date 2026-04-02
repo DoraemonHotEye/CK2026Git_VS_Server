@@ -17,6 +17,10 @@ void PacketManager::Register()
     RegisterHandler((uint16_t)MsgID::GAMECLIENT_ROOMEXITCALL, PacketHandler::GAMECLIENT_RoomExitCallHandler);
     _makeFunc[(uint16_t)MsgID::GAMECLIENT_GAMESTART] = MakePacket<GAMECLIENT_GameStart>;
     RegisterHandler((uint16_t)MsgID::GAMECLIENT_GAMESTART, PacketHandler::GAMECLIENT_GameStartHandler);
+    _makeFunc[(uint16_t)MsgID::GAMECLIENT_GAMESTARTREADY] = MakePacket<GAMECLIENT_GameStartReady>;
+    RegisterHandler((uint16_t)MsgID::GAMECLIENT_GAMESTARTREADY, PacketHandler::GAMECLIENT_GameStartReadyHandler);
+    _makeFunc[(uint16_t)MsgID::GAMECLIENT_SENDLOCALENDPOINT] = MakePacket<GAMECLIENT_SendLocalEndPoint>;
+    RegisterHandler((uint16_t)MsgID::GAMECLIENT_SENDLOCALENDPOINT, PacketHandler::GAMECLIENT_SendLocalEndPointHandler);
     
 }
 

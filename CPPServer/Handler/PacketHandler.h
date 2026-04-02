@@ -9,5 +9,7 @@ public:
     static void GAMECLIENT_JoinRoomCallHandler(class CPacketSession* session, class PacketInterface* message);
     static void GAMECLIENT_RoomExitCallHandler(class CPacketSession* session, class PacketInterface* message);
     static void GAMECLIENT_GameStartHandler(class CPacketSession* session, class PacketInterface* message);
+    static void GAMECLIENT_GameStartReadyHandler(class CPacketSession* session, class PacketInterface* message);
+    static void GAMECLIENT_SendLocalEndPointHandler(class CPacketSession* session, class PacketInterface* message);
     
 };

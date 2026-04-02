@@ -37,3 +37,11 @@ void PacketHandler::GAMECLIENT_GameStartHandler(CPacketSession* session, PacketI
 {
 
 }
+
+void PacketHandler::GAMECLIENT_GameStartReadyHandler(CPacketSession* session, PacketInterface* message)
+{
+}
+
+void PacketHandler::GAMECLIENT_SendLocalEndPointHandler(CPacketSession* session, PacketInterface* message)
+{
+}

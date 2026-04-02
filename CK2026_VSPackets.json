@@ -44,6 +44,19 @@
     },
     "isUseUDP": true,
     "Language": 0
+  },
+  "MainServerCPP": {
+    "Name": "MainServerCPP",
+    "Description": "C++ MainServer",
+    "Path": "../../../CPPServer",
+    "tag": {
+      "Name": "MainServerCPP",
+      "Type": 1,
+      "ClientSeed": 0,
+      "Description": "C++ MainServer"
+    },
+    "isUseUDP": true,
+    "Language": 1
   }
 }
 [Settings/]
@@ -73,6 +86,12 @@
     "Type": 1,
     "ClientSeed": 3,
     "Description": "메인 서버"
+  },
+  "MainServerCPP": {
+    "Name": "MainServerCPP",
+    "Type": 1,
+    "ClientSeed": 4,
+    "Description": "C++ MainServer"
   }
 }
 [Tags/]
@@ -111,6 +130,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 1
@@ -139,6 +171,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 1
@@ -167,6 +212,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -195,6 +253,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -223,6 +294,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -251,6 +335,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -279,6 +376,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -509,6 +619,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -537,6 +660,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "MainServerCPP",
+            "Description": "C++ MainServer",
+            "Path": "../../../CPPServer",
+            "tag": {
+              "Name": "MainServerCPP",
+              "Type": 1,
+              "ClientSeed": 0,
+              "Description": "C++ MainServer"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1539,6 +1675,28 @@
       },
       "isUseUDP": true,
       "Language": 0
+    }
+  },
+  "MainServerCPP": {
+    "tag": {
+      "Name": "MainServerCPP",
+      "Type": 1,
+      "ClientSeed": 0,
+      "Description": "C++ MainServer"
+    },
+    "Packers": {},
+    "profiler": {
+      "Name": "MainServerCPP",
+      "Description": "C++ MainServer",
+      "Path": "../../../CPPServer",
+      "tag": {
+        "Name": "MainServerCPP",
+        "Type": 1,
+        "ClientSeed": 0,
+        "Description": "C++ MainServer"
+      },
+      "isUseUDP": true,
+      "Language": 1
     }
   }
 }

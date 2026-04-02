@@ -35,6 +35,45 @@ void CUSession::Start(u_short port)
     LOG("UDP Server Started (Blocking Mode) on Port: " + std::to_string(port));
 }
 
+void CUSession::StartClient(const std::string& serverIP, u_short port)
+{
+    _socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (_socket == INVALID_SOCKET) {
+        LOG("Socket creation failed: " + std::to_string(WSAGetLastError()));
+        return;
+    }
+
+    // [중요] 클라이언트 소켓 바인딩: 포트를 0으로 설정하면 OS가 자동으로 할당함
+    SOCKADDR_IN localAddr = {};
+    localAddr.sin_family = AF_INET;
+    localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    localAddr.sin_port = htons(0); // 임의의 포트 할당
+
+    if (bind(_socket, (SOCKADDR*)&localAddr, sizeof(localAddr)) == SOCKET_ERROR) {
+        LOG("Client Bind failed: " + std::to_string(WSAGetLastError()));
+        closesocket(_socket);
+        return;
+    }
+
+    // Windows UDP 10054 방지 옵션
+    DWORD dwBytesReturned = 0;
+    BOOL bNewBehavior = FALSE;
+    WSAIoctl(_socket, SIO_UDP_CONNRESET, &bNewBehavior, sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
+
+    // 서버 주소 설정 (Send용)
+    memset(&_serverAddr, 0, sizeof(_serverAddr));
+    _serverAddr.sin_family = AF_INET;
+    _serverAddr.sin_port = htons(port);
+    InetPtonA(AF_INET, serverIP.c_str(), &_serverAddr.sin_addr);
+
+    _stopThread = false;
+    _recvThread = std::thread(&CUSession::ReceiveLoop, this);
+
+    RegisterUpdateMethod();
+
+    LOG("UDP Client Started. Local Port Assigned.");
+}
+
 void CUSession::ReceiveLoop()
 {
     char recvBuffer[65535]; // UDP 최대 패킷 크기
