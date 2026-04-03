@@ -103,13 +103,13 @@
   "CPPServer": {
     "Name": "CPPServer",
     "Type": 1,
-    "ClientSeed": 0,
+    "ClientSeed": 4,
     "Description": "C++메인서버"
   },
   "CPPDummyCS": {
     "Name": "CPPDummyCS",
     "Type": 2,
-    "ClientSeed": 0,
+    "ClientSeed": 5,
     "Description": "C++더미 클라이언트"
   }
 }
@@ -1272,21 +1272,19 @@
         ],
         "MProtoType": 1
       },
-      "GAMECLIENT_MONSTERGRAB": {
+      "GAMECLIENT_MONSTERGRABSTART": {
         "packer": {
-          "Name": "MonsterGrab",
+          "Name": "MonsterGrabStart",
           "MemberTypes": [
             "single:ushort",
-            "single:float",
-            "single:float"
+            "single:ushort"
           ],
           "MemberNames": [
             "NetID",
-            "x",
-            "y"
+            "GrabID"
           ]
         },
-        "PacketID": "GAMECLIENT_MONSTERGRAB",
+        "PacketID": "GAMECLIENT_MONSTERGRABSTART",
         "LinkedProfilers": [
           {
             "Name": "GameClient",
@@ -1349,6 +1347,70 @@
           ]
         },
         "PacketID": "GAMECLIENT_MONSTERTRIGGER",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERGRABING": {
+        "packer": {
+          "Name": "MonsterGrabIng",
+          "MemberTypes": [
+            "single:ushort",
+            "single:float",
+            "single:float",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "NetID",
+            "GrabX",
+            "GrabY",
+            "TargetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERGRABING",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_MONSTERGRABEND": {
+        "packer": {
+          "Name": "MonsterGrabEnd",
+          "MemberTypes": [
+            "single:ushort",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "NetID",
+            "GrabID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_MONSTERGRABEND",
         "LinkedProfilers": [
           {
             "Name": "GameClient",

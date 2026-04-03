@@ -148,20 +148,22 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_MONSTERVELOCITYSET = 32,
          GAMECLIENT_PROJECTILEDISABLECALL = 33,
          GAMECLIENT_GROUNDCHECK = 34,
-         GAMECLIENT_MONSTERGRAB = 35,
+         GAMECLIENT_MONSTERGRABSTART = 35,
          GAMECLIENT_MONSTERTELEPORT = 36,
          GAMECLIENT_MONSTERTRIGGER = 37,
-         MAINSERVER_SENDSESSIONID = 38,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 39,
-         MAINSERVER_SENDROOMLIST = 40,
-         MAINSERVER_JOINROOMSUCC = 41,
-         MAINSERVER_ROOMMASTERCHANGED = 42,
-         MAINSERVER_ROOMEXITSUCC = 43,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 44,
-         MAINSERVER_NOROOMCALLBACK = 45,
-         MAINSERVER_SENDPEERUSER = 46,
-         MAINSERVER_GAMESTARTSUCC = 47,
-         MAINSERVER_SENDPBENDPOINT = 48,
+         GAMECLIENT_MONSTERGRABING = 38,
+         GAMECLIENT_MONSTERGRABEND = 39,
+         MAINSERVER_SENDSESSIONID = 40,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 41,
+         MAINSERVER_SENDROOMLIST = 42,
+         MAINSERVER_JOINROOMSUCC = 43,
+         MAINSERVER_ROOMMASTERCHANGED = 44,
+         MAINSERVER_ROOMEXITSUCC = 45,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 46,
+         MAINSERVER_NOROOMCALLBACK = 47,
+         MAINSERVER_SENDPEERUSER = 48,
+         MAINSERVER_GAMESTARTSUCC = 49,
+         MAINSERVER_SENDPBENDPOINT = 50,
          
          DGRAM_SERVER_REQUESTACK = 25562,
          DGRAM_SERVER_ACKSEQ = 25563,
@@ -2830,14 +2832,13 @@ namespace MakePacketTemplate.Packets
         }
     }
     
-    public class GAMECLIENT_MonsterGrab : PacketInterface
+    public class GAMECLIENT_MonsterGrabStart : PacketInterface
     {
-        public MsgID MsgID = MsgID.GAMECLIENT_MONSTERGRAB;
+        public MsgID MsgID = MsgID.GAMECLIENT_MONSTERGRABSTART;
         public ushort SeqNum;
 
         public ushort NetID;
-        public float x;
-        public float y;
+        public ushort GrabID;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -2857,10 +2858,8 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            x = BitConverter.ToSingle(buffer, start + offset);
-            offset += sizeof(float);
-            y = BitConverter.ToSingle(buffer, start + offset);
-            offset += sizeof(float);
+            GrabID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
             
         }
 
@@ -2874,9 +2873,7 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort);
             
-            size += sizeof(float);
-            
-            size += sizeof(float);
+            size += sizeof(ushort);
             
             
 
@@ -2900,10 +2897,8 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
-            BitConverter.GetBytes(x).CopyTo(buffer, offset);        
-            offset += sizeof(float);
-            BitConverter.GetBytes(y).CopyTo(buffer, offset);        
-            offset += sizeof(float);
+            BitConverter.GetBytes(GrabID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
@@ -3057,6 +3052,166 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
             BitConverter.GetBytes(AttackCount).CopyTo(buffer, offset);        
             offset += sizeof(int);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_MonsterGrabIng : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_MONSTERGRABING;
+        public ushort SeqNum;
+
+        public ushort NetID;
+        public float GrabX;
+        public float GrabY;
+        public ushort TargetID;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            NetID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            GrabX = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            GrabY = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            TargetID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
+
+            size += sizeof(ushort);
+            
+            size += sizeof(float);
+            
+            size += sizeof(float);
+            
+            size += sizeof(ushort);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(GrabX).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(GrabY).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(TargetID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_MonsterGrabEnd : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_MONSTERGRABEND;
+        public ushort SeqNum;
+
+        public ushort NetID;
+        public ushort GrabID;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            NetID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            GrabID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
+
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(GrabID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
