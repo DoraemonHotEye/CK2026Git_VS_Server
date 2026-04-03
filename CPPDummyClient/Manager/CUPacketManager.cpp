@@ -5,7 +5,6 @@
 #include "../../CPPServerCore/UDP/Session/CUPacketSession.h"
 
 #include "../Handler/UPacketHandler.h"
-#include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
 
 void UPacketManager::Register()
 {
@@ -15,10 +14,6 @@ void UPacketManager::Register()
     RegisterHandler((uint16_t)MsgID::DGRAM_SERVER_ACKSEQ, UPacketHandler::DGRAM_SERVER_AckSeqHandler);
     _makeFunc[(uint16_t)MsgID::DGRAM_SERVER_REQUESTACK] = MakePacket<DGRAM_SERVER_RequestAck>;
     RegisterHandler((uint16_t)MsgID::DGRAM_SERVER_REQUESTACK, UPacketHandler::DGRAM_SERVER_RequestAckHandler);
-    _makeFunc[(uint16_t)MsgID::GAMECLIENT_DISCONNECTUDP] = MakePacket<GAMECLIENT_DisconnectUDP>;
-    RegisterHandler((uint16_t)MsgID::GAMECLIENT_DISCONNECTUDP, UPacketHandler::GAMECLIENT_DisconnectUDPHandler);
-    _makeFunc[(uint16_t)MsgID::GAMECLIENT_USESSIONIDMATCH] = MakePacket<GAMECLIENT_USessionIDMatch>;
-    RegisterHandler((uint16_t)MsgID::GAMECLIENT_USESSIONIDMATCH, UPacketHandler::GAMECLIENT_USessionIDMatchHandler);
     
 }
 

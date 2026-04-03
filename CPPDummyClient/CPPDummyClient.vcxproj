@@ -123,8 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Handler\PacketHandler.cpp" />
     <ClCompile Include="Handler\UPacketHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Manager\CPacketManager.cpp" />
     <ClCompile Include="Manager\CUPacketManager.cpp" />
     <ClCompile Include="Session\ServerSession.cpp" />
     <ClCompile Include="Session\UServerSession.cpp" />
@@ -135,7 +137,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Handler\PacketHandler.h" />
     <ClInclude Include="Handler\UPacketHandler.h" />
+    <ClInclude Include="Manager\CPacketManager.h" />
     <ClInclude Include="Manager\CUPacketManager.h" />
     <ClInclude Include="Session\ServerSession.h" />
     <ClInclude Include="Session\UServerSession.h" />

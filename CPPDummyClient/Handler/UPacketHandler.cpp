@@ -55,23 +55,3 @@ void UPacketHandler::DGRAM_SERVER_RequestAckHandler(CUPacketSession* session, SO
 		}
 	}
 }
-
-void UPacketHandler::GAMECLIENT_DisconnectUDPHandler(CUPacketSession* session, SOCKADDR_IN& addr, PacketInterface* message)
-{
-	GAMECLIENT_DisconnectUDP* _packet = dynamic_cast<GAMECLIENT_DisconnectUDP*>(message);
-
-	std::string msg;
-
-	msg += std::to_string(_packet->timeout);
-
-	LOG(msg);
-}
-
-void UPacketHandler::GAMECLIENT_USessionIDMatchHandler(CUPacketSession* session, SOCKADDR_IN& addr, PacketInterface* message)
-{
-	bool succ = UIPEndPointManager::Instance().Add(addr);
-	if (succ == true)
-	{
-		//TODO 로그 메세지
-	}
-}

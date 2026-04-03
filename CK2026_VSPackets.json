@@ -57,6 +57,19 @@
     },
     "isUseUDP": true,
     "Language": 1
+  },
+  "CPPDummyCS": {
+    "Name": "CPPDummyCS",
+    "Description": "C++ 더미 클리아이언트",
+    "Path": "../../../CPPDummyClient",
+    "tag": {
+      "Name": "CPPDummyCS",
+      "Type": 2,
+      "ClientSeed": 0,
+      "Description": "C++ 더미 클라이언트"
+    },
+    "isUseUDP": true,
+    "Language": 1
   }
 }
 [Settings/]
@@ -92,6 +105,12 @@
     "Type": 1,
     "ClientSeed": 4,
     "Description": "C++ MainServer"
+  },
+  "CPPDummyCS": {
+    "Name": "CPPDummyCS",
+    "Type": 2,
+    "ClientSeed": 0,
+    "Description": "C++ 더미 클라이언트"
   }
 }
 [Tags/]
@@ -1364,6 +1383,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1392,6 +1424,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1420,6 +1465,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1454,6 +1512,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1482,6 +1553,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1510,6 +1594,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1538,6 +1635,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1566,6 +1676,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1600,6 +1723,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1628,6 +1764,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1658,6 +1807,19 @@
             },
             "isUseUDP": true,
             "Language": 0
+          },
+          {
+            "Name": "CPPDummyCS",
+            "Description": "C++ 더미 클리아이언트",
+            "Path": "../../../CPPDummyClient",
+            "tag": {
+              "Name": "CPPDummyCS",
+              "Type": 2,
+              "ClientSeed": 0,
+              "Description": "C++ 더미 클라이언트"
+            },
+            "isUseUDP": true,
+            "Language": 1
           }
         ],
         "MProtoType": 0
@@ -1694,6 +1856,28 @@
         "Type": 1,
         "ClientSeed": 0,
         "Description": "C++ MainServer"
+      },
+      "isUseUDP": true,
+      "Language": 1
+    }
+  },
+  "CPPDummyCS": {
+    "tag": {
+      "Name": "CPPDummyCS",
+      "Type": 2,
+      "ClientSeed": 0,
+      "Description": "C++ 더미 클라이언트"
+    },
+    "Packers": {},
+    "profiler": {
+      "Name": "CPPDummyCS",
+      "Description": "C++ 더미 클리아이언트",
+      "Path": "../../../CPPDummyClient",
+      "tag": {
+        "Name": "CPPDummyCS",
+        "Type": 2,
+        "ClientSeed": 0,
+        "Description": "C++ 더미 클라이언트"
       },
       "isUseUDP": true,
       "Language": 1

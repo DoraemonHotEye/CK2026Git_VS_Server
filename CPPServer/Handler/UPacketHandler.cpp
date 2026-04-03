@@ -74,5 +74,6 @@ void UPacketHandler::GAMECLIENT_USessionIDMatchHandler(CUPacketSession* session,
 	if (succ == true)
 	{
 		//TODO 로그 메세지
+
 	}
 }
