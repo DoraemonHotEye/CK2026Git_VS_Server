@@ -20,6 +20,8 @@ public:
     Room* Enter(class Player* player);
     bool Remove(class Player* player);
 
+    const int GetMasterSessionID();
+
 public:
     std::string RoomHashData;
     unsigned short _MaxPlayerCount;

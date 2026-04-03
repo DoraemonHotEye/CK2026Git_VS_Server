@@ -7,6 +7,7 @@
 #include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
 #include "../Game/Player/CPlayer.h"
 #include "../Game/Player/CPlayerManager.h"
+#include "../Game/Room/CRoom.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -46,7 +47,13 @@ void ClientSession::OnDisconnected(SOCKADDR_IN addr)
 
     LOG(log);
 
-    PlayerManager::GetInstance().Remove(this);
+    if (player != nullptr)
+    {
+        if (player->CurrentRoom != nullptr)
+            player->CurrentRoom->Remove(player);
+
+        PlayerManager::GetInstance().Remove(this);
+    }
 }
 
 void ClientSession::OnRecvPacket(char* buffer, int len)

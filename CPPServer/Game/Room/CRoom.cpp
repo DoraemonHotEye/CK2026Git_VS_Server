@@ -3,6 +3,9 @@
 #include <algorithm>
 #include "../Player/CPlayer.h"
 #include "../../Session/ClientSession.h"
+#include "../../../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../PeerJobTimerSender/PeerJobTimerSender.h"
+#include "../PeerJobTimerSender/PeerStationPackage.h"
 
 Room::Room(unsigned short maxPlayerCount, std::string initHashID)
     : _MaxPlayerCount(maxPlayerCount), RoomHashData(initHashID)
@@ -38,16 +41,21 @@ void Room::Ready()
         std::lock_guard<std::mutex> lock(_lock);
         ReadyCount++;
 
-        if (ReadyCount >= (int)playerList.size()) {
-            snapshotPlayers = playerList;
+        if (ReadyCount >= static_cast<int>(playerList.size())) {
+            snapshotPlayers = playerList; // snapshot 복사
             shouldRegister = true;
         }
     }
 
-    if (shouldRegister) {
-        // PeerStationPackage 등에 넘기는 로직 (생략된 클래스이므로 구조만 유지)
-        // package.EnterPlayers(snapshotPlayers); 
-        // PeerJobTimerSender::GetInstance().RegisterSender(package);
+    if (shouldRegister && !snapshotPlayers.empty())
+    {
+        // PeerStationPackage 생성
+        auto package = std::make_shared<PeerStationPackage>();
+        package->HashRoomID = RoomHashData;
+        package->EnterPlayers(snapshotPlayers);
+
+        // PeerJobTimerSender에 등록 (스레드 안전)
+        PeerJobTimerSender::Instance().RegisterSender(package);
     }
 }
 
@@ -56,6 +64,8 @@ void Room::GameStart()
     MAINSERVER_GameStartSucc start;
     start.timeout = 10;
     BroadCast(start);
+
+    LOG("[Room] -> # Started Room: " + RoomHashData);
 }
 
 Room* Room::Enter(Player* player)
@@ -136,6 +146,9 @@ bool Room::Remove(Player* player)
             newMaster = RoomMaster;
             masterChanged = true;
         }
+
+        LOG("Room: " + RoomHashData + " :: Session :: " + std::to_string(player->_session->sessionID) + " :: Leave Room Call Point");
+
         snapshot = playerList;
     }
 
@@ -158,4 +171,19 @@ bool Room::Remove(Player* player)
     BroadCast(exit);
 
     return true;
+}
+
+const int Room::GetMasterSessionID()
+{
+    Player* master = nullptr;
+
+    {
+        std::lock_guard<std::mutex> lock(_lock);
+        master = RoomMaster;
+    }
+
+    if (master == nullptr || master->_session == nullptr)
+        return -1;
+
+    return master->_session->sessionID;
 }

@@ -17,10 +17,22 @@ void PacketHandler::MAINSERVER_OtherPlayerRoomJoinHandler(CPacketSession* sessio
 
 void PacketHandler::MAINSERVER_SendRoomListHandler(CPacketSession* session, PacketInterface* message)
 {
+	ServerSession* _session = dynamic_cast<ServerSession*>(session);
+	MAINSERVER_SendRoomList* _packet = dynamic_cast<MAINSERVER_SendRoomList*>(message);
+
+	if (_session != nullptr && _packet != nullptr)
+	{
+		LOG("[Server] : RoomList :");
+		for (auto room : _packet->RoomHashDatas.Values) 
+		{
+			LOG(room);
+		}
+	}
 }
 
 void PacketHandler::MAINSERVER_JoinRoomSuccHandler(CPacketSession* session, PacketInterface* message)
 {
+	LOG("[Server]: Join Room Succ :: Session ID :: " + std::to_string(session->sessionID));
 }
 
 void PacketHandler::MAINSERVER_RoomMasterChangedHandler(CPacketSession* session, PacketInterface* message)

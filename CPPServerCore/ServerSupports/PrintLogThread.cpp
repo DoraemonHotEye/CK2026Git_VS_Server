@@ -1,7 +1,8 @@
-#include "PrintLogThread.h"
+ï»¿#include "PrintLogThread.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include "../CommandManager/CCommandManager.h"
 
 PrintLogThread& PrintLogThread::Instance()
 {
@@ -41,37 +42,60 @@ void PrintLogThread::Run()
 
         if (node)
         {
-            // ÀÓ½Ã ÀúÀå
             _tempBuffer.push_back(node->data);
+            continue;
         }
-        else
+
+        // íê°€ ë¹„ì—ˆì„ ë•Œ flush
+        if (!_tempBuffer.empty())
         {
-            if (!_tempBuffer.empty())
+            bool usePrompt = CCommandManager::Instance().isRunning();
+
+            // í˜„ì¬ ì…ë ¥ ê°€ì ¸ì˜¤ê¸°
+            std::string currentInput;
+            if (usePrompt)
+                currentInput = CCommandManager::Instance().GetCurrentInput(); // ìƒˆë¡œ ì¶”ê°€ëœ í•¨ìˆ˜
+
+            if (usePrompt)
             {
-                // FIFO ¼ø¼­·Î Ãâ·Â
-                for (auto it = _tempBuffer.rbegin(); it != _tempBuffer.rend(); ++it)
-                {
-                    std::cout << (*it) << std::endl;
-                }
-                _tempBuffer.clear();
+                // ì…ë ¥ ë¼ì¸ ì‚­ì œ (ANSI ì‚¬ìš© ê°€ëŠ¥ ì‹œ ë” ê¹”ë”)
+                std::cout << "\r" << std::string(120, ' ') << "\r";
             }
-            // CPU 100% ¹æÁö
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+            // ë¡œê·¸ ì¶œë ¥ (FIFO)
+            for (auto it = _tempBuffer.rbegin(); it != _tempBuffer.rend(); ++it)
+            {
+                std::cout << (*it) << std::endl;
+            }
+            _tempBuffer.clear();
+
+            if (usePrompt)
+            {
+                // í”„ë¡¬í”„íŠ¸ + ì…ë ¥ ë³µêµ¬
+                std::cout << "root-#command $: " << currentInput;
+                std::cout.flush();
+            }
         }
+
+        // CPU ì ìœ  ë°©ì§€
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
-    // Á¾·á ½Ã ³²Àº ·Î±× flush (FIFO)
     while (true)
     {
         auto node = _stack.Pop();
         if (!node)
             break;
+
         _tempBuffer.push_back(node->data);
     }
 
-    for (auto it = _tempBuffer.rbegin(); it != _tempBuffer.rend(); ++it)
+    if (!_tempBuffer.empty())
     {
-        std::cout << (*it) << std::endl;
+        for (auto it = _tempBuffer.rbegin(); it != _tempBuffer.rend(); ++it)
+        {
+            std::cout << (*it) << std::endl;
+        }
+        _tempBuffer.clear();
     }
-    _tempBuffer.clear();
 }

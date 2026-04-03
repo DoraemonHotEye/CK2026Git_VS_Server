@@ -12,10 +12,22 @@
 #include "../CPPServerCore/UDP/Session/CUSession.h"
 #include "Session/UServerSession.h"
 #include "../CPPServerCore/Headers/Packets.h"
+#include "CmdHeader/CmdHeader.h"
+#include "../CPPServerCore/JobTimer/CJobTimer.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
+
+UServerSession cusession;
+Connector connector;
+
+void FlushTimer()
+{
+    cusession.Update();
+    UIPEndPointManager::Instance().Update();
+    JobTimer::Instance().Push(FlushTimer, 1000);
+}
 
 int main()
 {
@@ -33,11 +45,6 @@ int main()
     {
         std::thread(workerThread, iocp).detach();
     }
-
-    UServerSession cusession;
-
-    // 3. Connector 생성
-    Connector connector;
 
     // 4. Session 생성 콜백
     OnAcceptCallback createSession = [](SOCKET socket) -> CSession*
@@ -77,16 +84,17 @@ int main()
 
 
     // 6. 연결 시도
-    connector.Start(addr, iocp, createSession, 150);
+    connector.Start(addr, iocp, createSession, 1);
 
     cout << "Client Connecting...\n";
 
+    RegisterCommand();
+
+    JobTimer::Instance().Push(FlushTimer, 1000);
     // 유지
     while (true)
     {
-        cusession.Update();
-        UIPEndPointManager::Instance().Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        JobTimer::Instance().Flush();
     }
 
     WSACleanup();

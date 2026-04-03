@@ -6,6 +6,7 @@
 
 #include "../../CPPServerCore/Headers/Packets.h"
 #include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../Manager/CPacketManager.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -46,4 +47,7 @@ void ServerSession::OnDisconnected(SOCKADDR_IN addr)
 
 void ServerSession::OnRecvPacket(char* buffer, int len)
 {
+    std::vector<uint8_t> vecBuffer(buffer, buffer + len);
+
+    PacketManager::Instance().OnRecvPacket(this, vecBuffer);
 }

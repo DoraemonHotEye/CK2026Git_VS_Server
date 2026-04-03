@@ -135,8 +135,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm\CPriorityQueue.h" />
+    <ClInclude Include="CommandManager\CCommandManager.h" />
     <ClInclude Include="Connector\CConnector.h" />
     <ClInclude Include="IPEndPointEntry\IPEndPointEntry.h" />
+    <ClInclude Include="JobTimer\CJobTimer.h" />
     <ClInclude Include="Managers\UIPEndPointManager.h" />
     <ClInclude Include="UDP\SubPart\CURequestTable.h" />
     <ClInclude Include="UDP\SubPart\IRdupCallback.h" />
@@ -156,7 +159,10 @@
     <ClInclude Include="UDP\Session\CUSession.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm\CPriorityQueue.inl" />
+    <ClCompile Include="CommandManager\CCommandManager.cpp" />
     <ClCompile Include="Connector\CConnector.cpp" />
+    <ClCompile Include="JobTimer\CJobTimer.cpp" />
     <ClCompile Include="Managers\UIPEndPointManager.cpp" />
     <ClCompile Include="UDP\SubPart\CURequestTable.cpp" />
     <ClCompile Include="UDP\SubPart\CUSendTable.cpp" />
