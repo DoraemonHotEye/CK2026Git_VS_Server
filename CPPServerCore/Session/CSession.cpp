@@ -17,6 +17,18 @@ void CSession::Start(SOCKET socket, HANDLE iocp)
     _iocp = iocp;
 
     CreateIoCompletionPort((HANDLE)_socket, iocp, (ULONG_PTR)this, 0);
+    
+    SOCKADDR_IN addr{};
+    int addrLen = sizeof(addr);
+    if (getpeername(_socket, (SOCKADDR*)&addr, &addrLen) == 0)
+    {
+        remoteAddr = addr;
+    }
+    else
+    {
+        // 실패하면 0.0.0.0:0 으로 초기화
+        ZeroMemory(&remoteAddr, sizeof(remoteAddr));
+    }
 
     // 풀에서 나온 세션이면 Reset() 호출 후 다시 초기화
     Reset();
@@ -50,6 +62,15 @@ void CSession::Reset()
     // 4. 기존 컨텍스트 삭제
     _recvContext.reset();
     _sendContext.reset();
+}
+
+std::string CSession::GetEndPoint() const
+{
+    char ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &remoteAddr.sin_addr, ip, sizeof(ip));
+    int port = ntohs(remoteAddr.sin_port);
+
+    return std::string(ip) + ":" + std::to_string(port);
 }
 
 void CSession::Send(PacketInterface& packet)

@@ -50,6 +50,10 @@ public:
 
     void Reset();
 
+    std::string GetEndPoint() const;
+
+    SOCKADDR_IN remoteAddr;
+
 protected:
     RecvBuffer _recvBuffer{ 8192 }; // 사이즈 적당히
 

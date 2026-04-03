@@ -24,6 +24,10 @@ public:
     void AddSession(std::unique_ptr<class CSession> session);
     void RemoveSession(class CSession* session);
 
+    class CSession* Get(int SessionID);
+    std::vector<std::string> GetEndPointsOrderBy(int step = 0, int step2 = 0);
+    std::vector<std::string> GetEndPointCount(int c1 = 0, int c2 = 0);
+
     std::unique_ptr<CSession> AcquireSession(std::function<std::unique_ptr<CSession>()> creator)
     {
         std::lock_guard<std::mutex> lock(mtx);

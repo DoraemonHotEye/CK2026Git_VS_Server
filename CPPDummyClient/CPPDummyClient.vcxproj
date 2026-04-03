@@ -137,6 +137,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CmdHeader\CmdHeader.h" />
     <ClInclude Include="Handler\PacketHandler.h" />
     <ClInclude Include="Handler\UPacketHandler.h" />
     <ClInclude Include="Manager\CPacketManager.h" />

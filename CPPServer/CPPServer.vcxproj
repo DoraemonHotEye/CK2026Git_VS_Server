@@ -123,6 +123,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\PeerJobTimerSender\PeerJobTimerSender.cpp" />
+    <ClCompile Include="Game\PeerJobTimerSender\PeerStationPackage.cpp" />
     <ClCompile Include="Game\Player\CPlayer.cpp" />
     <ClCompile Include="Game\Player\CPlayerManager.cpp" />
     <ClCompile Include="Game\Room\CRoom.cpp" />
@@ -141,6 +143,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\PeerJobTimerSender\PeerJobTimerSender.h" />
+    <ClInclude Include="Game\PeerJobTimerSender\PeerStationPackage.h" />
     <ClInclude Include="Game\Player\CPlayer.h" />
     <ClInclude Include="Game\Player\CPlayerManager.h" />
     <ClInclude Include="Game\Room\CRoom.h" />

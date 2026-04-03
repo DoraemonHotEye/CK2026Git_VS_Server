@@ -48,6 +48,12 @@
     <ClCompile Include="Game\Room\CRoomManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Game\PeerJobTimerSender\PeerStationPackage.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PeerJobTimerSender\PeerJobTimerSender.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session\ClientSession.h">
@@ -78,6 +84,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Game\Room\CRoom.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PeerJobTimerSender\PeerStationPackage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PeerJobTimerSender\PeerJobTimerSender.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

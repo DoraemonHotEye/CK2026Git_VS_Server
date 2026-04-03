@@ -72,6 +72,15 @@
     <ClInclude Include="IPEndPointEntry\IPEndPointEntry.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CommandManager\CCommandManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithm\CPriorityQueue.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="JobTimer\CJobTimer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Listener\CListener.cpp">
@@ -102,6 +111,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Managers\UIPEndPointManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandManager\CCommandManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\CPriorityQueue.inl">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="JobTimer\CJobTimer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

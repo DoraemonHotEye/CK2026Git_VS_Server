@@ -3,6 +3,7 @@
 #include <winsock2.h>
 
 #include "Session/ClientSession.h"
+#include "Session/UClientSession.h"
 
 #include "../CPPServerCore/Listener/CListener.h"
 #include "../CPPServerCore/Headers/CommonTypes.h"
@@ -10,31 +11,38 @@
 #include "../CPPServerCore/Headers/StaticMethods.h"
 #include "../CPPServerCore/ServerSupports/PrintLogThread.h"
 #include "../CPPServerCore/UDP/Session/CUSession.h"
-#include "Session/UClientSession.h"
+#include "../CPPServerCore/JobTimer/CJobTimer.h"
+
+#include "Game/PeerJobTimerSender/PeerJobTimerSender.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
+
+Listener listener;
+UClientSession cusession;
+
+void FlushTimer() 
+{
+    cusession.Update();
+    UIPEndPointManager::Instance().Update();
+    PeerJobTimerSender::Instance().BroadCast();
+    JobTimer::Instance().Push(FlushTimer, 1000);
+}
+
 int main()
 {
-    //Logger Start
     PrintLogThread::Instance().Start();
 
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-    // 1. IOCP 생성
     HANDLE iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 
-    // 2. WorkerThread 실행
     for (int i = 0; i < 4; i++)
     {
         std::thread(workerThread, iocp).detach();
     }
 
-    // 3. Listener 생성
-    Listener listener;
-
-    // 4. 콜백 설정 (Session 생성)
     OnAcceptCallback createSession = [](SOCKET socket) -> CSession*
         {
             // 풀에서 ClientSession 가져오기
@@ -49,9 +57,6 @@ int main()
             return rawPtr; // IOCP에서 raw pointer 사용
         };
 
-    UClientSession cusession;
-
-    // 5. 주소 설정
     SOCKADDR_IN addr;
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -62,13 +67,12 @@ int main()
     cusession.Start(5556);
 
     std::cout << "Server Started (Port: 7777)\n";
+    JobTimer::Instance().Push(FlushTimer, 200);
 
     // 서버 유지
     while (true)
     {
-        cusession.Update();
-        UIPEndPointManager::Instance().Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        JobTimer::Instance().Flush();
     }
 
     WSACleanup();
