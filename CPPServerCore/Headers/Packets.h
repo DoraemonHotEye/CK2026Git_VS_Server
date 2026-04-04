@@ -3186,6 +3186,7 @@ public:
 
     uint16_t NetID;
     int32_t AttackCount;
+    uint16_t SessionID;
     
 
     virtual void Deserialize(const std::vector<uint8_t>& data) override
@@ -3210,6 +3211,8 @@ public:
         offset += sizeof(uint16_t);
         std::memcpy(&AttackCount, &data[offset], sizeof(int32_t));
         offset += sizeof(int32_t);
+        std::memcpy(&SessionID, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
         
     }
 
@@ -3222,6 +3225,8 @@ public:
         size += sizeof(uint16_t);
         
         size += sizeof(int32_t);
+        
+        size += sizeof(uint16_t);
         
                 
         
@@ -3250,6 +3255,9 @@ public:
         
         std::memcpy(&buffer[offset], &AttackCount, sizeof(int32_t));
         offset += sizeof(int32_t);
+        
+        std::memcpy(&buffer[offset], &SessionID, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
         
         
 

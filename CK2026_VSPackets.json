@@ -1339,11 +1339,13 @@
           "Name": "MonsterTrigger",
           "MemberTypes": [
             "single:ushort",
-            "single:int"
+            "single:int",
+            "single:ushort"
           ],
           "MemberNames": [
             "NetID",
-            "AttackCount"
+            "AttackCount",
+            "SessionID"
           ]
         },
         "PacketID": "GAMECLIENT_MONSTERTRIGGER",

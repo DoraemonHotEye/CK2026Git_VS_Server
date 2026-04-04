@@ -2992,6 +2992,7 @@ namespace MakePacketTemplate.Packets
 
         public ushort NetID;
         public int AttackCount;
+        public ushort SessionID;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -3013,6 +3014,8 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
             AttackCount = BitConverter.ToInt32(buffer, start + offset);
             offset += sizeof(int);
+            SessionID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
             
         }
 
@@ -3027,6 +3030,8 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort);
             
             size += sizeof(int);
+            
+            size += sizeof(ushort);
             
             
 
@@ -3052,6 +3057,8 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
             BitConverter.GetBytes(AttackCount).CopyTo(buffer, offset);        
             offset += sizeof(int);
+            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
