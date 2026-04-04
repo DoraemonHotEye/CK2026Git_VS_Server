@@ -6,9 +6,19 @@
 #include "../../CPPServerCore/Headers/Packets.h"
 #include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
 #include "../Session/ServerSession.h"
+#include "../Session/UServerSession.h"
 
 void PacketHandler::MAINSERVER_SendSessionIDHandler(CPacketSession* session, PacketInterface* message)
 {
+	ServerSession* _session = dynamic_cast<ServerSession*>(session);
+	MAINSERVER_SendSessionID* _packet = dynamic_cast<MAINSERVER_SendSessionID*>(message);
+
+	if (_session != nullptr && _packet != nullptr)
+	{
+		GAMECLIENT_USessionIDMatch match = GAMECLIENT_USessionIDMatch();
+		match.SessionID = _packet->SessionID;
+		_session->usession->Send(match, _session->usession->_serverAddr, true);
+	}
 }
 
 void PacketHandler::MAINSERVER_OtherPlayerRoomJoinHandler(CPacketSession* session, PacketInterface* message)
@@ -57,6 +67,7 @@ void PacketHandler::MAINSERVER_SendPeerUserHandler(CPacketSession* session, Pack
 
 void PacketHandler::MAINSERVER_GameStartSuccHandler(CPacketSession* session, PacketInterface* message)
 {
+	
 }
 
 void PacketHandler::MAINSERVER_SendPbEndPointHandler(CPacketSession* session, PacketInterface* message)

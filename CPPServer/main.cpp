@@ -63,8 +63,8 @@ int main()
     addr.sin_port = htons(7777);
 
     // 6. Listener 시작
-    listener.Start(addr, iocp, createSession);
     cusession.Start(5556);
+    listener.Start(addr, iocp, createSession);
 
     std::cout << "Server Started (Port: 7777)\n";
     JobTimer::Instance().Push(FlushTimer, 200);

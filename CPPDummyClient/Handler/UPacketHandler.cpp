@@ -13,6 +13,7 @@ void UPacketHandler::DGRAM_SERVER_PingHandler(CUPacketSession* session, SOCKADDR
 	msg += ip;
 	msg += ":";
 	msg += std::to_string(ntohs(addr.sin_port));
+	msg += " :: Ping Packet UDP Session :: ";
 
 	UIPEndPointManager::Instance().OnPingResponse(addr);
 

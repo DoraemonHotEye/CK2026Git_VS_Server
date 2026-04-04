@@ -141,6 +141,7 @@
     <ClInclude Include="IPEndPointEntry\IPEndPointEntry.h" />
     <ClInclude Include="JobTimer\CJobTimer.h" />
     <ClInclude Include="Managers\UIPEndPointManager.h" />
+    <ClInclude Include="ServerSupports\NetworkEMC.h" />
     <ClInclude Include="UDP\SubPart\CURequestTable.h" />
     <ClInclude Include="UDP\SubPart\IRdupCallback.h" />
     <ClInclude Include="UDP\SubPart\CUSendTable.h" />

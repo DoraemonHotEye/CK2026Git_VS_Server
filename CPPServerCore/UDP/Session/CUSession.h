@@ -36,7 +36,6 @@ public:
 
 protected:
     virtual void RegisterUpdateMethod() { }
-    SOCKADDR_IN _serverAddr;
 
 protected:
     SOCKET _socket;
@@ -48,6 +47,7 @@ protected:
     std::mutex _tableMutex;
 
 public:
+    SOCKADDR_IN _serverAddr;
     RudpSendTable sendTable;
     std::unordered_map<SOCKADDR_IN, std::shared_ptr<RudpRequestTable>, SockAddrHash, SockAddrEqual> RequestTables;
 

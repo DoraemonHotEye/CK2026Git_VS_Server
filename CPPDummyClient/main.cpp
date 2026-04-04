@@ -14,7 +14,6 @@
 #include "../CPPServerCore/Headers/Packets.h"
 #include "CmdHeader/CmdHeader.h"
 #include "../CPPServerCore/JobTimer/CJobTimer.h"
-
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
@@ -51,7 +50,9 @@ int main()
         {
             // 풀에서 ClientSession 가져오기
             auto session = SessionManager::Instance().AcquireSession([]() {
-                return std::make_unique<ServerSession>(); // 생성 콜백
+                    auto ses = std::make_unique<ServerSession>();
+                    ses.get()->usession = &cusession;
+                return ses; // 생성 콜백
                 });
 
             // 활성 세션 리스트에 등록
@@ -66,15 +67,14 @@ int main()
     inet_pton(AF_INET, "127.0.0.1", &addru.sin_addr); // 서버 IP
     addru.sin_port = htons(5556);
 
-    cusession.StartClient("127.0.0.1", 5556);
-
     UIPEndPointManager::Instance().Add(addru);
 
-    GAMECLIENT_USessionIDMatch disconnect = GAMECLIENT_USessionIDMatch();
-    disconnect.SessionID = 241;
-
-    for(int i = 0; i < 1; ++i)
-        cusession.Send(disconnect, addru, true);
+    //GAMECLIENT_USessionIDMatch disconnect = GAMECLIENT_USessionIDMatch();
+    //disconnect.SessionID = 241;
+    //
+    //for(int i = 0; i < 1; ++i)
+    //    cusession.Send(disconnect, addru, true);
+    cusession.StartClient("127.0.0.1", 5556);
 
     // 5. 서버 주소 설정
     SOCKADDR_IN addr;

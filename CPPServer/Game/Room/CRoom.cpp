@@ -38,10 +38,12 @@ void Room::Ready()
     bool shouldRegister = false;
 
     {
+        LOG("Room Hash: " + RoomHashData + " 게임 준비 1 call");
         std::lock_guard<std::mutex> lock(_lock);
         ReadyCount++;
 
         if (ReadyCount >= static_cast<int>(playerList.size())) {
+            LOG("Room Hash: " + RoomHashData + " 게임 시작 가능");
             snapshotPlayers = playerList; // snapshot 복사
             shouldRegister = true;
         }
@@ -49,10 +51,38 @@ void Room::Ready()
 
     if (shouldRegister && !snapshotPlayers.empty())
     {
+        LOG("Room Hash: " + RoomHashData + " 등록");
         // PeerStationPackage 생성
         auto package = std::make_shared<PeerStationPackage>();
         package->HashRoomID = RoomHashData;
         package->EnterPlayers(snapshotPlayers);
+
+        std::vector<PeerDataPack> datas;
+        datas.reserve(snapshotPlayers.size());
+
+        for (auto p : snapshotPlayers)
+        {
+            if (!p || !p->_session)
+                continue;
+
+            PeerDataPack datapack;
+
+            datapack.LocalAddress = p->_localAddress;
+
+            // IP 변환 (string일 경우)
+            char ip[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &p->_peerEndPoint.sin_addr, ip, INET_ADDRSTRLEN);
+            datapack.PublicAddress = ip;
+
+            // 포트 변환
+            datapack.Port = ntohs(p->_peerEndPoint.sin_port);
+
+            datapack.SessionID = p->_session->sessionID;
+
+            datas.emplace_back(datapack);
+        }
+
+        package->EnterPeers(datas);
 
         // PeerJobTimerSender에 등록 (스레드 안전)
         PeerJobTimerSender::Instance().RegisterSender(package);

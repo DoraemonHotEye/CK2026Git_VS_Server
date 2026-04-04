@@ -69,7 +69,18 @@ void PacketHandler::GAMECLIENT_JoinRoomCallHandler(CPacketSession* session, Pack
 
 void PacketHandler::GAMECLIENT_RoomExitCallHandler(CPacketSession* session, PacketInterface* message)
 {
+	ClientSession* _session = dynamic_cast<ClientSession*>(session);
 
+	if (_session != nullptr)
+	{
+		if (_session->player != nullptr)
+		{
+			if (_session->player->CurrentRoom != nullptr)
+			{
+				_session->player->CurrentRoom->Remove(_session->player);
+			}
+		}
+	}
 }
 
 void PacketHandler::GAMECLIENT_GameStartHandler(CPacketSession* session, PacketInterface* message)
@@ -90,8 +101,31 @@ void PacketHandler::GAMECLIENT_GameStartHandler(CPacketSession* session, PacketI
 
 void PacketHandler::GAMECLIENT_GameStartReadyHandler(CPacketSession* session, PacketInterface* message)
 {
+	ClientSession* _session = dynamic_cast<ClientSession*>(session);
+
+	if (_session != nullptr)
+	{
+		if (_session->player != nullptr)
+		{
+			if (_session->player->CurrentRoom != nullptr)
+			{
+				_session->player->CurrentRoom->Ready();
+			}
+		}
+	}
 }
 
 void PacketHandler::GAMECLIENT_SendLocalEndPointHandler(CPacketSession* session, PacketInterface* message)
 {
+	ClientSession* _session = dynamic_cast<ClientSession*>(session);
+	GAMECLIENT_SendLocalEndPoint* endpoint = dynamic_cast<GAMECLIENT_SendLocalEndPoint*>(message);
+
+	if (_session != nullptr)
+	{
+		if (_session->player != nullptr && endpoint != nullptr)
+		{
+			_session->player->_localAddress = endpoint->LocalAddress;
+			LOG("SET Local Address :: SessionID (" + std::to_string(_session->sessionID) + ")" + " :: Local IP: " + endpoint->LocalAddress + " ::");
+		}
+	}
 }

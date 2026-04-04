@@ -4,6 +4,9 @@
 class ServerSession : public CPacketSession
 {
 public:
+	class UServerSession* usession;
+
+public:
 	void OnConnected(SOCKADDR_IN addr) override;
 	void OnSend(int len) override;
 	void OnDisconnected(SOCKADDR_IN addr) override;

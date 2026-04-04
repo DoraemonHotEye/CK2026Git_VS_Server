@@ -6,6 +6,7 @@
 
 #include "../../CPPServerCore/Headers/Packets.h"
 #include "../../CPPServerCore/ServerSupports/PrintLogThread.h"
+#include "../../CPPServerCore/ServerSupports/NetworkEMC.h"
 #include "../Manager/CPacketManager.h"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -25,6 +26,10 @@ void ServerSession::OnConnected(SOCKADDR_IN addr)
     GAMECLIENT_RoomSendCall call = GAMECLIENT_RoomSendCall();
     call.timeout = 40;
     Send(call);
+
+    GAMECLIENT_SendLocalEndPoint localend = GAMECLIENT_SendLocalEndPoint();
+    localend.LocalAddress = GetLocalIP();
+    Send(localend);
 }
 
 void ServerSession::OnSend(int len)

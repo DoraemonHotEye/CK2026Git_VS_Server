@@ -26,6 +26,10 @@ void ClientSession::OnConnected(SOCKADDR_IN addr)
     LOG(log);
 
     PlayerManager::GetInstance().Generate(this);
+
+    MAINSERVER_SendSessionID sessionid = MAINSERVER_SendSessionID();
+    sessionid.SessionID = sessionID;
+    Send(sessionid);
 }
 
 void ClientSession::OnSend(int len)

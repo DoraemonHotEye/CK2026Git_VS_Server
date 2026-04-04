@@ -1,6 +1,7 @@
 #include "PeerStationPackage.h"
 #include "../Player/CPlayer.h"
 #include "../../Session/ClientSession.h"
+#include "../../../CPPServerCore/ServerSupports/PrintLogThread.h"
 
 
 void PeerStationPackage::EnterPlayers(const std::vector<Player*>& players)
@@ -27,7 +28,9 @@ void PeerStationPackage::BroadCastMessage(PacketInterface& message)
     for (Player* pl : snapshot)
     {
         if (pl && pl->_session)
+        {
             pl->_session->Send(message); // Lock 밖에서 호출
+        }
     }
 }
 
@@ -51,6 +54,12 @@ bool PeerStationPackage::BroadCast()
     peer.LocalAddress = endPoint.LocalAddress;
     peer.SessionID = endPoint.SessionID;
     peer.Port = endPoint.Port;
+
+    std::string msg = "[Peer] Public[" + peer.PublicAddress + ":" + std::to_string(peer.Port) +
+        "] Local[" + peer.LocalAddress +
+        "] Session[" + std::to_string(peer.SessionID) + "]";
+
+    LOG(msg);
 
     BroadCastMessage(peer);
     return false;

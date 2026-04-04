@@ -204,6 +204,48 @@ void RoomCommands(const std::vector<std::string>& params)
             return;
         }
     }
+    else if (params[1] == "leave") 
+    {
+        if (CurrentHead == nullptr)
+        {
+            LOG("[ERROR] 현재 사용 중인 세션이 없음");
+        }
+
+        try
+        {
+            GAMECLIENT_RoomExitCall roomcall = GAMECLIENT_RoomExitCall();
+            roomcall.timeout = 10;
+            CurrentHead->Send(roomcall);
+
+            LOG("[INFO] Execute Send Packet PacketName: GAMECLIENT_RoomExitCall");
+        }
+        catch (const std::exception& e)
+        {
+            LOG("[ERROR] Invalid session ID: " + params[2]);
+            return;
+        }
+    }
+    else if (params[1] == "ready")
+    {
+        if (CurrentHead == nullptr)
+        {
+            LOG("[ERROR] 현재 사용 중인 세션이 없음");
+        }
+
+        try
+        {
+            GAMECLIENT_GameStartReady ready = GAMECLIENT_GameStartReady();
+            ready.timeout = 10;
+            CurrentHead->Send(ready);
+
+            LOG("[INFO] Execute Send Packet PacketName: GAMECLIENT_GameStartReady");
+        }
+        catch (const std::exception& e)
+        {
+            LOG("[ERROR] Invalid session ID: " + params[2]);
+            return;
+        }
+    }
 }
 
 void RegisterCommand() 
