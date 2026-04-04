@@ -150,20 +150,19 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_GROUNDCHECK = 34,
          GAMECLIENT_MONSTERGRABSTART = 35,
          GAMECLIENT_MONSTERTELEPORT = 36,
-         GAMECLIENT_MONSTERTRIGGER = 37,
-         GAMECLIENT_MONSTERGRABING = 38,
-         GAMECLIENT_MONSTERGRABEND = 39,
-         MAINSERVER_SENDSESSIONID = 40,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 41,
-         MAINSERVER_SENDROOMLIST = 42,
-         MAINSERVER_JOINROOMSUCC = 43,
-         MAINSERVER_ROOMMASTERCHANGED = 44,
-         MAINSERVER_ROOMEXITSUCC = 45,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 46,
-         MAINSERVER_NOROOMCALLBACK = 47,
-         MAINSERVER_SENDPEERUSER = 48,
-         MAINSERVER_GAMESTARTSUCC = 49,
-         MAINSERVER_SENDPBENDPOINT = 50,
+         GAMECLIENT_MONSTERGRABING = 37,
+         GAMECLIENT_MONSTERGRABEND = 38,
+         MAINSERVER_SENDSESSIONID = 39,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 40,
+         MAINSERVER_SENDROOMLIST = 41,
+         MAINSERVER_JOINROOMSUCC = 42,
+         MAINSERVER_ROOMMASTERCHANGED = 43,
+         MAINSERVER_ROOMEXITSUCC = 44,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 45,
+         MAINSERVER_NOROOMCALLBACK = 46,
+         MAINSERVER_SENDPEERUSER = 47,
+         MAINSERVER_GAMESTARTSUCC = 48,
+         MAINSERVER_SENDPBENDPOINT = 49,
          
          DGRAM_SERVER_REQUESTACK = 25562,
          DGRAM_SERVER_ACKSEQ = 25563,
@@ -2979,86 +2978,6 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(float);
             BitConverter.GetBytes(PosY).CopyTo(buffer, offset);        
             offset += sizeof(float);
-            
-
-            return new ArraySegment<byte>(buffer, 0, size);
-        }
-    }
-    
-    public class GAMECLIENT_MonsterTrigger : PacketInterface
-    {
-        public MsgID MsgID = MsgID.GAMECLIENT_MONSTERTRIGGER;
-        public ushort SeqNum;
-
-        public ushort NetID;
-        public int AttackCount;
-        public ushort SessionID;
-        
-
-        public void Desrialize(ArraySegment<byte> data)
-        {
-            byte[] buffer = data.Array;
-            int start = data.Offset;
-            int offset = 0;
-            
-            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            NetID = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            AttackCount = BitConverter.ToInt32(buffer, start + offset);
-            offset += sizeof(int);
-            SessionID = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            
-        }
-
-        public ushort GetSize()
-        {
-            ushort size = 0;
-
-            size += sizeof(ushort); // PacketSize
-            size += sizeof(ushort); // PacketID
-            size += sizeof(ushort); // SeqNum
-
-            size += sizeof(ushort);
-            
-            size += sizeof(int);
-            
-            size += sizeof(ushort);
-            
-            
-
-            return size;
-        }
-
-        public ArraySegment<byte> Serialize()
-        {
-            ushort size = GetSize();
-            byte[] buffer = new byte[size];
-            ushort offset = 0;
-
-            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            BitConverter.GetBytes(AttackCount).CopyTo(buffer, offset);        
-            offset += sizeof(int);
-            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
