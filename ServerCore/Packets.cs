@@ -2837,7 +2837,12 @@ namespace MakePacketTemplate.Packets
         public ushort SeqNum;
 
         public ushort NetID;
-        public ushort GrabID;
+        public ushort OwnerID;
+        public float posX;
+        public float posY;
+        public ushort SessionID;
+        public ushort CarrierIdx;
+        public ushort TargetIdx;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -2857,7 +2862,17 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            GrabID = BitConverter.ToUInt16(buffer, start + offset);
+            OwnerID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            posX = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            posY = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            SessionID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            CarrierIdx = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            TargetIdx = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
         }
@@ -2870,6 +2885,16 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketID
             size += sizeof(ushort); // SeqNum
 
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            
+            size += sizeof(float);
+            
+            size += sizeof(float);
+            
+            size += sizeof(ushort);
+            
             size += sizeof(ushort);
             
             size += sizeof(ushort);
@@ -2896,7 +2921,17 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
-            BitConverter.GetBytes(GrabID).CopyTo(buffer, offset);        
+            BitConverter.GetBytes(OwnerID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(posX).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(posY).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(CarrierIdx).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(TargetIdx).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
 
@@ -2990,9 +3025,9 @@ namespace MakePacketTemplate.Packets
         public ushort SeqNum;
 
         public ushort NetID;
-        public float GrabX;
-        public float GrabY;
         public ushort TargetID;
+        public float posX;
+        public float posY;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -3012,12 +3047,12 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            GrabX = BitConverter.ToSingle(buffer, start + offset);
-            offset += sizeof(float);
-            GrabY = BitConverter.ToSingle(buffer, start + offset);
-            offset += sizeof(float);
             TargetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
+            posX = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            posY = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
             
         }
 
@@ -3031,11 +3066,11 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort);
             
-            size += sizeof(float);
-            
-            size += sizeof(float);
-            
             size += sizeof(ushort);
+            
+            size += sizeof(float);
+            
+            size += sizeof(float);
             
             
 
@@ -3059,12 +3094,12 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
-            BitConverter.GetBytes(GrabX).CopyTo(buffer, offset);        
-            offset += sizeof(float);
-            BitConverter.GetBytes(GrabY).CopyTo(buffer, offset);        
-            offset += sizeof(float);
             BitConverter.GetBytes(TargetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            BitConverter.GetBytes(posX).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(posY).CopyTo(buffer, offset);        
+            offset += sizeof(float);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
@@ -3077,7 +3112,6 @@ namespace MakePacketTemplate.Packets
         public ushort SeqNum;
 
         public ushort NetID;
-        public ushort GrabID;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -3097,8 +3131,6 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            GrabID = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
             
         }
 
@@ -3110,8 +3142,6 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketID
             size += sizeof(ushort); // SeqNum
 
-            size += sizeof(ushort);
-            
             size += sizeof(ushort);
             
             
@@ -3135,8 +3165,6 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            BitConverter.GetBytes(GrabID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
 

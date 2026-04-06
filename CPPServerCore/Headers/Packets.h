@@ -3020,7 +3020,12 @@ public:
     uint16_t SeqNum = 0;
 
     uint16_t NetID;
-    uint16_t GrabID;
+    uint16_t OwnerID;
+    float posX;
+    float posY;
+    uint16_t SessionID;
+    uint16_t CarrierIdx;
+    uint16_t TargetIdx;
     
 
     virtual void Deserialize(const std::vector<uint8_t>& data) override
@@ -3043,7 +3048,17 @@ public:
 
         std::memcpy(&NetID, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
-        std::memcpy(&GrabID, &data[offset], sizeof(uint16_t));
+        std::memcpy(&OwnerID, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        std::memcpy(&posX, &data[offset], sizeof(float));
+        offset += sizeof(float);
+        std::memcpy(&posY, &data[offset], sizeof(float));
+        offset += sizeof(float);
+        std::memcpy(&SessionID, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        std::memcpy(&CarrierIdx, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        std::memcpy(&TargetIdx, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
         
     }
@@ -3054,6 +3069,16 @@ public:
         size += sizeof(uint16_t); // PacketSize
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t); // SeqNum
+        size += sizeof(uint16_t);
+        
+        size += sizeof(uint16_t);
+        
+        size += sizeof(float);
+        
+        size += sizeof(float);
+        
+        size += sizeof(uint16_t);
+        
         size += sizeof(uint16_t);
         
         size += sizeof(uint16_t);
@@ -3083,7 +3108,22 @@ public:
         std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         
-        std::memcpy(&buffer[offset], &GrabID, sizeof(uint16_t));
+        std::memcpy(&buffer[offset], &OwnerID, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &posX, sizeof(float));
+        offset += sizeof(float);
+        
+        std::memcpy(&buffer[offset], &posY, sizeof(float));
+        offset += sizeof(float);
+        
+        std::memcpy(&buffer[offset], &SessionID, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &CarrierIdx, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &TargetIdx, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         
         
@@ -3184,9 +3224,9 @@ public:
     uint16_t SeqNum = 0;
 
     uint16_t NetID;
-    float GrabX;
-    float GrabY;
     uint16_t TargetID;
+    float posX;
+    float posY;
     
 
     virtual void Deserialize(const std::vector<uint8_t>& data) override
@@ -3209,12 +3249,12 @@ public:
 
         std::memcpy(&NetID, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
-        std::memcpy(&GrabX, &data[offset], sizeof(float));
-        offset += sizeof(float);
-        std::memcpy(&GrabY, &data[offset], sizeof(float));
-        offset += sizeof(float);
         std::memcpy(&TargetID, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
+        std::memcpy(&posX, &data[offset], sizeof(float));
+        offset += sizeof(float);
+        std::memcpy(&posY, &data[offset], sizeof(float));
+        offset += sizeof(float);
         
     }
 
@@ -3226,11 +3266,11 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-        size += sizeof(float);
-        
-        size += sizeof(float);
-        
         size += sizeof(uint16_t);
+        
+        size += sizeof(float);
+        
+        size += sizeof(float);
         
                 
         
@@ -3257,14 +3297,14 @@ public:
         std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         
-        std::memcpy(&buffer[offset], &GrabX, sizeof(float));
-        offset += sizeof(float);
-        
-        std::memcpy(&buffer[offset], &GrabY, sizeof(float));
-        offset += sizeof(float);
-        
         std::memcpy(&buffer[offset], &TargetID, sizeof(uint16_t));
         offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &posX, sizeof(float));
+        offset += sizeof(float);
+        
+        std::memcpy(&buffer[offset], &posY, sizeof(float));
+        offset += sizeof(float);
         
         
 
@@ -3278,7 +3318,6 @@ public:
     uint16_t SeqNum = 0;
 
     uint16_t NetID;
-    uint16_t GrabID;
     
 
     virtual void Deserialize(const std::vector<uint8_t>& data) override
@@ -3301,8 +3340,6 @@ public:
 
         std::memcpy(&NetID, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
-        std::memcpy(&GrabID, &data[offset], sizeof(uint16_t));
-        offset += sizeof(uint16_t);
         
     }
 
@@ -3312,8 +3349,6 @@ public:
         size += sizeof(uint16_t); // PacketSize
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t); // SeqNum
-        size += sizeof(uint16_t);
-        
         size += sizeof(uint16_t);
         
                 
@@ -3339,9 +3374,6 @@ public:
         offset += sizeof(uint16_t);
         
         std::memcpy(&buffer[offset], &NetID, sizeof(uint16_t));
-        offset += sizeof(uint16_t);
-        
-        std::memcpy(&buffer[offset], &GrabID, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         
         
