@@ -1277,11 +1277,21 @@
           "Name": "MonsterGrabStart",
           "MemberTypes": [
             "single:ushort",
+            "single:ushort",
+            "single:float",
+            "single:float",
+            "single:ushort",
+            "single:ushort",
             "single:ushort"
           ],
           "MemberNames": [
             "NetID",
-            "GrabID"
+            "OwnerID",
+            "posX",
+            "posY",
+            "SessionID",
+            "CarrierIdx",
+            "TargetIdx"
           ]
         },
         "PacketID": "GAMECLIENT_MONSTERGRABSTART",
@@ -1334,52 +1344,20 @@
         ],
         "MProtoType": 1
       },
-      "GAMECLIENT_MONSTERTRIGGER": {
-        "packer": {
-          "Name": "MonsterTrigger",
-          "MemberTypes": [
-            "single:ushort",
-            "single:int",
-            "single:ushort"
-          ],
-          "MemberNames": [
-            "NetID",
-            "AttackCount",
-            "SessionID"
-          ]
-        },
-        "PacketID": "GAMECLIENT_MONSTERTRIGGER",
-        "LinkedProfilers": [
-          {
-            "Name": "GameClient",
-            "Description": "게임 클라이언트",
-            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
-            "tag": {
-              "Name": "GameClient",
-              "Type": 4,
-              "ClientSeed": 0,
-              "Description": ""
-            },
-            "isUseUDP": true,
-            "Language": 0
-          }
-        ],
-        "MProtoType": 1
-      },
       "GAMECLIENT_MONSTERGRABING": {
         "packer": {
           "Name": "MonsterGrabIng",
           "MemberTypes": [
             "single:ushort",
+            "single:ushort",
             "single:float",
-            "single:float",
-            "single:ushort"
+            "single:float"
           ],
           "MemberNames": [
             "NetID",
-            "GrabX",
-            "GrabY",
-            "TargetID"
+            "TargetID",
+            "posX",
+            "posY"
           ]
         },
         "PacketID": "GAMECLIENT_MONSTERGRABING",
@@ -1404,12 +1382,10 @@
         "packer": {
           "Name": "MonsterGrabEnd",
           "MemberTypes": [
-            "single:ushort",
             "single:ushort"
           ],
           "MemberNames": [
-            "NetID",
-            "GrabID"
+            "NetID"
           ]
         },
         "PacketID": "GAMECLIENT_MONSTERGRABEND",

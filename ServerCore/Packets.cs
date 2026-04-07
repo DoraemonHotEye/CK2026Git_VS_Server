@@ -150,20 +150,19 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_GROUNDCHECK = 34,
          GAMECLIENT_MONSTERGRABSTART = 35,
          GAMECLIENT_MONSTERTELEPORT = 36,
-         GAMECLIENT_MONSTERTRIGGER = 37,
-         GAMECLIENT_MONSTERGRABING = 38,
-         GAMECLIENT_MONSTERGRABEND = 39,
-         MAINSERVER_SENDSESSIONID = 40,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 41,
-         MAINSERVER_SENDROOMLIST = 42,
-         MAINSERVER_JOINROOMSUCC = 43,
-         MAINSERVER_ROOMMASTERCHANGED = 44,
-         MAINSERVER_ROOMEXITSUCC = 45,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 46,
-         MAINSERVER_NOROOMCALLBACK = 47,
-         MAINSERVER_SENDPEERUSER = 48,
-         MAINSERVER_GAMESTARTSUCC = 49,
-         MAINSERVER_SENDPBENDPOINT = 50,
+         GAMECLIENT_MONSTERGRABING = 37,
+         GAMECLIENT_MONSTERGRABEND = 38,
+         MAINSERVER_SENDSESSIONID = 39,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 40,
+         MAINSERVER_SENDROOMLIST = 41,
+         MAINSERVER_JOINROOMSUCC = 42,
+         MAINSERVER_ROOMMASTERCHANGED = 43,
+         MAINSERVER_ROOMEXITSUCC = 44,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 45,
+         MAINSERVER_NOROOMCALLBACK = 46,
+         MAINSERVER_SENDPEERUSER = 47,
+         MAINSERVER_GAMESTARTSUCC = 48,
+         MAINSERVER_SENDPBENDPOINT = 49,
          
          DGRAM_SERVER_REQUESTACK = 25562,
          DGRAM_SERVER_ACKSEQ = 25563,
@@ -2838,7 +2837,12 @@ namespace MakePacketTemplate.Packets
         public ushort SeqNum;
 
         public ushort NetID;
-        public ushort GrabID;
+        public ushort OwnerID;
+        public float posX;
+        public float posY;
+        public ushort SessionID;
+        public ushort CarrierIdx;
+        public ushort TargetIdx;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -2858,7 +2862,17 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            GrabID = BitConverter.ToUInt16(buffer, start + offset);
+            OwnerID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            posX = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            posY = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            SessionID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            CarrierIdx = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            TargetIdx = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             
         }
@@ -2871,6 +2885,16 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketID
             size += sizeof(ushort); // SeqNum
 
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            
+            size += sizeof(float);
+            
+            size += sizeof(float);
+            
+            size += sizeof(ushort);
+            
             size += sizeof(ushort);
             
             size += sizeof(ushort);
@@ -2897,7 +2921,17 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
-            BitConverter.GetBytes(GrabID).CopyTo(buffer, offset);        
+            BitConverter.GetBytes(OwnerID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(posX).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(posY).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(CarrierIdx).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            BitConverter.GetBytes(TargetIdx).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
 
@@ -2985,95 +3019,15 @@ namespace MakePacketTemplate.Packets
         }
     }
     
-    public class GAMECLIENT_MonsterTrigger : PacketInterface
-    {
-        public MsgID MsgID = MsgID.GAMECLIENT_MONSTERTRIGGER;
-        public ushort SeqNum;
-
-        public ushort NetID;
-        public int AttackCount;
-        public ushort SessionID;
-        
-
-        public void Desrialize(ArraySegment<byte> data)
-        {
-            byte[] buffer = data.Array;
-            int start = data.Offset;
-            int offset = 0;
-            
-            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-
-            NetID = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            AttackCount = BitConverter.ToInt32(buffer, start + offset);
-            offset += sizeof(int);
-            SessionID = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
-            
-        }
-
-        public ushort GetSize()
-        {
-            ushort size = 0;
-
-            size += sizeof(ushort); // PacketSize
-            size += sizeof(ushort); // PacketID
-            size += sizeof(ushort); // SeqNum
-
-            size += sizeof(ushort);
-            
-            size += sizeof(int);
-            
-            size += sizeof(ushort);
-            
-            
-
-            return size;
-        }
-
-        public ArraySegment<byte> Serialize()
-        {
-            ushort size = GetSize();
-            byte[] buffer = new byte[size];
-            ushort offset = 0;
-
-            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
-            offset += sizeof(ushort);
-
-            BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            BitConverter.GetBytes(AttackCount).CopyTo(buffer, offset);        
-            offset += sizeof(int);
-            BitConverter.GetBytes(SessionID).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            
-
-            return new ArraySegment<byte>(buffer, 0, size);
-        }
-    }
-    
     public class GAMECLIENT_MonsterGrabIng : PacketInterface
     {
         public MsgID MsgID = MsgID.GAMECLIENT_MONSTERGRABING;
         public ushort SeqNum;
 
         public ushort NetID;
-        public float GrabX;
-        public float GrabY;
         public ushort TargetID;
+        public float posX;
+        public float posY;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -3093,12 +3047,12 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            GrabX = BitConverter.ToSingle(buffer, start + offset);
-            offset += sizeof(float);
-            GrabY = BitConverter.ToSingle(buffer, start + offset);
-            offset += sizeof(float);
             TargetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
+            posX = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
+            posY = BitConverter.ToSingle(buffer, start + offset);
+            offset += sizeof(float);
             
         }
 
@@ -3112,11 +3066,11 @@ namespace MakePacketTemplate.Packets
 
             size += sizeof(ushort);
             
-            size += sizeof(float);
-            
-            size += sizeof(float);
-            
             size += sizeof(ushort);
+            
+            size += sizeof(float);
+            
+            size += sizeof(float);
             
             
 
@@ -3140,12 +3094,12 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
-            BitConverter.GetBytes(GrabX).CopyTo(buffer, offset);        
-            offset += sizeof(float);
-            BitConverter.GetBytes(GrabY).CopyTo(buffer, offset);        
-            offset += sizeof(float);
             BitConverter.GetBytes(TargetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            BitConverter.GetBytes(posX).CopyTo(buffer, offset);        
+            offset += sizeof(float);
+            BitConverter.GetBytes(posY).CopyTo(buffer, offset);        
+            offset += sizeof(float);
             
 
             return new ArraySegment<byte>(buffer, 0, size);
@@ -3158,7 +3112,6 @@ namespace MakePacketTemplate.Packets
         public ushort SeqNum;
 
         public ushort NetID;
-        public ushort GrabID;
         
 
         public void Desrialize(ArraySegment<byte> data)
@@ -3178,8 +3131,6 @@ namespace MakePacketTemplate.Packets
 
             NetID = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
-            GrabID = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
             
         }
 
@@ -3191,8 +3142,6 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketID
             size += sizeof(ushort); // SeqNum
 
-            size += sizeof(ushort);
-            
             size += sizeof(ushort);
             
             
@@ -3216,8 +3165,6 @@ namespace MakePacketTemplate.Packets
             offset += sizeof(ushort);
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
-            BitConverter.GetBytes(GrabID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
             
 
