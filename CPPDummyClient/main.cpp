@@ -14,6 +14,7 @@
 #include "../CPPServerCore/Headers/Packets.h"
 #include "CmdHeader/CmdHeader.h"
 #include "../CPPServerCore/JobTimer/CJobTimer.h"
+#include "../CPPServerCore/ServerSupports/Configuration/CIpConfigManager.h"
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
@@ -64,8 +65,12 @@ int main()
 
     SOCKADDR_IN addru;
     addru.sin_family = AF_INET;
-    inet_pton(AF_INET, "127.0.0.1", &addru.sin_addr); // 서버 IP
-    addru.sin_port = htons(5556);
+    inet_pton(
+        AF_INET,
+        IpConfigManager::Instance().ipConfig.UDPIPEndPoint.IPAddress.c_str(), // 수정된 부분
+        &addru.sin_addr
+    );
+    addru.sin_port = htons(IpConfigManager::Instance().ipConfig.UDPIPEndPoint.Port);
 
     UIPEndPointManager::Instance().Add(addru);
 
@@ -74,13 +79,17 @@ int main()
     //
     //for(int i = 0; i < 1; ++i)
     //    cusession.Send(disconnect, addru, true);
-    cusession.StartClient("127.0.0.1", 5556);
+    cusession.StartClient(IpConfigManager::Instance().ipConfig.UDPIPEndPoint.IPAddress, IpConfigManager::Instance().ipConfig.UDPIPEndPoint.Port);
 
     // 5. 서버 주소 설정
     SOCKADDR_IN addr;
     addr.sin_family = AF_INET;
-    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr); // 서버 IP
-    addr.sin_port = htons(7777);                     // 서버 포트
+    inet_pton(
+        AF_INET,
+        IpConfigManager::Instance().ipConfig.TCPIPEndPoint.IPAddress.c_str(), // 수정된 부분
+        &addr.sin_addr
+    );
+    addr.sin_port = htons(IpConfigManager::Instance().ipConfig.TCPIPEndPoint.Port);
 
 
     // 6. 연결 시도

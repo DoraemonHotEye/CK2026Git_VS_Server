@@ -23,7 +23,7 @@ public:
     }
 
     // 소켓 시작 및 수신 스레드 실행
-    void Start(u_short port);
+    void Start(std::string ipAddress, u_short port);
     void StartClient(const std::string& serverIP, u_short port);
     void Stop();
 

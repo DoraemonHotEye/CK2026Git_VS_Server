@@ -3,7 +3,7 @@
 #include "../../Headers/Packets.h"
 #include "../../ServerSupports/PrintLogThread.h"
 
-void CUSession::Start(u_short port)
+void CUSession::Start(std::string ipAddress, u_short port)
 {
     _socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (_socket == INVALID_SOCKET) {
@@ -16,9 +16,15 @@ void CUSession::Start(u_short port)
     BOOL bNewBehavior = FALSE;
     WSAIoctl(_socket, SIO_UDP_CONNRESET, &bNewBehavior, sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
 
-    SOCKADDR_IN addr = {};
+    SOCKADDR_IN addr;
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    inet_pton(
+        AF_INET,
+        ipAddress.c_str(), // 수정된 부분
+        &addr.sin_addr
+    );
+
     addr.sin_port = htons(port);
 
     if (bind(_socket, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR) {

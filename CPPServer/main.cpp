@@ -12,6 +12,7 @@
 #include "../CPPServerCore/ServerSupports/PrintLogThread.h"
 #include "../CPPServerCore/UDP/Session/CUSession.h"
 #include "../CPPServerCore/JobTimer/CJobTimer.h"
+#include "../CPPServerCore/ServerSupports/Configuration/CIpConfigManager.h"
 
 #include "Game/PeerJobTimerSender/PeerJobTimerSender.h"
 
@@ -59,11 +60,17 @@ int main()
 
     SOCKADDR_IN addr;
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(7777);
+
+    inet_pton(
+        AF_INET,
+        IpConfigManager::Instance().ipConfig.TCPIPEndPoint.IPAddress.c_str(), // 수정된 부분
+        &addr.sin_addr
+    );
+
+    addr.sin_port = htons(IpConfigManager::Instance().ipConfig.TCPIPEndPoint.Port);
 
     // 6. Listener 시작
-    cusession.Start(5556);
+    cusession.Start(IpConfigManager::Instance().ipConfig.UDPIPEndPoint.IPAddress, IpConfigManager::Instance().ipConfig.UDPIPEndPoint.Port);
     listener.Start(addr, iocp, createSession);
 
     std::cout << "Server Started (Port: 7777)\n";

@@ -84,6 +84,9 @@
     <ClInclude Include="ServerSupports\NetworkEMC.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ServerSupports\Configuration\CIpConfigManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Listener\CListener.cpp">
@@ -125,5 +128,11 @@
     <ClCompile Include="JobTimer\CJobTimer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ServerSupports\Configuration\CIpConfigManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

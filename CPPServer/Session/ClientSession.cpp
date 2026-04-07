@@ -30,6 +30,11 @@ void ClientSession::OnConnected(SOCKADDR_IN addr)
     MAINSERVER_SendSessionID sessionid = MAINSERVER_SendSessionID();
     sessionid.SessionID = sessionID;
     Send(sessionid);
+
+    MAINSERVER_SendPbEndPoint pbSend;
+    pbSend.IPAddress = ip;
+    pbSend.Port = ntohs(addr.sin_port);
+    Send(pbSend);
 }
 
 void ClientSession::OnSend(int len)
