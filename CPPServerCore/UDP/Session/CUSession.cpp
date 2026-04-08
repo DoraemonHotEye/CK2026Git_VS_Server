@@ -126,7 +126,7 @@ void CUSession::Send(PacketInterface& packet, SOCKADDR_IN& addr, bool isUseRUDP)
 
     try
     {
-        if (isUseRUDP)
+        if (isUseRUDP == true)
         {
             // RUDP 헤더 위치 파악 (dataSize:2, packetId:2, seqNum:2 순서라고 가정)
             // 직렬화된 데이터의 4바이트 지점(seqNum)에 값을 덮어씌움
