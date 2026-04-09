@@ -328,6 +328,7 @@ public:
 {{
     {2}
 
+public:
     // Size
     virtual uint16_t GetSize() const override
     {{
