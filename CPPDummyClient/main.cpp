@@ -99,7 +99,7 @@ int main()
 
     RegisterCommand();
 
-    JobTimer::Instance().Push(FlushTimer, 1000);
+    JobTimer::Instance().Push(FlushTimer, 200);
     // 유지
     while (true)
     {

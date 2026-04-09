@@ -27,7 +27,7 @@ void PeerStationPackage::BroadCastMessage(PacketInterface& message)
 
     for (Player* pl : snapshot)
     {
-        if (pl && pl->_session)
+        if (pl != nullptr && pl->_session)
         {
             pl->_session->Send(message); // Lock 밖에서 호출
         }
