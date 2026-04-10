@@ -3178,7 +3178,6 @@ namespace MakePacketTemplate.Packets
         public MsgID MsgID = MsgID.GAMECLIENT_RPCCALL;
         public ushort SeqNum;
 
-        public ushort ObjectID;
         public string JsonHash;
         
 
@@ -3197,8 +3196,6 @@ namespace MakePacketTemplate.Packets
             SeqNum = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
 
-            ObjectID = BitConverter.ToUInt16(buffer, start + offset);
-            offset += sizeof(ushort);
             ushort JsonHashLength = BitConverter.ToUInt16(buffer, start + offset);
             offset += sizeof(ushort);
             JsonHash = Encoding.UTF8.GetString(buffer, start + offset, JsonHashLength);
@@ -3214,8 +3211,6 @@ namespace MakePacketTemplate.Packets
             size += sizeof(ushort); // PacketID
             size += sizeof(ushort); // SeqNum
 
-            size += sizeof(ushort);
-            
             size += sizeof(ushort);
             size += (ushort)Encoding.UTF8.GetByteCount(JsonHash);
             
@@ -3238,8 +3233,6 @@ namespace MakePacketTemplate.Packets
             Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
             offset += sizeof(ushort);
 
-            BitConverter.GetBytes(ObjectID).CopyTo(buffer, offset);        
-            offset += sizeof(ushort);
             byte[] JsonHashBytes = Encoding.UTF8.GetBytes(JsonHash);
             BitConverter.GetBytes((ushort)JsonHashBytes.Length).CopyTo(buffer, offset);
             offset += sizeof(ushort);

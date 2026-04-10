@@ -1410,11 +1410,9 @@
         "packer": {
           "Name": "RpcCall",
           "MemberTypes": [
-            "single:ushort",
             "single:string"
           ],
           "MemberNames": [
-            "ObjectID",
             "JsonHash"
           ]
         },

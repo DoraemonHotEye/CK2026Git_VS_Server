@@ -3389,7 +3389,6 @@ public:
     MsgID MsgIDValue = MsgID::GAMECLIENT_RPCCALL;
     uint16_t SeqNum = 0;
 
-    uint16_t ObjectID;
     string JsonHash;
     
 
@@ -3411,8 +3410,6 @@ public:
         std::memcpy(&SeqNum, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
 
-        std::memcpy(&ObjectID, &data[offset], sizeof(uint16_t));
-        offset += sizeof(uint16_t);
         uint16_t JsonHashLength;
         std::memcpy(&JsonHashLength, &data[offset], sizeof(uint16_t));
         offset += sizeof(uint16_t);
@@ -3428,8 +3425,6 @@ public:
         size += sizeof(uint16_t); // PacketSize
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t); // SeqNum
-        size += sizeof(uint16_t);
-        
         size += sizeof(uint16_t);
         size += static_cast<uint16_t>(JsonHash.size());
                 
@@ -3452,9 +3447,6 @@ public:
         offset += sizeof(uint16_t);
         
         std::memcpy(&buffer[offset], &SeqNum, sizeof(uint16_t));
-        offset += sizeof(uint16_t);
-        
-        std::memcpy(&buffer[offset], &ObjectID, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         
         uint16_t JsonHashLen = static_cast<uint16_t>(JsonHash.size());
