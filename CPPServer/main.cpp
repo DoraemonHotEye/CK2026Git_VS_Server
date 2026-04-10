@@ -60,13 +60,11 @@ int main()
 
     SOCKADDR_IN addr;
     addr.sin_family = AF_INET;
-
     inet_pton(
         AF_INET,
         IpConfigManager::Instance().ipConfig.TCPIPEndPoint.IPAddress.c_str(), // 수정된 부분
         &addr.sin_addr
     );
-
     addr.sin_port = htons(IpConfigManager::Instance().ipConfig.TCPIPEndPoint.Port);
 
     // 6. Listener 시작

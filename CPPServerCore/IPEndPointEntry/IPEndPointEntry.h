@@ -10,7 +10,7 @@ public:
     IPEndPointEntry(const SOCKADDR_IN& addr)
         : Address(addr)
     {
-        auto now = std::chrono::steady_clock::now();
+       auto now = std::chrono::steady_clock::now();
         LastResponseTime = now;
         LastPingTime = now;
     }
