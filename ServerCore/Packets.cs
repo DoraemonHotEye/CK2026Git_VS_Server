@@ -152,17 +152,18 @@ namespace MakePacketTemplate.Packets
          GAMECLIENT_MONSTERTELEPORT = 36,
          GAMECLIENT_MONSTERGRABING = 37,
          GAMECLIENT_MONSTERGRABEND = 38,
-         MAINSERVER_SENDSESSIONID = 39,
-         MAINSERVER_OTHERPLAYERROOMJOIN = 40,
-         MAINSERVER_SENDROOMLIST = 41,
-         MAINSERVER_JOINROOMSUCC = 42,
-         MAINSERVER_ROOMMASTERCHANGED = 43,
-         MAINSERVER_ROOMEXITSUCC = 44,
-         MAINSERVER_OTHERPLAYERROOMEXIT = 45,
-         MAINSERVER_NOROOMCALLBACK = 46,
-         MAINSERVER_SENDPEERUSER = 47,
-         MAINSERVER_GAMESTARTSUCC = 48,
-         MAINSERVER_SENDPBENDPOINT = 49,
+         GAMECLIENT_RPCCALL = 39,
+         MAINSERVER_SENDSESSIONID = 40,
+         MAINSERVER_OTHERPLAYERROOMJOIN = 41,
+         MAINSERVER_SENDROOMLIST = 42,
+         MAINSERVER_JOINROOMSUCC = 43,
+         MAINSERVER_ROOMMASTERCHANGED = 44,
+         MAINSERVER_ROOMEXITSUCC = 45,
+         MAINSERVER_OTHERPLAYERROOMEXIT = 46,
+         MAINSERVER_NOROOMCALLBACK = 47,
+         MAINSERVER_SENDPEERUSER = 48,
+         MAINSERVER_GAMESTARTSUCC = 49,
+         MAINSERVER_SENDPBENDPOINT = 50,
          
          DGRAM_SERVER_REQUESTACK = 25562,
          DGRAM_SERVER_ACKSEQ = 25563,
@@ -3166,6 +3167,84 @@ namespace MakePacketTemplate.Packets
 
             BitConverter.GetBytes(NetID).CopyTo(buffer, offset);        
             offset += sizeof(ushort);
+            
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
+    }
+    
+    public class GAMECLIENT_RpcCall : PacketInterface
+    {
+        public MsgID MsgID = MsgID.GAMECLIENT_RPCCALL;
+        public ushort SeqNum;
+
+        public ushort ObjectID;
+        public string JsonHash;
+        
+
+        public void Desrialize(ArraySegment<byte> data)
+        {
+            byte[] buffer = data.Array;
+            int start = data.Offset;
+            int offset = 0;
+            
+            ushort packetSize = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ushort packetId = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            SeqNum = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+
+            ObjectID = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            ushort JsonHashLength = BitConverter.ToUInt16(buffer, start + offset);
+            offset += sizeof(ushort);
+            JsonHash = Encoding.UTF8.GetString(buffer, start + offset, JsonHashLength);
+            offset += (ushort)JsonHashLength;
+            
+        }
+
+        public ushort GetSize()
+        {
+            ushort size = 0;
+
+            size += sizeof(ushort); // PacketSize
+            size += sizeof(ushort); // PacketID
+            size += sizeof(ushort); // SeqNum
+
+            size += sizeof(ushort);
+            
+            size += sizeof(ushort);
+            size += (ushort)Encoding.UTF8.GetByteCount(JsonHash);
+            
+
+            return size;
+        }
+
+        public ArraySegment<byte> Serialize()
+        {
+            ushort size = GetSize();
+            byte[] buffer = new byte[size];
+            ushort offset = 0;
+
+            Array.Copy(BitConverter.GetBytes(size), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)MsgID), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            Array.Copy(BitConverter.GetBytes((ushort)SeqNum), 0, buffer, offset, sizeof(ushort));
+            offset += sizeof(ushort);
+
+            BitConverter.GetBytes(ObjectID).CopyTo(buffer, offset);        
+            offset += sizeof(ushort);
+            byte[] JsonHashBytes = Encoding.UTF8.GetBytes(JsonHash);
+            BitConverter.GetBytes((ushort)JsonHashBytes.Length).CopyTo(buffer, offset);
+            offset += sizeof(ushort);
+            JsonHashBytes.CopyTo(buffer, offset);
+            offset += (ushort)JsonHashBytes.Length;
             
 
             return new ArraySegment<byte>(buffer, 0, size);
