@@ -116,24 +116,30 @@ int GUIScreen::GetGPUUsage()
 void GUIScreen::RenderLogs(wchar_t screen[][81], int startY, int width, int height)
 {
     std::lock_guard<std::mutex> lock(_logMutex);
-
     int logAreaHeight = height - startY;
     int logCount = (int)_logQueue.size();
-
     int startIndex = max(0, logCount - logAreaHeight);
-
     int y = startY;
-
     for (int i = startIndex; i < logCount && y < height; i++, y++)
     {
         const std::wstring log = Utf8ToWide(_logQueue[i]);
-
         int x = 2;
-
         for (int j = 0; j < (int)log.size() && x < width - 1; j++, x++)
         {
-            screen[y][x] = log[j];  //이제 정상
+            screen[y][x] = log[j];
         }
+        // 로그 끝 이후 ~ 오른쪽 끝까지 공백으로 덮어쓰기
+        for (; x < width - 1; x++)
+        {
+            screen[y][x] = L' ';
+        }
+    }
+
+    // 로그가 줄어든 경우 남은 행도 공백으로 정리
+    for (; y < height; y++)
+    {
+        for (int x = 2; x < width - 1; x++)
+            screen[y][x] = L' ';
     }
 }
 
@@ -152,10 +158,8 @@ void GUIScreen::RenderScreen()
     const int width = 80;
     const int height = 25;
     const int boxHeight = 8;
-
     wchar_t screen[25][81];
 
-    // 초기화
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
@@ -163,82 +167,64 @@ void GUIScreen::RenderScreen()
         screen[y][width] = L'\0';
     }
 
-    // ===== 박스 =====
     screen[0][0] = L'┌';
     screen[0][width - 1] = L'┐';
-
     for (int x = 1; x < width - 1; x++)
         screen[0][x] = L'─';
-
     screen[boxHeight][0] = L'└';
     screen[boxHeight][width - 1] = L'┘';
-
     for (int x = 1; x < width - 1; x++)
         screen[boxHeight][x] = L'─';
-
     for (int y = 1; y < boxHeight; y++)
     {
         screen[y][0] = L'│';
         screen[y][width - 1] = L'│';
     }
 
-    // ===== 안전한 문자열 넣기 =====
     auto PutString = [&](int y, int x, const wchar_t* str)
         {
             if (y < 0 || y >= height) return;
             if (x < 0 || x >= width) return;
-
             for (int i = 0; str[i] != 0; i++)
             {
-                if (x + i >= width - 1) break; // 절대 넘지 않게
+                if (x + i >= width - 1) break;
                 screen[y][x + i] = str[i];
             }
         };
 
-    // ===== 데이터 =====
     int clientSessionCount = SessionManager::Instance().GetSessionCount();
     int uiPeerCount = UIPEndPointManager::Instance().GetEndPointCount();
     int cpuUsage = GetCPUUsage();
     int gpuUsage = GetGPUUsage();
-
     wchar_t buffer[64];
 
     PutString(1, 2, L"[ Server Status ]");
-
     swprintf_s(buffer, _countof(buffer), L"ClientSession : %d", clientSessionCount);
     PutString(3, 2, buffer);
-
     swprintf_s(buffer, _countof(buffer), L"UIPEndPointPeer : %d", uiPeerCount);
     PutString(4, 2, buffer);
-
     swprintf_s(buffer, _countof(buffer), L"CPU : %d%%", cpuUsage);
     PutString(3, 40, buffer);
-
     swprintf_s(buffer, _countof(buffer), L"GPU : %d%%", gpuUsage);
     PutString(4, 40, buffer);
 
-    // ===== 로그 =====
     for (int x = 0; x < width; x++)
         screen[boxHeight + 1][x] = L'─';
-
     PutString(boxHeight + 2, 2, L"[ Logs ]");
 
-    // ===== 출력 (WriteConsoleW 사용) =====
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD written;
-
-    COORD pos = { 0,0 };
-    SetConsoleCursorPosition(hConsole, pos);
 
     int logStartY = boxHeight + 3;
     RenderLogs(screen, logStartY, width, height);
 
+    // 여기가 수정된 부분 : wcslen → width 고정, \n 제거, 행마다 커서 직접 이동
     for (int y = 0; y < height; y++)
     {
-        WriteConsoleW(hConsole, screen[y], wcslen(screen[y]), &written, NULL);
-        WriteConsoleW(hConsole, L"\n", 1, &written, NULL);
+        COORD pos = { 0, (SHORT)y };
+        SetConsoleCursorPosition(hConsole, pos);
+        WriteConsoleW(hConsole, screen[y], width, &written, NULL);
     }
-
 }
 
 void GUIScreen::Start()

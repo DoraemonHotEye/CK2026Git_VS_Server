@@ -16,6 +16,7 @@
 
 #include "Game/PeerJobTimerSender/PeerJobTimerSender.h"
 #include "../CPPServerCore/ServerSupports/GUIScreen.h"
+#include "../CPPServerCore/CommandManager/CCommandManager.h"
 
 #pragma comment(lib, "ws2_32.lib")
 

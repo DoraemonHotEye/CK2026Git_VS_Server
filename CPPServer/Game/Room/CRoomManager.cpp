@@ -36,7 +36,7 @@ bool RoomManager::Remove(Room* room) {
     }
 
     if (success) {
-        std::cout << "[RoomManager]:: " << hash << " 삭제 완료" << std::endl;
+        std::cout << "[RoomManager]:: " << hash << " Deleted From Memory" << std::endl;
         // 주의: Room의 소멸 책임이 Manager에게 있다면 여기서 delete 수행
         // 만약 다른 곳에서 관리한다면 delete 로직을 상황에 맞게 배치하세요.
         delete room;

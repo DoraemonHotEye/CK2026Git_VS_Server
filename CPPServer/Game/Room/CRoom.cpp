@@ -38,12 +38,12 @@ void Room::Ready()
     bool shouldRegister = false;
 
     {
-        LOG("Room Hash: " + RoomHashData + " 게임 준비 1 call");
+        LOG("Room Hash: " + RoomHashData + " Game Ready 1 call");
         std::lock_guard<std::mutex> lock(_lock);
         ReadyCount++;
 
         if (ReadyCount >= static_cast<int>(playerList.size())) {
-            LOG("Room Hash: " + RoomHashData + " 게임 시작 가능");
+            LOG("Room Hash: " + RoomHashData + " Game Can Start");
             snapshotPlayers = playerList; // snapshot 복사
             shouldRegister = true;
         }
@@ -51,7 +51,7 @@ void Room::Ready()
 
     if (shouldRegister && !snapshotPlayers.empty())
     {
-        LOG("Room Hash: " + RoomHashData + " 등록");
+        LOG("Room Hash: " + RoomHashData + " Registered");
         // PeerStationPackage 생성
         auto package = std::make_shared<PeerStationPackage>();
         package->HashRoomID = RoomHashData;

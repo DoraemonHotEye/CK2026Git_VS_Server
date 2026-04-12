@@ -35,7 +35,7 @@ void PacketHandler::GAMECLIENT_RoomSendCallHandler(CPacketSession* session, Pack
 	if (_session != nullptr && _packet != nullptr) 
 	{
 		std::stringstream ss;
-		ss << "SessionID: " << _session->sessionID << "	||	GAMECLIENT_RoomSendCallPacket	||	timeOut: " << _packet->timeout;
+		ss << "SessionID: " << _session->sessionID << "GAMECLIENT_RoomSendCallPacket || timeOut: " << _packet->timeout;
 
 		PrintLogThread::Instance().Log(ss.str());
 
