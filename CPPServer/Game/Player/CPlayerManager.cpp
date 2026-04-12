@@ -1,6 +1,7 @@
 #include "CPlayerManager.h"
 #include "CPlayer.h"
 #include "../../Session/ClientSession.h"
+#include "../../../CPPServerCore/ServerSupports/PrintLogThread.h"
 
 Player* PlayerManager::Generate(ClientSession* session) {
     if (session == nullptr) return nullptr;
@@ -18,8 +19,12 @@ Player* PlayerManager::Generate(ClientSession* session) {
     // 3. 락 해제 후 세션 멤버 수정 (세션 내부 락과 데드락 방지)
     session->player = newPlayer;
 
-    std::cout << "[PlayerManager] == SessionID: " << session->sessionID
-        << " :: Player 생성 성공 ::" << std::endl;
+    std::string message;
+    message += "[PlayerManager] == SessionID: ";
+    message += std::to_string(session->sessionID);
+    message += " :: Player Created Succ ::";
+
+    LOG(message);
 
     return newPlayer;
 }
@@ -44,8 +49,12 @@ bool PlayerManager::Remove(ClientSession* session) {
         // 세션과의 연결 고리 제거
         session->player = nullptr;
 
-        std::cout << "[PlayerManager] == SessionID: " << session->sessionID
-            << " :: Player 삭제 및 메모리 해제 ::" << std::endl;
+        std::string message;
+        message += "[PlayerManager] == SessionID: ";
+        message += std::to_string(session->sessionID);
+        message += " :: Player Deleted From Memory ::";
+
+        LOG(message);
 
         // 3. 실제 메모리 해제 (delete)
         // 여기서 delete를 수행해도 매니저 락을 잡고 있지 않으므로 데드락 안전

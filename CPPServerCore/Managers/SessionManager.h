@@ -6,23 +6,29 @@
 #include <mutex>
 #include <functional>
 
+class CSession;
+
 class SessionManager
 {
 private:
-    int32_t sessionCount = 0;
+    std::atomic<uint32_t> sessionCount = 0;
 
     static SessionManager* inst;
 
-    std::list<std::unique_ptr<class CSession>> sessions;
-    std::queue<std::unique_ptr<class CSession>> sessionPool;
+    std::list<std::unique_ptr<CSession>> sessions;
+    std::queue<std::unique_ptr<CSession>> sessionPool;
     std::mutex mtx;
 
     SessionManager() = default;
 
 public:
+    uint32_t GetSessionAllCount();
+    uint32_t GetSessionCount();
+    uint32_t GetSessionPoolCount();
+
     static SessionManager& Instance();
-    void AddSession(std::unique_ptr<class CSession> session);
-    void RemoveSession(class CSession* session);
+    void AddSession(std::unique_ptr<CSession> session);
+    void RemoveSession(CSession* session);
 
     class CSession* Get(int SessionID);
     std::vector<std::string> GetEndPointsOrderBy(int step = 0, int step2 = 0);

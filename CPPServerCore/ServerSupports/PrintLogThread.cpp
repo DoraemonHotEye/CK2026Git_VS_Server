@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include "../CommandManager/CCommandManager.h"
+#include "GUIScreen.h"
 
 PrintLogThread& PrintLogThread::Instance()
 {
@@ -65,7 +66,12 @@ void PrintLogThread::Run()
             // 로그 출력 (FIFO)
             for (auto it = _tempBuffer.rbegin(); it != _tempBuffer.rend(); ++it)
             {
-                std::cout << (*it) << std::endl;
+                if (GUIScreen::Instance().isRunning() == false)
+                    std::cout << (*it) << std::endl;
+                else
+                {
+                    GUIScreen::Instance().EnterLog((*it));
+                }
             }
             _tempBuffer.clear();
 

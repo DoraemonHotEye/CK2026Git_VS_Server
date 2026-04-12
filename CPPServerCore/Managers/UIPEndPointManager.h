@@ -18,6 +18,8 @@ private:
     OnUDPSendCallback OnPingSendCallback;
 
 public:
+    uint32_t GetEndPointCount();
+
     static UIPEndPointManager& Instance();
 
     void RegisterSendCallback(OnUDPSendCallback callbackEvent);

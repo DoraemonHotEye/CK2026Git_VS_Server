@@ -15,6 +15,11 @@ UIPEndPointManager& UIPEndPointManager::Instance()
     return *inst;
 }
 
+uint32_t UIPEndPointManager::GetEndPointCount()
+{
+    return endpoints.size();
+}
+
 void UIPEndPointManager::RegisterSendCallback(OnUDPSendCallback callbackEvent)
 {
     OnPingSendCallback = callbackEvent;
@@ -55,7 +60,7 @@ bool UIPEndPointManager::Remove(const SOCKADDR_IN& addr)
         char ip[INET_ADDRSTRLEN] = { 0 };
         inet_ntop(AF_INET, &addr.sin_addr, ip, sizeof(ip));
 
-        std::string logMsg = "UIPEndPoint 삭제: IP = ";
+        std::string logMsg = "UIPEndPoint Deleted From Memory: IP = ";
         logMsg += ip;
         logMsg += ", Port = ";
         logMsg += std::to_string(ntohs(it->Address.sin_port));
@@ -99,7 +104,7 @@ void UIPEndPointManager::Update(double pingIntervalSec, double timeoutSec)
                 char ip[INET_ADDRSTRLEN] = { 0 };
                 inet_ntop(AF_INET, &it->Address.sin_addr, ip, sizeof(ip));
 
-                std::string logMsg = "UIPEndPoint 삭제: IP = ";
+                std::string logMsg = "UIPEndPoint Deleted From Memory: IP = ";
                 logMsg += ip;
                 logMsg += ", Port = ";
                 logMsg += std::to_string(ntohs(it->Address.sin_port));

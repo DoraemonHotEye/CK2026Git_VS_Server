@@ -142,6 +142,7 @@
     <ClInclude Include="JobTimer\CJobTimer.h" />
     <ClInclude Include="Managers\UIPEndPointManager.h" />
     <ClInclude Include="ServerSupports\Configuration\CIpConfigManager.h" />
+    <ClInclude Include="ServerSupports\GUIScreen.h" />
     <ClInclude Include="ServerSupports\NetworkEMC.h" />
     <ClInclude Include="UDP\SubPart\CURequestTable.h" />
     <ClInclude Include="UDP\SubPart\IRdupCallback.h" />
@@ -167,6 +168,7 @@
     <ClCompile Include="JobTimer\CJobTimer.cpp" />
     <ClCompile Include="Managers\UIPEndPointManager.cpp" />
     <ClCompile Include="ServerSupports\Configuration\CIpConfigManager.cpp" />
+    <ClCompile Include="ServerSupports\GUIScreen.cpp" />
     <ClCompile Include="UDP\SubPart\CURequestTable.cpp" />
     <ClCompile Include="UDP\SubPart\CUSendTable.cpp" />
     <ClCompile Include="Listener\CListener.cpp" />

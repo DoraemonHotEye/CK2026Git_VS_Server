@@ -39,7 +39,7 @@ bool RudpRequestTable::Remove(uint32_t seqNum) {
     if (!lock.try_lock_for(std::chrono::milliseconds(10))) {
         return false;
     }
-    std::string logMsg = "리퀘스트 삭제: SeqNum: ";
+    std::string logMsg = "Request Deleted: SeqNum: ";
     logMsg += std::to_string(seqNum);  // ipEndPoint가 ToString() 제공해야 함
     LOG(logMsg);
     return _requestTable.erase(seqNum) > 0;
@@ -58,7 +58,7 @@ void RudpRequestTable::Update() {
     while (it != _requestTable.end()) {
         if ((now - it->second.ReceivedTime) >= _keepAliveMs) {
             // 삭제 전 로그
-            std::string logMsg = "리퀘스트 삭제: SeqNum: ";
+            std::string logMsg = "Request Deleted: SeqNum: ";
             logMsg += std::to_string(it->second.SeqNum);  // ipEndPoint가 ToString() 제공해야 함
             LOG(logMsg);
 

@@ -8,6 +8,21 @@
 
 SessionManager* SessionManager::inst;
 
+uint32_t SessionManager::GetSessionAllCount()
+{
+    return sessionCount;
+}
+
+uint32_t SessionManager::GetSessionCount()
+{
+    return sessions.size();
+}
+
+uint32_t SessionManager::GetSessionPoolCount()
+{
+    return sessionPool.size();
+}
+
 SessionManager& SessionManager::Instance()
 {
     if (inst == nullptr)

@@ -87,6 +87,9 @@
     <ClInclude Include="ServerSupports\Configuration\CIpConfigManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ServerSupports\GUIScreen.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Listener\CListener.cpp">
@@ -129,6 +132,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ServerSupports\Configuration\CIpConfigManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSupports\GUIScreen.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

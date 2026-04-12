@@ -15,6 +15,7 @@
 #include "../CPPServerCore/ServerSupports/Configuration/CIpConfigManager.h"
 
 #include "Game/PeerJobTimerSender/PeerJobTimerSender.h"
+#include "../CPPServerCore/ServerSupports/GUIScreen.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -32,6 +33,7 @@ void FlushTimer()
 
 int main()
 {
+    GUIScreen::Instance().Start();
     PrintLogThread::Instance().Start();
 
     WSADATA wsaData;
@@ -71,7 +73,7 @@ int main()
     cusession.Start(IpConfigManager::Instance().ipConfig.UDPIPEndPoint.IPAddress, IpConfigManager::Instance().ipConfig.UDPIPEndPoint.Port);
     listener.Start(addr, iocp, createSession);
 
-    std::cout << "Server Started (Port: 7777)\n";
+    LOG("Server Started (Port: 7777)");
     JobTimer::Instance().Push(FlushTimer, 200);
 
     // 서버 유지
@@ -83,6 +85,7 @@ int main()
     WSACleanup();
 
     PrintLogThread::Instance().Stop();
+    GUIScreen::Instance().Stop();
 
     return 0;
 }
