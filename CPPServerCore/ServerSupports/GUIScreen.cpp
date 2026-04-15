@@ -8,10 +8,13 @@
 #include <io.h>
 #include <fcntl.h>
 #include <pdh.h>
+#include <wlanapi.h>
+
 #include "../Managers/SessionManager.h"
 #include "../Session/CSession.h"
 #include "../Managers/UIPEndPointManager.h"
 
+#pragma comment(lib, "wlanapi.lib")
 #pragma comment(lib, "pdh.lib")
 
 using namespace std;
@@ -53,6 +56,48 @@ void GUIScreen::GotoXY(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
+int GUIScreen::GetRAMUsage()
+{
+    MEMORYSTATUSEX memInfo;
+    memInfo.dwLength = sizeof(memInfo);
+
+    if (GlobalMemoryStatusEx(&memInfo))
+    {
+        // 사용 중인 비율 (0~100)
+        return (int)memInfo.dwMemoryLoad;
+    }
+
+    return 0;
+}
+
+int GUIScreen::GetRAMTotalMB()
+{
+    MEMORYSTATUSEX memInfo;
+    memInfo.dwLength = sizeof(memInfo);
+
+    if (GlobalMemoryStatusEx(&memInfo))
+    {
+        // 바이트 → MB 변환
+        return (int)(memInfo.ullTotalPhys / (1024 * 1024));
+    }
+
+    return 0;
+}
+
+int GUIScreen::GetRAMUsedMB()
+{
+    MEMORYSTATUSEX memInfo;
+    memInfo.dwLength = sizeof(memInfo);
+
+    if (GlobalMemoryStatusEx(&memInfo))
+    {
+        DWORDLONG used = memInfo.ullTotalPhys - memInfo.ullAvailPhys;
+        return (int)(used / (1024 * 1024));
+    }
+
+    return 0;
+}
+
 int GUIScreen::GetCPUUsage()
 {
     static FILETIME prevIdle = {}, prevKernel = {}, prevUser = {};
@@ -80,6 +125,44 @@ int GUIScreen::GetCPUUsage()
     // kernel 시간에 idle이 포함되어 있어서 빼줘야 함
     int usage = (int)(100 * (total - idleDiff) / total);
     return usage;
+}
+
+int GUIScreen::GetNetworkTraffic()
+{
+    static PDH_HQUERY   query = nullptr;
+    static PDH_HCOUNTER counterSend = nullptr;
+    static PDH_HCOUNTER counterRecv = nullptr;
+    static bool initialized = false;
+
+    if (!initialized)
+    {
+        PdhOpenQuery(nullptr, 0, &query);
+        PdhAddEnglishCounterW(
+            query,
+            L"\\Network Interface(*)\\Bytes Sent/sec",
+            0,
+            &counterSend
+        );
+        PdhAddEnglishCounterW(
+            query,
+            L"\\Network Interface(*)\\Bytes Received/sec",
+            0,
+            &counterRecv
+        );
+        PdhCollectQueryData(query);
+        initialized = true;
+        return 0;
+    }
+
+    PdhCollectQueryData(query);
+
+    PDH_FMT_COUNTERVALUE valueSend, valueRecv;
+    PdhGetFormattedCounterValue(counterSend, PDH_FMT_DOUBLE, nullptr, &valueSend);
+    PdhGetFormattedCounterValue(counterRecv, PDH_FMT_DOUBLE, nullptr, &valueRecv);
+
+    // Bytes/sec -> KB/sec 변환 후 송수신 합산
+    int totalKBps = (int)((valueSend.doubleValue + valueRecv.doubleValue) / 1024.0);
+    return totalKBps;
 }
 
 int GUIScreen::GetGPUUsage()
@@ -196,6 +279,12 @@ void GUIScreen::RenderScreen()
     int uiPeerCount = UIPEndPointManager::Instance().GetEndPointCount();
     int cpuUsage = GetCPUUsage();
     int gpuUsage = GetGPUUsage();
+    int wifiStatus = GetNetworkTraffic();
+    float RamUsage = GetRAMUsedMB();
+    float RamMax = GetRAMTotalMB();
+
+    float Rampers = (RamUsage / RamMax) * 100.f;
+
     wchar_t buffer[64];
 
     PutString(1, 2, L"[ Server Status ]");
@@ -203,10 +292,16 @@ void GUIScreen::RenderScreen()
     PutString(3, 2, buffer);
     swprintf_s(buffer, _countof(buffer), L"UIPEndPointPeer : %d", uiPeerCount);
     PutString(4, 2, buffer);
+    swprintf_s(buffer, _countof(buffer), L"RAM : %.0f%%/100 (ps)", Rampers);
+    PutString(5, 2, buffer);
+    swprintf_s(buffer, _countof(buffer), L"RAMTotal : %d/%d (MB)", (int)RamUsage, (int)RamMax);
+    PutString(6, 2, buffer);
     swprintf_s(buffer, _countof(buffer), L"CPU : %d%%", cpuUsage);
     PutString(3, 40, buffer);
     swprintf_s(buffer, _countof(buffer), L"GPU : %d%%", gpuUsage);
     PutString(4, 40, buffer);
+    swprintf_s(buffer, _countof(buffer), L"NTF : %d/t (NetworkTraffic)", wifiStatus);
+    PutString(5, 40, buffer);
 
     for (int x = 0; x < width; x++)
         screen[boxHeight + 1][x] = L'─';

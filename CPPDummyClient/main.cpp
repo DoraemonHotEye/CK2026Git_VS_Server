@@ -93,7 +93,7 @@ int main()
 
 
     // 6. 연결 시도
-    connector.Start(addr, iocp, createSession, 425);
+    connector.Start(addr, iocp, createSession, 1);
 
     cout << "Client Connecting...\n";
 

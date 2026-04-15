@@ -31,6 +31,10 @@ private:
     void GotoXY(int x, int y);
     int GetCPUUsage();
     int GetGPUUsage();
+    int GetNetworkTraffic();
+    int GetRAMUsage();
+    int GetRAMTotalMB();
+    int GetRAMUsedMB();
     void RenderLogs(wchar_t screen[][81], int startY, int width, int height);
     
 public:
