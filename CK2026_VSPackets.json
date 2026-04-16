@@ -416,10 +416,12 @@
         "packer": {
           "Name": "UMovepacket",
           "MemberTypes": [
-            "single:short"
+            "single:short",
+            "single:ushort"
           ],
           "MemberNames": [
-            "XDir"
+            "XDir",
+            "NetID"
           ]
         },
         "PacketID": "GAMECLIENT_UMOVEPACKET",
@@ -445,11 +447,13 @@
           "Name": "UPosSyncPacket",
           "MemberTypes": [
             "single:float",
-            "single:float"
+            "single:float",
+            "single:ushort"
           ],
           "MemberNames": [
             "x",
-            "y"
+            "y",
+            "NetID"
           ]
         },
         "PacketID": "GAMECLIENT_UPOSSYNCPACKET",
@@ -530,10 +534,12 @@
         "packer": {
           "Name": "UJumpPacket",
           "MemberTypes": [
-            "single:float"
+            "single:float",
+            "single:ushort"
           ],
           "MemberNames": [
-            "JumpPos"
+            "JumpPos",
+            "NetID"
           ]
         },
         "PacketID": "GAMECLIENT_UJUMPPACKET",
@@ -559,44 +565,16 @@
           "Name": "UJumpEndPacket",
           "MemberTypes": [
             "single:float",
-            "single:float"
+            "single:float",
+            "single:ushort"
           ],
           "MemberNames": [
             "currY",
-            "currX"
+            "currX",
+            "NetID"
           ]
         },
         "PacketID": "GAMECLIENT_UJUMPENDPACKET",
-        "LinkedProfilers": [
-          {
-            "Name": "GameClient",
-            "Description": "게임 클라이언트",
-            "Path": "D:\\Gits\\CK2026Git_VS",
-            "tag": {
-              "Name": "GameClient",
-              "Type": 4,
-              "ClientSeed": 0,
-              "Description": ""
-            },
-            "isUseUDP": true,
-            "Language": 0
-          }
-        ],
-        "MProtoType": 1
-      },
-      "GAMECLIENT_RANDINGSYNCPOS": {
-        "packer": {
-          "Name": "RandingSyncPos",
-          "MemberTypes": [
-            "single:float",
-            "single:float"
-          ],
-          "MemberNames": [
-            "x",
-            "y"
-          ]
-        },
-        "PacketID": "GAMECLIENT_RANDINGSYNCPOS",
         "LinkedProfilers": [
           {
             "Name": "GameClient",
@@ -763,11 +741,13 @@
           "Name": "UDownJumpPacket",
           "MemberTypes": [
             "single:float",
-            "single:float"
+            "single:float",
+            "single:ushort"
           ],
           "MemberNames": [
             "duration",
-            "downSpeed"
+            "downSpeed",
+            "NetID"
           ]
         },
         "PacketID": "GAMECLIENT_UDOWNJUMPPACKET",
@@ -1417,6 +1397,70 @@
           ]
         },
         "PacketID": "GAMECLIENT_RPCCALL",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_SWITCHANIMINT": {
+        "packer": {
+          "Name": "SwitchAnimInt",
+          "MemberTypes": [
+            "single:ushort",
+            "single:string",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "AnimCode",
+            "ParamName",
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_SWITCHANIMINT",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_LANDINGSYNCPOS": {
+        "packer": {
+          "Name": "LandingSyncPos",
+          "MemberTypes": [
+            "single:float",
+            "single:float",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "x",
+            "y",
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_LANDINGSYNCPOS",
         "LinkedProfilers": [
           {
             "Name": "GameClient",
