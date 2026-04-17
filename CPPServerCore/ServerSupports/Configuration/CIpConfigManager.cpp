@@ -55,10 +55,10 @@ IpConfigManager::IpConfigManager()
     if (!infile.good())
     {
         // 파일 없으면 생성
-        ipConfig.TCPIPEndPoint.IPAddress = "127.0.0.1";
+        ipConfig.TCPIPEndPoint.IPAddress = "192.168.30.246";
         ipConfig.TCPIPEndPoint.Port = 5555;
 
-        ipConfig.UDPIPEndPoint.IPAddress = "127.0.0.1";
+        ipConfig.UDPIPEndPoint.IPAddress = "192.168.30.246";
         ipConfig.UDPIPEndPoint.Port = 5556;
 
         json j = ipConfig;
