@@ -44,7 +44,13 @@ public class PeerStationPackage
     {
         //TODO Queue에서 순차적 진행
         if (SendIPEndPointContainer.Count < 1)
+        {
+            MAINSERVER_AllCompeletedReady allComp = new MAINSERVER_AllCompeletedReady();
+            allComp.timeout = 10;
+            BroadCastMessage(allComp);
+
             return true; //완료 더이상 보낼 필요 없음
+        }
 
         var EndPoint = SendIPEndPointContainer.Dequeue();
 
