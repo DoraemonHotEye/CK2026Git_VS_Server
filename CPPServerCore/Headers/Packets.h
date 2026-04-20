@@ -172,6 +172,7 @@ enum class MsgID : uint16_t
     MAINSERVER_SENDPEERUSER = 49,
     MAINSERVER_GAMESTARTSUCC = 50,
     MAINSERVER_SENDPBENDPOINT = 51,
+    MAINSERVER_ALLCOMPELETEDREADY = 52,
     
     DGRAM_SERVER_REQUESTACK = 25562,
     DGRAM_SERVER_ACKSEQ = 25563,
@@ -4469,6 +4470,68 @@ public:
         
         std::memcpy(&buffer[offset], &Port, sizeof(int32_t));
         offset += sizeof(int32_t);
+        
+        
+
+        return buffer;
+    }
+};
+class MAINSERVER_AllCompeletedReady : public PacketInterface
+{
+public:
+    MsgID MsgIDValue = MsgID::MAINSERVER_ALLCOMPELETEDREADY;
+
+    uint16_t timeout;
+    
+
+    virtual void Deserialize(const std::vector<uint8_t>& data) override
+    {
+        if (data.size() < GetSize())
+            return;
+
+        size_t offset = 0;
+
+        uint16_t packetSize;
+        std::memcpy(&packetSize, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t packetId;
+        std::memcpy(&packetId, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&timeout, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+    }
+
+    virtual uint16_t GetSize() const override
+    {
+        uint16_t size = 0;
+        size += sizeof(uint16_t); // PacketSize
+        size += sizeof(uint16_t); // PacketID
+        size += sizeof(uint16_t);
+        
+                
+        
+        return size;
+    }
+
+    virtual std::vector<uint8_t> Serialize() override
+    {
+        uint16_t size = GetSize();
+        std::vector<uint8_t> buffer(size);
+
+        size_t offset = 0;
+
+        std::memcpy(&buffer[offset], &size, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t msgId = static_cast<uint16_t>(MsgIDValue);
+        std::memcpy(&buffer[offset], &msgId, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        
+        std::memcpy(&buffer[offset], &timeout, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
         
         
 
