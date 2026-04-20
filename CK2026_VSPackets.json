@@ -1477,6 +1477,124 @@
           }
         ],
         "MProtoType": 1
+      },
+      "GAMECLIENT_PROJECTTILESYNCPOS": {
+        "packer": {
+          "Name": "ProjectTileSyncPos",
+          "MemberTypes": [
+            "single:float",
+            "single:float",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "x",
+            "y",
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PROJECTTILESYNCPOS",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_PROJECTTILESTOPMOVE": {
+        "packer": {
+          "Name": "ProjectTileStopMove",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PROJECTTILESTOPMOVE",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_PROJECTTILEEFFACT": {
+        "packer": {
+          "Name": "ProjectTileEffact",
+          "MemberTypes": [
+            "single:ushort",
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "IsPlay",
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PROJECTTILEEFFACT",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
+      },
+      "GAMECLIENT_PROJECTTILEDISABLECALL": {
+        "packer": {
+          "Name": "ProjectTileDisableCall",
+          "MemberTypes": [
+            "single:ushort"
+          ],
+          "MemberNames": [
+            "NetID"
+          ]
+        },
+        "PacketID": "GAMECLIENT_PROJECTTILEDISABLECALL",
+        "LinkedProfilers": [
+          {
+            "Name": "GameClient",
+            "Description": "게임 클라이언트",
+            "Path": "C:\\CK2026_Client\\CK2026Git_VS",
+            "tag": {
+              "Name": "GameClient",
+              "Type": 4,
+              "ClientSeed": 0,
+              "Description": ""
+            },
+            "isUseUDP": true,
+            "Language": 0
+          }
+        ],
+        "MProtoType": 1
       }
     },
     "profiler": {
