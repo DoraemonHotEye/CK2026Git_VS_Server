@@ -21,7 +21,7 @@ void UPacketManager::OnRecvPacket(CUPacketSession* session, SOCKADDR_IN& addr, c
 {
     size_t offset = 0;
 
-    if (buffer.size() < 4) return; // 최소 크기 체크
+    if (buffer.size() < 4) return;
 
     uint16_t size = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
     offset += sizeof(uint16_t);
@@ -34,22 +34,19 @@ void UPacketManager::OnRecvPacket(CUPacketSession* session, SOCKADDR_IN& addr, c
 
     if (seqNum != 0 && id != static_cast<uint16_t>(MsgID::DGRAM_SERVER_ACKSEQ))
     {
-        // 요청 테이블 확인
         if (session->RequestTables.find(addr) == session->RequestTables.end()) {
             session->RequestTables[addr] = std::make_shared<RudpRequestTable>();
         }
         bool succ = session->RequestTables[addr]->TryAdd(seqNum);
         if (succ)
         {
-            // ACK 처리
             DGRAM_SERVER_AckSeq ack = DGRAM_SERVER_AckSeq();
             ack.SeqNum = seqNum;
-
             session->Send(ack, addr);
         }
         else
         {
-            return; // 이미 처리된 seqNum
+            return;
         }
     }
 

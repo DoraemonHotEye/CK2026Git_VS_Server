@@ -28,7 +28,7 @@ void PacketManager::OnRecvPacket(CPacketSession* session, const std::vector<uint
 {
     size_t offset = 0;
 
-    if (buffer.size() < 4) return; // 최소 크기 체크
+    if (buffer.size() < 4) return;
 
     uint16_t size = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
     offset += sizeof(uint16_t);
