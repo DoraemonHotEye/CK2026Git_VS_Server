@@ -86,7 +86,7 @@ public:
 
 // ---------------- MsgID ----------------
 enum class MsgID : uint16_t
-{{{2}
+{{ {2}
     DGRAM_SERVER_REQUESTACK = 25562,
     DGRAM_SERVER_ACKSEQ = 25563,
     DGRAM_SERVER_PING = 25564,
@@ -103,7 +103,7 @@ public:
     virtual void Deserialize(const std::vector<uint8_t>& data) override
     {{
         if (data.size() < GetSize())
-            return; // 안전 체크
+            return;
 
         size_t offset = 0;
 
@@ -392,7 +392,7 @@ public:
         uint16_t size = 0;
         size += sizeof(uint16_t); // PacketSize
         size += sizeof(uint16_t); // PacketID
-        {4}        
+        {4}       
         
         return size;
     }}
@@ -453,7 +453,7 @@ public:
         size += sizeof(uint16_t); // PacketSize
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t); // SeqNum
-        {4}        
+        {4}       
         
         return size;
     }}
@@ -497,7 +497,7 @@ void PacketManager::OnRecvPacket(CPacketSession* session, const std::vector<uint
 {{
     size_t offset = 0;
 
-    if (buffer.size() < 4) return; // 최소 크기 체크
+    if (buffer.size() < 4) return;
 
     uint16_t size = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
     offset += sizeof(uint16_t);
@@ -545,7 +545,7 @@ void UPacketManager::OnRecvPacket(CUPacketSession* session, SOCKADDR_IN& addr, c
 {{
     size_t offset = 0;
 
-    if (buffer.size() < 4) return; // 최소 크기 체크
+    if (buffer.size() < 4) return;
 
     uint16_t size = *reinterpret_cast<const uint16_t*>(buffer.data() + offset);
     offset += sizeof(uint16_t);
@@ -558,22 +558,19 @@ void UPacketManager::OnRecvPacket(CUPacketSession* session, SOCKADDR_IN& addr, c
 
     if (seqNum != 0 && id != static_cast<uint16_t>(MsgID::DGRAM_SERVER_ACKSEQ))
     {{
-        // 요청 테이블 확인
         if (session->RequestTables.find(addr) == session->RequestTables.end()) {{
             session->RequestTables[addr] = std::make_shared<RudpRequestTable>();
         }}
         bool succ = session->RequestTables[addr]->TryAdd(seqNum);
         if (succ)
         {{
-            // ACK 처리
             DGRAM_SERVER_AckSeq ack = DGRAM_SERVER_AckSeq();
             ack.SeqNum = seqNum;
-
             session->Send(ack, addr);
         }}
         else
         {{
-            return; // 이미 처리된 seqNum
+            return;
         }}
     }}
 
@@ -617,7 +614,7 @@ public:
 
 }};";
 
-        public static string MakeHandlerMethodFormat = 
+        public static string MakeHandlerMethodFormat =
             @"static void {0}Handler(class CPacketSession* session, class PacketInterface* message);
     ";
 
@@ -637,6 +634,9 @@ public:
 
         #region MemberType Offset Formats (C++)
 
+        // -------------------------------------------------------
+        // Single string: C# ushort(2) 길이 + UTF8 데이터
+        // -------------------------------------------------------
         public static string StringOffsetFormatSerializeSingle =
         @"uint16_t {0}Len = static_cast<uint16_t>({0}.size());
         std::memcpy(&buffer[offset], &{0}Len, sizeof(uint16_t));
@@ -645,33 +645,9 @@ public:
         offset += {0}Len;
         ";
 
-        public static string StringOffsetFormatSerializeList =
-        @"int count = {0}.GetCount();
-        std::memcpy(&buffer[offset], &count, sizeof(int));
-        offset += sizeof(int);
-        for (auto& str : {0}.Values)
-        {{
-            uint16_t strLen = static_cast<uint16_t>(str.size());
-            std::memcpy(&buffer[offset], &strLen, sizeof(uint16_t));
-            offset += sizeof(uint16_t);
-            std::memcpy(&buffer[offset], str.data(), strLen);
-            offset += strLen;
-        }}
-        ";
-
         public static string GetSingleStringSizeFormat =
         @"size += sizeof(uint16_t);
         size += static_cast<uint16_t>({0}.size());";
-
-        public static string GetListStringSizeFormat =
-        @"
-        size += sizeof(int);
-        for(auto& item : {0}.Values)
-        {{
-            size += sizeof(uint16_t);
-            size += static_cast<uint16_t>(item.size());
-        }}
-        ";
 
         public static string GetSingleStringDeserializeFormat =
         @"uint16_t {0}Length;
@@ -681,12 +657,37 @@ public:
         offset += {0}Length;
         ";
 
+        // -------------------------------------------------------
+        // String List: C# int32(4) count + ushort(2) 길이 + UTF8 데이터
+        // C# 코드: BitConverter.ToInt32 로 count 읽음
+        // -------------------------------------------------------
+        public static string StringOffsetFormatSerializeList =
+        @"int32_t count_{0} = static_cast<int32_t>({0}.GetCount());
+        std::memcpy(&buffer[offset], &count_{0}, sizeof(int32_t));
+        offset += sizeof(int32_t);
+        for (auto& str : {0}.Values)
+        {{
+            uint16_t strLen = static_cast<uint16_t>(str.size());
+            std::memcpy(&buffer[offset], &strLen, sizeof(uint16_t));
+            offset += sizeof(uint16_t);
+            std::memcpy(&buffer[offset], str.data(), strLen);
+            offset += strLen;
+        }}";
+
+        public static string GetListStringSizeFormat =
+        @"size += sizeof(int32_t);
+        for(auto& item : {0}.Values)
+        {{
+            size += sizeof(uint16_t);
+            size += static_cast<uint16_t>(item.size());
+        }}";
+
         public static string GetListStringDeserializeFormat =
         @"{0}.Empty();
-        int {0}Count;
-        std::memcpy(&{0}Count, &data[offset], sizeof(int));
-        offset += sizeof(int);
-        for(int i = 0; i < {0}Count; ++i)
+        int32_t {0}Count;
+        std::memcpy(&{0}Count, &data[offset], sizeof(int32_t));
+        offset += sizeof(int32_t);
+        for(int32_t i = 0; i < {0}Count; ++i)
         {{
             uint16_t strLength;
             std::memcpy(&strLength, &data[offset], sizeof(uint16_t));
@@ -694,9 +695,11 @@ public:
             std::string tempString(reinterpret_cast<const char*>(&data[offset]), strLength);
             offset += strLength;
             {0}.Enter(tempString);
-        }}
-        ";
+        }}";
 
+        // -------------------------------------------------------
+        // Single basic type
+        // -------------------------------------------------------
         public static string GetSingleBasicSerializeFormat =
         @"std::memcpy(&buffer[offset], &{1}, sizeof({0}));
         offset += sizeof({0});
@@ -706,31 +709,43 @@ public:
         @"size += sizeof({0});
         ";
 
+        public static string GetSingleBasicDeserializeFormat =
+        @"std::memcpy(&{0}, &data[offset], sizeof({1}));
+        offset += sizeof({1});";
+
+        // -------------------------------------------------------
+        // Basic type List: uint16_t count (C# ushort 기준)
+        // -------------------------------------------------------
         public static string GetListBasicSerializeFormat =
-        @"uint32_t count = {1}.GetCount();
-        std::memcpy(&buffer[offset], &count, sizeof(uint32_t));
-        offset += sizeof(int);
+        @"uint16_t count_{1} = static_cast<uint16_t>({1}.GetCount());
+        std::memcpy(&buffer[offset], &count_{1}, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
         for(auto& item : {1}.Values)
         {{
             std::memcpy(&buffer[offset], &item, sizeof({0}));
             offset += sizeof({0});
         }}";
 
-        public static string GetListBasicSizeFormat = @"
-        size += (sizeof({0}) * {1}.GetCount()) + sizeof(uint32_t);";
-
-        public static string GetSingleBasicDeserializeFormat =
-        @"std::memcpy(&{0}, &data[offset], sizeof({1}));
-        offset += sizeof({1});";
-
-        public static string GetListObjectSizeFormat =
+        public static string GetListBasicSizeFormat =
         @"size += sizeof(uint16_t);
-        size += static_cast<uint16_t>(sizeof(uint16_t) * ({0}.GetCount() == 0 ? 1 : {0}.GetCount()));
-        for(auto& obj : {0}.Values)
+        size += static_cast<uint16_t>(sizeof({0}) * {1}.GetCount());";
+
+        public static string GetListBasicDeserializeFormat =
+        @"uint16_t {0}Count;
+        std::memcpy(&{0}Count, &data[offset], sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+        {0}.Empty();
+        for(uint16_t i = 0; i < {0}Count; ++i)
         {{
-            size += obj.GetSize();
+            {1} item;
+            std::memcpy(&item, &data[offset], sizeof({1}));
+            offset += sizeof({1});
+            {0}.Enter(item);
         }}";
 
+        // -------------------------------------------------------
+        // Single Object
+        // -------------------------------------------------------
         public static string GetSingleObjectSizeFormat =
         @"size += sizeof(uint16_t);
         size += {0}.GetSize();";
@@ -753,6 +768,17 @@ public:
         {1}.Deserialize(std::vector<uint8_t>(data.begin() + offset, data.begin() + offset + {1}PacketSize));
         offset += {1}PacketSize;
         ";
+
+        // -------------------------------------------------------
+        // Object List
+        // -------------------------------------------------------
+        public static string GetListObjectSizeFormat =
+        @"size += sizeof(uint16_t);
+        size += static_cast<uint16_t>(sizeof(uint16_t) * ({0}.GetCount() == 0 ? 1 : {0}.GetCount()));
+        for(auto& obj : {0}.Values)
+        {{
+            size += obj.GetSize();
+        }}";
 
         public static string GetListObjectSerializeFormat =
         @"uint16_t count = static_cast<uint16_t>({0}.GetCount());
@@ -857,7 +883,7 @@ public:
                     return string.Format(GetSingleBasicSerializeFormat, cppType, MemberName);
             }
 
-            //커스텀 객체
+            // 커스텀 객체
             if (kind == "single")
                 return string.Format(GetSingleObjectSerializeFormat, MemberName);
 
@@ -873,7 +899,6 @@ public:
             string kind = split[0];
             string type = split.Length > 1 ? split[1] : "";
 
-            // ⭐ string
             if (type == "string")
             {
                 if (kind == "single")
@@ -883,7 +908,6 @@ public:
                     return string.Format(GetListStringSizeFormat, MemberName);
             }
 
-            // ⭐ basic 타입
             if (IsBasicType(type))
             {
                 string cppType = ToCppType(type);
@@ -895,7 +919,7 @@ public:
                     return string.Format(GetListBasicSizeFormat, cppType, MemberName);
             }
 
-            // ⭐ 커스텀 객체
+            // 커스텀 객체
             if (kind == "single")
                 return string.Format(GetSingleObjectSizeFormat, MemberName);
 
@@ -911,7 +935,6 @@ public:
             string kind = split[0];
             string type = split.Length > 1 ? split[1] : "";
 
-            //string 처리
             if (type == "string")
             {
                 if (kind == "single")
@@ -920,19 +943,18 @@ public:
                     return string.Format(GetListStringDeserializeFormat, MemberName);
             }
 
-            // ⭐ 기본 타입
             if (IsBasicType(type))
             {
                 string cppType = ToCppType(type);
 
-                return string.Format(
-                    GetSingleBasicDeserializeFormat,
-                    MemberName,
-                    cppType
-                );
+                if (kind == "list")
+                    return string.Format(GetListBasicDeserializeFormat, MemberName, cppType);
+
+                if (kind == "single")
+                    return string.Format(GetSingleBasicDeserializeFormat, MemberName, cppType);
             }
 
-            //커스텀 객체
+            // 커스텀 객체
             if (kind == "single")
                 return string.Format(GetSingleObjectDeserializeFormat, type, MemberName);
 
@@ -941,6 +963,7 @@ public:
 
             return "";
         }
+
         static bool IsBasicType(string type)
         {
             return StaticMembers.memberList.isContains(type);

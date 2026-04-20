@@ -119,7 +119,7 @@ public:
 
 // ---------------- MsgID ----------------
 enum class MsgID : uint16_t
-{
+{ 
     GAMECLIENT_DISCONNECTUDP = 0,
     GAMECLIENT_USESSIONIDMATCH = 1,
     GAMECLIENT_CREATEROOMCALL = 2,
@@ -194,7 +194,7 @@ public:
     virtual void Deserialize(const std::vector<uint8_t>& data) override
     {
         if (data.size() < GetSize())
-            return; // 안전 체크
+            return;
 
         size_t offset = 0;
 
@@ -453,7 +453,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -523,7 +523,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(int32_t);
         
-                
+               
         
         return size;
     }
@@ -588,7 +588,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -650,7 +650,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -716,7 +716,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         size += static_cast<uint16_t>(RoomHashID.size());
-                
+               
         
         return size;
     }
@@ -781,7 +781,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -843,7 +843,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -915,7 +915,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -998,7 +998,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1074,7 +1074,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1144,7 +1144,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1219,7 +1219,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1302,7 +1302,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1373,7 +1373,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1439,7 +1439,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         size += static_cast<uint16_t>(LocalAddress.size());
-                
+               
         
         return size;
     }
@@ -1514,7 +1514,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1597,7 +1597,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1683,7 +1683,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1789,7 +1789,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -1887,7 +1887,7 @@ public:
         
         size += sizeof(int16_t);
         
-                
+               
         
         return size;
     }
@@ -1968,7 +1968,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2041,7 +2041,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2111,7 +2111,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2186,7 +2186,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2264,7 +2264,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2342,7 +2342,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2420,7 +2420,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2498,7 +2498,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2576,7 +2576,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2654,7 +2654,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2727,7 +2727,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2807,7 +2807,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2883,7 +2883,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -2953,7 +2953,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -3053,7 +3053,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -3151,7 +3151,7 @@ public:
         
         size += sizeof(float);
         
-                
+               
         
         return size;
     }
@@ -3242,7 +3242,7 @@ public:
         
         size += sizeof(float);
         
-                
+               
         
         return size;
     }
@@ -3321,7 +3321,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -3395,7 +3395,7 @@ public:
         size += sizeof(uint16_t); // SeqNum
         size += sizeof(uint16_t);
         size += static_cast<uint16_t>(JsonHash.size());
-                
+               
         
         return size;
     }
@@ -3482,7 +3482,7 @@ public:
         size += static_cast<uint16_t>(ParamName.size());
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -3571,7 +3571,7 @@ public:
         
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -3946,7 +3946,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(int32_t);
         
-                
+               
         
         return size;
     }
@@ -4014,7 +4014,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         size += OtherPlayer.GetSize();
-                
+               
         
         return size;
     }
@@ -4069,10 +4069,10 @@ public:
         offset += sizeof(uint16_t);
         
         RoomHashDatas.Empty();
-        int RoomHashDatasCount;
-        std::memcpy(&RoomHashDatasCount, &data[offset], sizeof(int));
-        offset += sizeof(int);
-        for(int i = 0; i < RoomHashDatasCount; ++i)
+        int32_t RoomHashDatasCount;
+        std::memcpy(&RoomHashDatasCount, &data[offset], sizeof(int32_t));
+        offset += sizeof(int32_t);
+        for(int32_t i = 0; i < RoomHashDatasCount; ++i)
         {
             uint16_t strLength;
             std::memcpy(&strLength, &data[offset], sizeof(uint16_t));
@@ -4082,7 +4082,6 @@ public:
             RoomHashDatas.Enter(tempString);
         }
         
-        
     }
 
     virtual uint16_t GetSize() const override
@@ -4090,15 +4089,13 @@ public:
         uint16_t size = 0;
         size += sizeof(uint16_t); // PacketSize
         size += sizeof(uint16_t); // PacketID
-        
-        size += sizeof(int);
+        size += sizeof(int32_t);
         for(auto& item : RoomHashDatas.Values)
         {
             size += sizeof(uint16_t);
             size += static_cast<uint16_t>(item.size());
         }
-        
-                
+               
         
         return size;
     }
@@ -4117,9 +4114,9 @@ public:
         std::memcpy(&buffer[offset], &msgId, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         
-        int count = RoomHashDatas.GetCount();
-        std::memcpy(&buffer[offset], &count, sizeof(int));
-        offset += sizeof(int);
+        int32_t count_RoomHashDatas = static_cast<int32_t>(RoomHashDatas.GetCount());
+        std::memcpy(&buffer[offset], &count_RoomHashDatas, sizeof(int32_t));
+        offset += sizeof(int32_t);
         for (auto& str : RoomHashDatas.Values)
         {
             uint16_t strLen = static_cast<uint16_t>(str.size());
@@ -4128,7 +4125,6 @@ public:
             std::memcpy(&buffer[offset], str.data(), strLen);
             offset += strLen;
         }
-        
         
 
         return buffer;
@@ -4215,7 +4211,7 @@ public:
         {
             size += obj.GetSize();
         }
-                
+               
         
         return size;
     }
@@ -4311,7 +4307,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         size += RoomMasterData.GetSize();
-                
+               
         
         return size;
     }
@@ -4377,7 +4373,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -4445,7 +4441,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         size += LeavePlayerData.GetSize();
-                
+               
         
         return size;
     }
@@ -4515,7 +4511,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         size += static_cast<uint16_t>(ReturnHashID.size());
-                
+               
         
         return size;
     }
@@ -4603,7 +4599,7 @@ public:
         size += static_cast<uint16_t>(PublicAddress.size());
         size += sizeof(int32_t);
         
-                
+               
         
         return size;
     }
@@ -4680,7 +4676,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }
@@ -4751,7 +4747,7 @@ public:
         size += static_cast<uint16_t>(IPAddress.size());
         size += sizeof(int32_t);
         
-                
+               
         
         return size;
     }
@@ -4819,7 +4815,7 @@ public:
         size += sizeof(uint16_t); // PacketID
         size += sizeof(uint16_t);
         
-                
+               
         
         return size;
     }

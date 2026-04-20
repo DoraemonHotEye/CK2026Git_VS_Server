@@ -1,4 +1,4 @@
-#include "PeerStationPackage.h"
+﻿#include "PeerStationPackage.h"
 #include "../Player/CPlayer.h"
 #include "../../Session/ClientSession.h"
 #include "../../../CPPServerCore/ServerSupports/PrintLogThread.h"
@@ -22,14 +22,14 @@ void PeerStationPackage::BroadCastMessage(PacketInterface& message)
     std::vector<Player*> snapshot;
     {
         std::lock_guard<std::mutex> lock(mtx);
-        snapshot = BroadCastList; // snapshot ����
+        snapshot = BroadCastList; // snapshot 복사
     }
 
     for (Player* pl : snapshot)
     {
         if (pl != nullptr && pl->_session)
         {
-            pl->_session->Send(message); // Lock �ۿ��� ȣ��
+            pl->_session->Send(message); // Lock 밖에서 호출
         }
     }
 }
@@ -37,13 +37,29 @@ void PeerStationPackage::BroadCastMessage(PacketInterface& message)
 bool PeerStationPackage::BroadCast()
 {
     PeerDataPack endPoint;
+    bool isEmpty = false;
+
     {
         std::lock_guard<std::mutex> lock(mtx);
-        if (SendIPEndPointContainer.empty())
-            return true;
 
-        endPoint = SendIPEndPointContainer.front();
-        SendIPEndPointContainer.pop();
+        if (SendIPEndPointContainer.empty())
+        {
+            isEmpty = true;
+        }
+        else
+        {
+            endPoint = SendIPEndPointContainer.front();
+            SendIPEndPointContainer.pop();
+        }
+    } //여기서 락 해제
+
+    if (isEmpty)
+    {
+        MAINSERVER_AllCompeletedReady allComp;
+        allComp.timeout = 10;
+
+        BroadCastMessage(allComp); //락 밖
+        return true;
     }
 
     if (endPoint.PublicAddress.empty())
@@ -61,6 +77,7 @@ bool PeerStationPackage::BroadCast()
 
     LOG(msg);
 
-    BroadCastMessage(peer);
+    BroadCastMessage(peer); //락 밖
+
     return false;
 }
