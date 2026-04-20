@@ -458,7 +458,7 @@ namespace MakePacketTemplate.Packets
 
             {1} = new {0}();
             byte[] {1}SliceCopied = new byte[{1}PacketSize];
-            Array.Copy(buffer, offset, {1}SliceCopied, 0, {1}PacketSize);
+            Array.Copy(buffer, start + offset, {1}SliceCopied, 0, {1}PacketSize);
             var {1}Array = new ArraySegment<byte>({1}SliceCopied);
             {1}.Deserialize({1}Array);
             offset += {1}PacketSize;
@@ -492,7 +492,7 @@ namespace MakePacketTemplate.Packets
 
                 {1} packet = new {1}();
                 byte[] copied = new byte[objectsize];
-                Array.Copy(buffer, offset, copied, 0, objectsize);
+                Array.Copy(buffer, start + offset, copied, 0, objectsize);
                 var slice = new ArraySegment<byte>(copied);
 
                 packet.Deserialize(slice);

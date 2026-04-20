@@ -3455,7 +3455,7 @@ namespace MakePacketTemplate.Packets
 
             OtherPlayer = new PlayerData();
             byte[] OtherPlayerSliceCopied = new byte[OtherPlayerPacketSize];
-            Array.Copy(buffer, offset, OtherPlayerSliceCopied, 0, OtherPlayerPacketSize);
+            Array.Copy(buffer, start + offset, OtherPlayerSliceCopied, 0, OtherPlayerPacketSize);
             var OtherPlayerArray = new ArraySegment<byte>(OtherPlayerSliceCopied);
             OtherPlayer.Deserialize(OtherPlayerArray);
             offset += OtherPlayerPacketSize;
@@ -3608,7 +3608,7 @@ namespace MakePacketTemplate.Packets
 
             MasterPlayer = new PlayerData();
             byte[] MasterPlayerSliceCopied = new byte[MasterPlayerPacketSize];
-            Array.Copy(buffer, offset, MasterPlayerSliceCopied, 0, MasterPlayerPacketSize);
+            Array.Copy(buffer, start + offset, MasterPlayerSliceCopied, 0, MasterPlayerPacketSize);
             var MasterPlayerArray = new ArraySegment<byte>(MasterPlayerSliceCopied);
             MasterPlayer.Deserialize(MasterPlayerArray);
             offset += MasterPlayerPacketSize;
@@ -3631,7 +3631,7 @@ namespace MakePacketTemplate.Packets
 
                 PlayerData packet = new PlayerData();
                 byte[] copied = new byte[objectsize];
-                Array.Copy(buffer, offset, copied, 0, objectsize);
+                Array.Copy(buffer, start + offset, copied, 0, objectsize);
                 var slice = new ArraySegment<byte>(copied);
 
                 packet.Deserialize(slice);
@@ -3730,7 +3730,7 @@ namespace MakePacketTemplate.Packets
 
             RoomMasterData = new PlayerData();
             byte[] RoomMasterDataSliceCopied = new byte[RoomMasterDataPacketSize];
-            Array.Copy(buffer, offset, RoomMasterDataSliceCopied, 0, RoomMasterDataPacketSize);
+            Array.Copy(buffer, start + offset, RoomMasterDataSliceCopied, 0, RoomMasterDataPacketSize);
             var RoomMasterDataArray = new ArraySegment<byte>(RoomMasterDataSliceCopied);
             RoomMasterData.Deserialize(RoomMasterDataArray);
             offset += RoomMasterDataPacketSize;
@@ -3857,7 +3857,7 @@ namespace MakePacketTemplate.Packets
 
             LeavePlayerData = new PlayerData();
             byte[] LeavePlayerDataSliceCopied = new byte[LeavePlayerDataPacketSize];
-            Array.Copy(buffer, offset, LeavePlayerDataSliceCopied, 0, LeavePlayerDataPacketSize);
+            Array.Copy(buffer, start + offset, LeavePlayerDataSliceCopied, 0, LeavePlayerDataPacketSize);
             var LeavePlayerDataArray = new ArraySegment<byte>(LeavePlayerDataSliceCopied);
             LeavePlayerData.Deserialize(LeavePlayerDataArray);
             offset += LeavePlayerDataPacketSize;
